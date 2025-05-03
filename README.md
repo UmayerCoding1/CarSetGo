@@ -55,6 +55,19 @@ The following libraries are used in the client-side application:
 - **sonner**: A lightweight notification library for React.
 - **tailwindcss**: A utility-first CSS framework for styling.
 
-<!-- ## Project Structure
+## Libraries Used on the Server Side
 
-### Client -->
+The following libraries are used in the server-side application:
+
+- **bcryptjs**: For hashing passwords securely.
+- **cloudinary**: For managing and storing images in the cloud.
+- **cookie-parser**: For parsing cookies in HTTP requests.
+- **cors**: For enabling cross-origin resource sharing.
+- **dotenv**: For managing environment variables.
+- **express**: For building RESTful APIs.
+- **jsonwebtoken**: For generating and verifying JSON Web Tokens (JWT).
+- **mongoose**: For MongoDB object modeling.
+- **multer**: For handling file uploads.
+- **nodemon**: For automatically restarting the server during development.
+
+Let me know if you need further updates or additional sections! 😊
