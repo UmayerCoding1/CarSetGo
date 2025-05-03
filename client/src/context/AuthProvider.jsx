@@ -1,0 +1,49 @@
+import React, { createContext, useEffect, useState } from "react";
+import usePublicApi from "../hooks/usePublicApi";
+import useSecureApi from "../hooks/useSecureApi";
+
+export const AuthContext = createContext(null);
+const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState();
+  const publicApi = usePublicApi();
+  const secureApi = useSecureApi();
+
+  const userRegister = async (data) => {
+    return await publicApi.post("/auth/register",data);
+  };
+  const userLogin = async(data) => {
+    return await publicApi.post('/auth/login',data)
+  }
+
+
+  useEffect(() => {
+    const getLoginUser  = async () => {
+      try {
+          const res = await secureApi.get('/auth/logdin-user');
+          
+          
+          if (res.data) {
+              setUser(res.data.user);
+          }
+      } catch (error) {
+          console.log(error);
+          
+      }
+  }
+
+
+  getLoginUser();
+  },[secureApi])
+
+  const value = {
+    userRegister,
+    userLogin,
+    setUser,
+    user
+  };
+  return <AuthContext.Provider value={value}>
+    {children}
+  </AuthContext.Provider>;
+};
+
+export default AuthProvider;
