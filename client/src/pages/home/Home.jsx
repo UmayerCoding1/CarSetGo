@@ -52,14 +52,7 @@ const Home = () => {
         <FeaturesSection />
       </motion.div>
 
-      <motion.div
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true }}
-        variants={fadeInUp}
-      >
-        <FAQSSection />
-      </motion.div>
+     
 
       <motion.div
         initial="hidden"
@@ -69,6 +62,9 @@ const Home = () => {
       >
         <AboutUs />
       </motion.div>
+
+
+
       <motion.div
         initial="hidden"
         whileInView="visible"
@@ -76,6 +72,16 @@ const Home = () => {
         variants={fadeInUp}
       >
         <Testimonial/>
+      </motion.div>
+
+
+      <motion.div
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+        variants={fadeInUp}
+      >
+        <FAQSSection />
       </motion.div>
     </div>
   );
