@@ -10,4 +10,4 @@ const dealershipSchema = new Schema({
 },{timestamps: true});
 
 
-export const Dealership = model('Uealership', dealershipSchema);
+export const Dealership = model('Dealership', dealershipSchema);

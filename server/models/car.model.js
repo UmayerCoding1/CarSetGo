@@ -1,4 +1,4 @@
-import  { Schema,model } from "mongoose";
+import { Schema, model } from "mongoose";
 
 // Enum for CarStatus (mimicking Prisma's enum)
 const CarStatus = {
@@ -12,7 +12,7 @@ const carSchema = new Schema(
     make: { type: String, required: true },
     model: { type: String, required: true },
     year: { type: Number, required: true },
-    price: { type:Number, required: true },
+    price: { type: Number, required: true },
     mileage: { type: Number, required: true },
     color: { type: String, required: true },
     fuelType: { type: String, required: true },
@@ -28,8 +28,18 @@ const carSchema = new Schema(
     featured: { type: Boolean, default: false },
     images: [{ type: String }], // Array of image URLs
     bookingBy: [{ type: Schema.Types.ObjectId, ref: "User" }],
-    createdAt: { type: Date, default: Date.now },
-    updatedAt: { type: Date, default: Date.now },
+    paymentsystem: [
+      {
+        type: {
+          type: String,
+          required: true,
+          enum: ["UPFRONT", "EMI", "FULL_PAYMENT"],
+        },
+        description: {
+          type: String,
+        },
+      },
+    ],
   },
   { timestamps: true }
 );
