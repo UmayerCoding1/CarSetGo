@@ -26,10 +26,6 @@ CarSetGo is a full-stack web application designed for car rental and dealership 
 - **TailwindCSS**: For styling.
 - **React Router**: For client-side routing.
 - **Axios**: For API requests.
-- **Lucide React**: For icons.
-- **Motion**: For animations.
-- **React Dropzone**: For file uploads.
-- **Sonner**: For notifications.
 
 ### Backend
 - **Node.js**: For server-side logic.
@@ -39,35 +35,108 @@ CarSetGo is a full-stack web application designed for car rental and dealership 
 - **Cloudinary**: For image storage and management.
 - **JWT**: For secure authentication.
 
-## Libraries Used on the Client Side
+## Demo Data for Models
 
-The following libraries are used in the client-side application:
+### User Model
+```json
+{
+  "fullname": "John Doe",
+  "email": "johndoe@example.com",
+  "username": "johndoe",
+  "password": "hashed_password",
+  "avatar": "https://example.com/avatar.jpg",
+  "role": "user",
+  "paymentstatus": "pending",
+  "isGoogleAccount": false
+}
+```
 
-- **@tailwindcss/vite**: TailwindCSS integration with Vite.
-- **axios**: For making HTTP requests.
-- **lucide-react**: A library for using Lucide icons in React.
-- **motion**: For creating animations and transitions.
-- **react**: A JavaScript library for building user interfaces.
-- **react-dom**: For rendering React components in the DOM.
-- **react-dropzone**: For handling file uploads via drag-and-drop.
-- **react-router**: For managing routing in React applications.
-- **react-router-dom**: DOM bindings for React Router.
-- **sonner**: A lightweight notification library for React.
-- **tailwindcss**: A utility-first CSS framework for styling.
+### Car Model
+```json
+{
+  "make": "Toyota",
+  "model": "Corolla",
+  "year": 2022,
+  "price": 20000,
+  "mileage": 15000,
+  "color": "Blue",
+  "fuelType": "Petrol",
+  "transmission": "Automatic",
+  "bodyType": "Sedan",
+  "seats": 5,
+  "description": "A reliable and fuel-efficient sedan.",
+  "status": "AVAILABLE",
+  "featured": true,
+  "images": ["https://example.com/car1.jpg", "https://example.com/car2.jpg"],
+  "bookingBy": [],
+  "paymentsystem": [
+    {
+      "type": "FULL_PAYMENT",
+      "description": "Full payment required."
+    }
+  ]
+}
+```
 
-## Libraries Used on the Server Side
+### Booking Model
+```json
+{
+  "userId": "user_id",
+  "carId": "car_id",
+  "bookingStartDate": "2025-05-01",
+  "bookingEndDate": "2025-05-10",
+  "status": "pending"
+}
+```
 
-The following libraries are used in the server-side application:
+### Payment Model
+```json
+{
+  "userId": "user_id",
+  "carId": "car_id",
+  "bookingId": "booking_id",
+  "dealershipId": "dealership_id",
+  "paymentType": "buying",
+  "amount": 20000,
+  "paymentMethod": "Credit Card",
+  "transactionId": "txn_123456789"
+}
+```
 
-- **bcryptjs**: For hashing passwords securely.
-- **cloudinary**: For managing and storing images in the cloud.
-- **cookie-parser**: For parsing cookies in HTTP requests.
-- **cors**: For enabling cross-origin resource sharing.
-- **dotenv**: For managing environment variables.
-- **express**: For building RESTful APIs.
-- **jsonwebtoken**: For generating and verifying JSON Web Tokens (JWT).
-- **mongoose**: For MongoDB object modeling.
-- **multer**: For handling file uploads.
-- **nodemon**: For automatically restarting the server during development.
+### Review Model
+```json
+{
+  "userId": "user_id",
+  "carId": "car_id",
+  "message": "Great car! Smooth ride and excellent condition."
+}
+```
 
-Let me know if you need further updates or additional sections! 😊
+### Minimal Model
+```json
+{
+  "userId": "user_id",
+  "carId": "car_id",
+  "dealershipFormId": "dealership_id",
+  "paymentId": "payment_id"
+}
+```
+
+### Dealership Model
+```json
+{
+  "name": "Premium Dealership",
+  "address": ["123 Main St, City, Country"],
+  "phone": "+1234567890",
+  "email": "dealership@example.com"
+}
+```
+
+### Seller Request Model
+```json
+{
+  "userId": "user_id",
+  "reason": "I want to sell my car on your platform.",
+  "status": "pending"
+}
+```
