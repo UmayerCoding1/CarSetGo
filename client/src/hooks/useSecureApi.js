@@ -5,16 +5,32 @@ const secureApi = axios.create({
     withCredentials: true
 })
 const useSecureApi = () => {
-    secureApi.interceptors.request.use(function (config) {
-        const token = localStorage.getItem('xytz5T').split('+')[1];
-        console.log(token);
-        
-         config.headers.Authorization = `Bearer ${token}`
-        return config;
-      }, function (error) {
-        // Do something with request error
-        return Promise.reject(error);
-      });
+    secureApi.interceptors.request.use(
+        function (config) {
+            // Retrieve the token from localStorage
+            const token = localStorage.getItem('xytz5T');
+            if (!token) {
+                console.error("Token is missing");
+                return Promise.reject(new Error("Authorization token is missing"));
+            }
+
+            // Extract the actual token from the stored value
+            const parsedToken = token.split('+')[1];
+            if (!parsedToken) {
+                console.error("Token format is invalid");
+                return Promise.reject(new Error("Invalid token format"));
+            }
+
+            // Attach the token to the Authorization header
+            config.headers.Authorization = `Bearer ${parsedToken}`;
+            return config;
+        },
+        function (error) {
+            // Log and reject the request error
+            console.error("Request error:", error);
+            return Promise.reject(error);
+        }
+    );
     return secureApi
 };
 

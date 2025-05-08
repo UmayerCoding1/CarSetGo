@@ -6,6 +6,7 @@ CarSetGo is a full-stack web application designed for car rental and dealership 
 
 ### Client-Side
 - **User Authentication**: Sign up, log in, and log out functionality.
+- **Google Login**: Login using Google accounts for a seamless experience.
 - **Role-Based Navigation**: Separate navigation for users, sellers, and admins.
 - **Car Search**: Search for cars by text or AI-powered image search.
 - **Car Categories**: Browse cars by categories like SUV, Crossover, MPV, etc.
@@ -14,6 +15,7 @@ CarSetGo is a full-stack web application designed for car rental and dealership 
 
 ### Server-Side
 - **Authentication**: JWT-based authentication with role management.
+- **Google OAuth Integration**: Login using Google accounts.
 - **Cloudinary Integration**: Upload and manage images using Cloudinary.
 - **Database**: MongoDB for storing user, car, and dealership data.
 - **RESTful API**: Backend APIs for user authentication, car management, and more.
@@ -34,6 +36,7 @@ CarSetGo is a full-stack web application designed for car rental and dealership 
 - **Mongoose**: For MongoDB object modeling.
 - **Cloudinary**: For image storage and management.
 - **JWT**: For secure authentication.
+- **Google OAuth**: For third-party login integration.
 
 ## Demo Data for Models
 
@@ -47,7 +50,7 @@ CarSetGo is a full-stack web application designed for car rental and dealership 
   "avatar": "https://example.com/avatar.jpg",
   "role": "user",
   "paymentstatus": "pending",
-  "isGoogleAccount": false
+  "isGoogleAccount": true
 }
 ```
 

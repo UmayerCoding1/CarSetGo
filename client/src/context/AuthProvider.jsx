@@ -4,7 +4,7 @@ import useSecureApi from "../hooks/useSecureApi";
 
 export const AuthContext = createContext(null);
 const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState();
+  const [user, setUser] = useState('');
   const publicApi = usePublicApi();
   const secureApi = useSecureApi();
 
@@ -13,6 +13,12 @@ const AuthProvider = ({ children }) => {
   };
   const userLogin = async(data) => {
     return await publicApi.post('/auth/login',data)
+  }
+
+  const logout = async () => {
+    console.log('ok');
+    
+    return await secureApi.post("/auth/logout");
   }
 
 
@@ -38,6 +44,7 @@ const AuthProvider = ({ children }) => {
   const value = {
     userRegister,
     userLogin,
+    logout,
     setUser,
     user
   };

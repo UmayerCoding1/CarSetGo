@@ -2,9 +2,9 @@ import { Schema, model } from "mongoose";
 
 // Enum for CarStatus (mimicking Prisma's enum)
 const CarStatus = {
-  AVAILABLE: "AVAILABLE",
-  SOLD: "SOLD",
-  BOOKED: "BOOKED",
+  AVAILABLE: "available",
+  SOLD: "sold",
+  BOOKED: "booked",
 };
 
 const carSchema = new Schema(
@@ -28,12 +28,15 @@ const carSchema = new Schema(
     featured: { type: Boolean, default: false },
     images: [{ type: String }], // Array of image URLs
     bookingBy: [{ type: Schema.Types.ObjectId, ref: "User" }],
+    seller: { type: Schema.Types.ObjectId, ref: "User" },
+    category: { type: String, required: true },
+    postType: { type: String, required: true, enum: ['booking', 'selling'] },
     paymentsystem: [
       {
         type: {
           type: String,
           required: true,
-          enum: ["UPFRONT", "EMI", "FULL_PAYMENT"],
+          enum: ["upfront", "emi", "full payment"],
         },
         description: {
           type: String,

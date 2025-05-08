@@ -3,18 +3,38 @@ import { asset } from "../../../assets/asser";
 import UserNav from "./UserNav";
 import { motion } from "motion/react";
 import SellerNav from "./SellerNav";
-import { LogOut, User } from "lucide-react";
+import { Handshake, Info, LogOut, Plus, Settings, User } from "lucide-react";
 import AdminNav from "./AdminNav";
 import { Link } from "react-router-dom";
 import useAuth from "../../../hooks/useAuth";
 
 const Navbar = () => {
-  const { user } = useAuth();
-  const MotionLink = motion(Link);
+  const { user, logout, setUser } = useAuth();
+  const MotionLink = motion.create(Link);
   const [isSticky, setIsSticky] = useState(false);
   const [isOpenUserMenage, setIsOpenUserMenage] = useState(false);
   const userManageRef = useRef(null);
 
+  const handleUpdateAvatar = async (e) => {
+
+    const file = e.target.files[0];
+     
+    const formData = new FormData();
+    formData.append('avatar',file);
+    console.log(formData);
+    
+  };
+
+  const handleLogout = () => {
+    logout()
+      .then((res) => {
+        setUser("");
+        localStorage.removeItem('xytz5T')
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 20) {
@@ -45,8 +65,6 @@ const Navbar = () => {
     };
   }, []);
 
-  
-
   return (
     <>
       <motion.header
@@ -59,7 +77,7 @@ const Navbar = () => {
       >
         <nav className="flex items-center justify-between ">
           <Link to={"/"}>
-            <img loading="lazy" className="w-48" src={asset.logo} alt="logo" />
+            <img loading="lazy" className="w-48 " src={asset.logo} alt="logo" />
           </Link>
 
           {user ? (
@@ -72,9 +90,20 @@ const Navbar = () => {
 
               <div className="relative">
                 {/* User Avatar or Icon */}
-                <div onClick={() => setIsOpenUserMenage(!isOpenUserMenage)} className="cursor-pointer">
+                <div
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setIsOpenUserMenage(!isOpenUserMenage);
+                  }}
+                  className="cursor-pointer"
+                >
                   {user?.avatar ? (
-                    <img className="w-16 h-16 " src={user?.avatar} alt="avatar" />
+                    <img
+                      className="w-10  h-10 rounded-full "
+                      src={user?.avatar}
+                      alt="avatar"
+                      loading="lazy"
+                    />
                   ) : (
                     <motion.div
                       whileTap={{ scale: 0.8 }}
@@ -89,15 +118,54 @@ const Navbar = () => {
                 {isOpenUserMenage && (
                   <div
                     ref={userManageRef}
-                    className="absolute w-full lg:w-[300px] h-[200px] top-20 shadow-primary rounded-lg bg-white right-0"
+                    className="absolute w-full lg:w-[300px] h-[200px] top-[52px] shadow-primary rounded-lg bg-white right-0 p-2"
                   >
-                    <div className="flex items-center gap-3 shadow p-2 mt-5">
-                      <LogOut
-                        size={20}
-                        strokeWidth={2}
-                        className="text-gray-600"
-                      />
-                      <p className="text-gray-600">Sign out</p>
+                    <div className="border-b border-gray-400">
+                      <div className="flex  gap-3">
+                        <img
+                          className="w-10  h-10 rounded-full "
+                          src={user?.avatar}
+                          alt="avatar"
+                          loading="lazy"
+                        />
+                        <div>
+                          <h2 className="font-medium text-lg">
+                            {user?.fullname}
+                          </h2>
+                          <p className="text-sm text-gray-600">{user?.email}</p>
+
+                          <div className="flex items-center gap-2 my-3 ">
+                            <label className="flex items-center justify-center gap-2 shadow border border-gray-300 px-2 py-1 rounded-lg text-sm cursor-pointer w-40">
+                              <Plus size={15} />
+                              <p>Update avatar</p>
+                              <input
+                                type="file"
+                                accept="image/*"
+                                className="hidden"
+                                onChange={handleUpdateAvatar}
+                              />
+                            </label>
+
+                            <div
+                              onClick={handleLogout}
+                              className="flex items-center justify-center gap-2 shadow border border-gray-300 px-2 py-1 rounded-lg text-sm cursor-pointer w-40"
+                            >
+                              <LogOut size={15} />
+                              <p>Sign out</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className=" flex items-center gap-3 shadow my-3 p-3 border border-gray-300 rounded-lg cursor-pointer">
+                      <Handshake size={18} />
+                      <p className="font-medium text-sm">Request for seller</p>
+                    </div>
+
+                    <div className=" flex items-center gap-3 shadow my-3 p-3 border border-gray-300 rounded-lg cursor-pointer">
+                      <Info size={18} />
+                      <p className="font-medium text-sm">About Us</p>
                     </div>
                   </div>
                 )}

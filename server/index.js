@@ -14,14 +14,18 @@ app.use(cookieParser());
 app.use(cors({
     origin: [
       "http://localhost:5173"
-    ],   // * means allow from any domain
+    ],   
   credentials: true,
 }));
 
 
 import auhRoute from './routes/auth.route.js';
+import sellerReqRoute from './routes/requestforseller.route.js';
+import carRoute from './routes/cat.route.js'
 
 app.use('/api/v1/auth', auhRoute);
+app.use('/api/v1', sellerReqRoute);
+app.use('/api/v1', carRoute);
 
 
 app.listen(port, () => {
