@@ -1,0 +1,109 @@
+import React, { useState, useRef, useEffect } from 'react';
+import { ChevronDown } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import useSecureApi from '../../hooks/useSecureApi';
+import useAuth from '../../hooks/useAuth';
+import BookingList from '../../components/ui/BookingList';
+import Loading from '../../components/ui/Loading';
+const MyBooking = () => {
+    const [statusFilter, setStatusFilter] = useState('all');
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const dropdownRef = useRef(null);
+    const {user} = useAuth();
+    const secureApi = useSecureApi();
+
+    const statusOptions = [
+        { value: 'all', label: 'All Bookings' },
+        { value: 'pending', label: 'Pending' },
+        { value: 'confirmed', label: 'Confirmed' },
+        { value: 'completed', label: 'Completed' },
+        { value: 'cancelled', label: 'Cancelled' },
+    ];
+
+    const { data: bookings=[], isLoading, error } = useQuery({
+        queryKey: ['bookings'],
+        queryFn: async() => {
+            const response = await secureApi.get(`/get-bookings/${user._id}`);
+            return response.data.bookings;
+        },
+       
+    });
+
+    // Close dropdown when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setIsDropdownOpen(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
+
+    const selectedStatus = statusOptions.find(option => option.value === statusFilter);
+
+
+     console.log(bookings);
+     
+    return (
+        <div className="min-h-screen bg-gray-50">
+            {/* Header Section */}
+            <div className="relative h-[300px] w-full">
+                {/* Background Image */}
+                <div 
+                    className="absolute inset-0 bg-cover bg-center"
+                    style={{
+                        backgroundImage: "url('https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=2070&auto=format&fit=crop')",
+                        filter: "brightness(0.7)"
+                    }}
+                />
+                
+                {/* Content Overlay */}
+                <div className="relative h-full w-full bg-black/40 flex flex-col items-center justify-center text-white px-4">
+                    <h1 className="text-4xl md:text-5xl font-bold mb-3">My Bookings</h1>
+                    <p className="text-lg md:text-xl text-gray-200 mb-6">Manage and track your car rental bookings</p>
+                    
+                    {/* Custom Status Filter Dropdown */}
+                    <div className="relative w-full max-w-xs" ref={dropdownRef}>
+                        <button
+                            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                            className="w-full bg-white text-gray-800 px-4 py-3 rounded-lg flex items-center justify-between hover:bg-gray-50 transition-colors"
+                        >
+                            <span>{selectedStatus?.label || 'Select Status'}</span>
+                            <ChevronDown className={`w-5 h-5 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
+                        </button>
+
+                        {isDropdownOpen && (
+                            <div className="absolute z-10 w-full mt-2 bg-white rounded-lg shadow-lg">
+                                {statusOptions.map((option) => (
+                                    <button
+                                        key={option.value}
+                                        onClick={() => {
+                                            setStatusFilter(option.value);
+                                            setIsDropdownOpen(false);
+                                        }}
+                                        className={`w-full px-4 py-3 text-left hover:bg-gray-100 transition-colors cursor-pointer ${
+                                            statusFilter === option.value ? 'bg-gray-50 text-blue-600' : 'text-gray-800'
+                                        }`}
+                                    >
+                                        {option.label}
+                                    </button>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </div>
+
+            {/* Main Content Area */}
+            <div className="container  mx-auto px-4 py-8">
+                {isLoading ? <Loading /> : <>
+                   {bookings.length > 0 && bookings.map(booking => <BookingList key={booking._id} carinfo={booking.carId} sellerinfo={booking.sellerId} bookinginfo={booking} />)}
+                </>}
+            </div>
+        </div>
+    );
+};
+
+export default MyBooking;

@@ -15,7 +15,7 @@ const UserNav = () => {
       </div>
       <div>
         <Link
-          to={"/save-cars"}
+          to={"/saved-cars"}
           className="flex items-center gap-2 border px-2 md:px-5 lg:px-5 py-2 rounded-lg select-none cursor-pointer"
         >
           <Heart strokeWidth={1.5} size={20} />

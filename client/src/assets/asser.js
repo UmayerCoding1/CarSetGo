@@ -8,6 +8,7 @@ import crossovercar from './cars/Crossover.png';
 import mpvcar from './cars/mpv.png';
 import PickupTruck from './cars/Pickup Truck.png';
 import aboutImg from './about.webp'; 
+import carBg from './car-bg.jpg';
 export const asset = {
     authBg,
     authCar,
@@ -19,5 +20,5 @@ export const asset = {
     mpvcar,
     PickupTruck,
     aboutImg,
-    
+    carBg
 }

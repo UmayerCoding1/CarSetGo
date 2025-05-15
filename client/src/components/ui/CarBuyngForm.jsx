@@ -1,11 +1,15 @@
 import React, { useState } from "react";
 import { motion } from "motion/react";
 import { X, Calculator } from "lucide-react";
-
-const CarBuyngForm = ({ carId, userId, sellerId, price }) => {
+import useSecureApi from "../../hooks/useSecureApi";
+import { toast } from "sonner";
+import useAuth from "../../hooks/useAuth";
+import { useNavigate } from "react-router-dom";
+const CarBuyngForm = ({ carId, userId, sellerId, price, status }) => {
+  const {user} = useAuth();
   const [formData, setFormData] = useState({
-    name: "",
-    email: "",
+    name: user?.fullname,
+    email: user?.email,
     phone: "",
     address: {
       city: "",
@@ -25,6 +29,10 @@ const CarBuyngForm = ({ carId, userId, sellerId, price }) => {
     interestRate: "8.5",
   });
   const [emiResult, setEmiResult] = useState(null);
+
+  const secureApi = useSecureApi();
+  const navigate = useNavigate();
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -76,14 +84,32 @@ const CarBuyngForm = ({ carId, userId, sellerId, price }) => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
-    console.log("Form Data:", formData);
+    if (!user) {
+      toast.error("Please login to buy the car", {duration: 1000});
+      navigate("/sign-in");
+      return;
+    }
+
+    try {
+      const res = await secureApi.post("/create-dealership", formData);
+      if(res.data.success){
+        toast.success(res.data.message, {duration: 1000});
+        setFormData({});
+        setShowEmiModal(false);
+        navigate("/payment/buy-car");
+      }
+    } catch (error) {
+      console.log("error", error);
+    }
+    
   };
 
   return (
     <>
-      <div className="max-w-4xl mx-auto p-8 border border-gray-300 rounded-md shadow-md">
+      {status === 'available' ? (
+        <div className="max-w-4xl mx-auto p-8 border border-gray-300 rounded-md shadow-md">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold">Buy the car</h2>
           <motion.button
@@ -107,7 +133,7 @@ const CarBuyngForm = ({ carId, userId, sellerId, price }) => {
               <input
                 type="text"
                 name="name"
-                value={formData.name}
+                value={user?.fullname}
                 onChange={handleChange}
                 className="w-full p-2 border rounded-md"
                 placeholder="Your name"
@@ -119,7 +145,7 @@ const CarBuyngForm = ({ carId, userId, sellerId, price }) => {
               <input
                 type="email"
                 name="email"
-                value={formData.email}
+                value={user?.email}
                 onChange={handleChange}
                 className="w-full p-2 border rounded-md"
                 placeholder="Your email"
@@ -149,7 +175,7 @@ const CarBuyngForm = ({ carId, userId, sellerId, price }) => {
                 <input
                   type="text"
                   name="address.city"
-                  value={formData.address.city}
+                  value={formData.address?.city}
                   onChange={handleChange}
                   className="w-full p-2 border rounded-md"
                   placeholder="City"
@@ -161,7 +187,7 @@ const CarBuyngForm = ({ carId, userId, sellerId, price }) => {
                 <input
                   type="text"
                   name="address.state"
-                  value={formData.address.state}
+                  value={formData.address?.state}
                   onChange={handleChange}
                   className="w-full p-2 border rounded-md"
                   placeholder="State"
@@ -175,7 +201,7 @@ const CarBuyngForm = ({ carId, userId, sellerId, price }) => {
                 <input
                   type="text"
                   name="address.zip"
-                  value={formData.address.zip}
+                  value={formData.address?.zip}
                   onChange={handleChange}
                   className="w-full p-2 border rounded-md"
                   placeholder="ZIP Code"
@@ -189,7 +215,7 @@ const CarBuyngForm = ({ carId, userId, sellerId, price }) => {
                 <input
                   type="text"
                   name="address.country"
-                  value={formData.address.country}
+                  value={formData.address?.country}
                   onChange={handleChange}
                   className="w-full p-2 border rounded-md"
                   placeholder="Country"
@@ -204,10 +230,13 @@ const CarBuyngForm = ({ carId, userId, sellerId, price }) => {
             type="submit"
             className="bg-black w-full text-white px-6 py-2 rounded-md transition-colors cursor-pointer"
           >
-            Submit
+            Confirm Dealership
           </motion.button>
         </form>
       </div>
+      ) : <> 
+        <h2 className="text-2xl font-bold">This car is already {status}</h2>
+      </>}
 
       {/* EMI Calculator Modal */}
       {showEmiModal && (

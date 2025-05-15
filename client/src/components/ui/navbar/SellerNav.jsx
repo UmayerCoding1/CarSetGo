@@ -18,7 +18,8 @@ const SellerNav = ({user}) => {
 
      
 
-      {user?.paymentstatus === "pending" &&  <div
+      {user?.paymentstatus === "pending" &&  <Link
+          to="/pricing" 
           className={`flex items-center ${
             "bg-gray-300"
           } px-2 py-1 rounded-lg cursor-pointer`}
@@ -30,8 +31,8 @@ const SellerNav = ({user}) => {
               "text-gray-600"
             } `}
           />
-          <span className="font-card text-xs font-semibold ">Pro</span>
-        </div> }
+          <span className="font-card text-xs font-semibold ">Upgrade to Pro</span>
+        </Link> }
 
         {user?.paymentstatus === "completed" && <div
           className={`flex items-center bg-yellow-100 px-2 py-1 rounded-lg cursor-pointer`}

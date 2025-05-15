@@ -5,6 +5,7 @@ import useSecureApi from "../hooks/useSecureApi";
 export const AuthContext = createContext(null);
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
   const publicApi = usePublicApi();
   const secureApi = useSecureApi();
 
@@ -24,11 +25,13 @@ const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const getLoginUser  = async () => {
+      setIsLoading(true);
       try {
           const res = await secureApi.get('/auth/logdin-user');
           
           
           if (res.data) {
+            setIsLoading(false);
               setUser(res.data.user);
           }
       } catch (error) {
@@ -46,7 +49,8 @@ const AuthProvider = ({ children }) => {
     userLogin,
     logout,
     setUser,
-    user
+    user,
+    isLoading
   };
   return <AuthContext.Provider value={value}>
     {children}

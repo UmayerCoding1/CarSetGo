@@ -3,37 +3,71 @@ import { asset } from "../../../assets/asser";
 import UserNav from "./UserNav";
 import { motion } from "motion/react";
 import SellerNav from "./SellerNav";
-import { Handshake, Info, LogOut, Plus, Settings, User } from "lucide-react";
+import {
+  Car,
+  Handshake,
+  Info,
+  LogOut,
+  MessageCircle,
+  Plus,
+  Settings,
+  User,
+  X,
+} from "lucide-react";
 import AdminNav from "./AdminNav";
 import { Link } from "react-router-dom";
 import useAuth from "../../../hooks/useAuth";
+import { toast } from "sonner";
+import useSecureApi from "../../../hooks/useSecureApi";
 
 const Navbar = () => {
   const { user, logout, setUser } = useAuth();
   const MotionLink = motion.create(Link);
   const [isSticky, setIsSticky] = useState(false);
   const [isOpenUserMenage, setIsOpenUserMenage] = useState(false);
+  const [isOpenRequestForSeller, setIsOpenRequestForSeller] = useState(false);
   const userManageRef = useRef(null);
+  const secureApi = useSecureApi();
 
   const handleUpdateAvatar = async (e) => {
-
     const file = e.target.files[0];
-     
+
     const formData = new FormData();
-    formData.append('avatar',file);
+    formData.append("avatar", file);
     console.log(formData);
-    
   };
 
   const handleLogout = () => {
     logout()
       .then((res) => {
         setUser("");
-        localStorage.removeItem('xytz5T')
+        localStorage.removeItem("xytz5T");
       })
       .catch((err) => {
         console.log(err);
       });
+  };
+
+  const handleRequestForSeller = async (e) => {
+    e.preventDefault();
+    const reason = e.target.reason.value;
+    if (reason.length === 0) {
+      toast.error("Reason is required");
+      return;
+    }
+
+    try {
+      const res = await secureApi.post("/seller-request", { reason });
+      if (res.data.success) {
+        toast.success(res.data.message);
+        e.target.reset();
+        setIsOpenRequestForSeller(false);
+        document.body.style.overflow = "auto";
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error.response.data.message);
+    }
   };
   useEffect(() => {
     const handleScroll = () => {
@@ -118,7 +152,7 @@ const Navbar = () => {
                 {isOpenUserMenage && (
                   <div
                     ref={userManageRef}
-                    className="absolute w-full lg:w-[300px] h-[200px] top-[52px] shadow-primary rounded-lg bg-white right-0 p-2"
+                    className="absolute w-full lg:w-[300px]  top-[52px] shadow-primary rounded-lg bg-white right-0 p-2"
                   >
                     <div className="border-b border-gray-400">
                       <div className="flex  gap-3">
@@ -158,10 +192,32 @@ const Navbar = () => {
                       </div>
                     </div>
 
-                    <div className=" flex items-center gap-3 shadow my-3 p-3 border border-gray-300 rounded-lg cursor-pointer">
-                      <Handshake size={18} />
-                      <p className="font-medium text-sm">Request for seller</p>
-                    </div>
+                    <Link to={`/your-cars/${user?._id}`} className=" flex items-center gap-3 shadow my-3 p-3 border border-gray-300 rounded-lg cursor-pointer">
+                      <Car size={18} />
+                      <p className="font-medium text-sm">Your cars</p>
+                    </Link>
+
+                    {user?.role === "user" && (
+                      <div
+                        onClick={() => {
+                          document.body.style.overflow = "hidden";
+                          setIsOpenRequestForSeller(true);
+                        }}
+                        className=" flex items-center gap-3 shadow my-3 p-3 border border-gray-300 rounded-lg cursor-pointer"
+                      >
+                        <Handshake size={18} />
+                        <p className="font-medium text-sm">
+                          Request for seller
+                        </p>
+                      </div>
+                    )}
+
+                    {user?.role === "seller" && (
+                      <div className=" flex items-center gap-3 shadow my-3 p-3 border border-gray-300 rounded-lg cursor-pointer">
+                        <MessageCircle size={18} />
+                        <p className="font-medium text-sm">Message </p>
+                      </div>
+                    )}
 
                     <div className=" flex items-center gap-3 shadow my-3 p-3 border border-gray-300 rounded-lg cursor-pointer">
                       <Info size={18} />
@@ -183,6 +239,46 @@ const Navbar = () => {
         </nav>
       </motion.header>
 
+      {isOpenRequestForSeller && (
+        <div className="absolute  top-0 left-0 w-full h-screen bg-black/70 z-50 flex items-center justify-center">
+          <div className="w-[500px]  bg-white rounded-lg p-3 ">
+            <div className="flex items-center justify-between">
+              <h2 className="text-center text-2xl font-bold">
+                Request for seller
+              </h2>
+
+              <div onClick={() => {
+                document.body.style.overflow = 'auto';
+                setIsOpenRequestForSeller(false)
+              }} className="flex items-center justify-center gap-1 text-sm font-medium cursor-pointer">
+                <X size={18} />
+                
+              </div>
+            </div>
+
+            <form onSubmit={handleRequestForSeller}>
+              <div className="my-3">
+                <label htmlFor="reason" className="text-sm font-medium">
+                  Reason
+                </label>
+                <textarea
+                  name="reason"
+                  id="reason"
+                  className="w-full h-20 border border-gray-300 rounded-lg p-2 resize-none outline-none"
+                  placeholder="Reason"
+                ></textarea>
+
+                <button
+                  type="submit"
+                  className="bg-black text-white px-4 py-2 font-semibold rounded-lg text-sm cursor-pointer my-3"
+                >
+                  Submit
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
       {/* Navbar er jonne space */}
       <div className="h-[90px] md:h-[65px] lg:h-[65px]"></div>
     </>

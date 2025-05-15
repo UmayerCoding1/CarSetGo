@@ -11,7 +11,7 @@ const CarCard = ({ car }) => {
         <img className="w-full h-[150px] object-cover  bg-center rounded-xl" src={car?.images[0]} alt={car?.make} loading="lazy" />
       </div>
       <div className="mt-2 ">
-        <h2 className="font-semibold text-2xl">{car?.make}</h2>
+        <h2 className="font-semibold text-2xl">{car?.make}<span className={`text-xs font-medium ${car?.status === 'booked' && 'text-blue-400'} ${car?.status === 'available' && 'text-green-600'} ${car?.status === 'sold' && 'text-red-600'}`}>({car?.status})</span></h2>
         <p className="text-gray-600">${car?.price}{car?.postType === "booking" && "/hour"}</p>
       </div>
 

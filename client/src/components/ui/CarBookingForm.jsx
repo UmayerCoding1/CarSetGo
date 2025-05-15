@@ -1,17 +1,20 @@
 import React, { useState } from "react";
 import { motion } from "motion/react";
 import { X } from "lucide-react";
-
+import useSecureApi from "../../hooks/useSecureApi";
+import { toast } from "sonner";
+import useAuth from "../../hooks/useAuth";
 const CarBookingForm = ({ carId, userId, sellerId, price }) => {
+  const {user} = useAuth();
   const [formData, setFormData] = useState({
-    name: "",
-    email: "",
+    name: user?.fullname,
+    email: user?.email,
     phone: "",
     bookingStartDate: "",
     pickupLocation: "",
     numberOfPassengers: "",
-    durationType: "hour", 
-    duration: "1", 
+    durationType: "hour",
+    duration: "1",
     carId: carId,
     userId: userId,
     sellerId: sellerId,
@@ -19,6 +22,32 @@ const CarBookingForm = ({ carId, userId, sellerId, price }) => {
 
   const [showModal, setShowModal] = useState(false);
   const [totalPrice, setTotalPrice] = useState(0);
+  const secureApi = useSecureApi();
+  
+
+  const checkExistingBookings = async (startDate, endDate) => {
+    if (!startDate || !endDate)
+      return toast.error("Please select a valid date");
+    console.log("startDate", startDate);
+    console.log("endDate", endDate);
+
+    try {
+      const response = await secureApi.get(
+        `${
+          import.meta.env.VITE_API_ENDPOINT
+        }/check-bookings?carId=${carId}&startDate=${startDate}&endDate=${endDate}`
+      );
+      if (response.data.success) {
+        setShowModal(false);
+        document.body.style.overflow = "auto";
+        console.log("response.data.success", response.data.success);
+      }
+      return response.data.success;
+    } catch (error) {
+      console.error("Error checking existing bookings:", error);
+      return false;
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -30,21 +59,33 @@ const CarBookingForm = ({ carId, userId, sellerId, price }) => {
 
   const calculateEndDate = (startDate, duration, type) => {
     if (!startDate) return "";
+
     const date = new Date(startDate);
+    if (isNaN(date.getTime())) return ""; // Check if date is valid
+
+    const durationNum = parseInt(duration);
+    if (isNaN(durationNum) || durationNum <= 0) return ""; // Validate duration
+
     switch (type) {
       case "hour":
-        date.setHours(date.getHours() + parseInt(duration));
+        date.setHours(date.getHours() + durationNum);
         break;
       case "day":
-        date.setDate(date.getDate() + parseInt(duration));
+        date.setDate(date.getDate() + durationNum);
         break;
       case "week":
-        date.setDate(date.getDate() + parseInt(duration) * 7);
+        date.setDate(date.getDate() + durationNum * 7);
         break;
       default:
         return "";
     }
-    return date.toISOString().slice(0, 16);
+
+    try {
+      return date.toISOString().slice(0, 16);
+    } catch (error) {
+      console.error("Error calculating end date:", error);
+      return "";
+    }
   };
 
   const handleDurationChange = (e) => {
@@ -76,7 +117,8 @@ const CarBookingForm = ({ carId, userId, sellerId, price }) => {
   };
 
   const calculateTotalPrice = () => {
-    const hourlyRate = price / 720; // Assuming price is monthly rate
+    const hourlyRate = price;
+    
     let total = 0;
 
     switch (formData.durationType) {
@@ -84,10 +126,10 @@ const CarBookingForm = ({ carId, userId, sellerId, price }) => {
         total = hourlyRate * parseInt(formData.duration);
         break;
       case "day":
-        total = (hourlyRate * 24) * parseInt(formData.duration);
+        total = hourlyRate * 24 * parseInt(formData.duration);
         break;
       case "week":
-        total = (hourlyRate * 24 * 7) * parseInt(formData.duration);
+        total = hourlyRate * 24 * 7 * parseInt(formData.duration);
         break;
       default:
         total = 0;
@@ -96,24 +138,82 @@ const CarBookingForm = ({ carId, userId, sellerId, price }) => {
     return total.toFixed(2);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const calculatedPrice = calculateTotalPrice();
     setTotalPrice(calculatedPrice);
-    setShowModal(true);
-    document.body.style.overflow = 'hidden';
+
+    // Check for existing bookings before showing modal
+    const hasExistingBooking = await checkExistingBookings(
+      formData.bookingStartDate,
+      formData.bookingEndDate
+    );
+
+    if (hasExistingBooking) {
+      toast.error(
+        "This time slot is already booked. Please select different dates.",
+        { duration: 3000 }
+      );
+      setShowModal(false);
+      document.body.style.overflow = "auto";
+      return;
+    } else {
+      setShowModal(true);
+      document.body.style.overflow = "hidden";
+    }
+
+    // setShowModal(true);
+    // document.body.style.overflow = 'hidden';
   };
 
-  const handleConfirmBooking = () => {
-    console.log("Booking Confirmed:", { ...formData, totalPrice });
-    setShowModal(false);
-    document.body.style.overflow = 'auto';
-    // Here you can add your API call to confirm the booking
+  const handleConfirmBooking = async () => {
+    const bookingData = {
+      ...formData,
+      totalPrice: Number(totalPrice),
+      bookingEndDate: new Date(formData.bookingEndDate),
+      bookingStartDate: new Date(formData.bookingStartDate),
+      numberOfPassengers: Number(formData.numberOfPassengers),
+      duration: Number(formData.duration),
+    };
+
+    console.log("bookingData", bookingData);
+
+    // Double check for existing bookings before confirming
+    const hasExistingBooking = await checkExistingBookings(
+      bookingData.bookingStartDate,
+      bookingData.bookingEndDate
+    );
+
+    if (hasExistingBooking) {
+      toast.error(
+        "This time slot is already booked. Please select different dates.",
+        { duration: 3000 }
+      );
+      setShowModal(false);
+      document.body.style.overflow = "auto";
+      return;
+    }
+
+    try {
+      const response = await secureApi.post(
+        `${import.meta.env.VITE_API_ENDPOINT}/create-booking`,
+        { bookingData }
+      );
+      if (response.data.success) {
+        toast.success(response.data.message, { duration: 1000 });
+        setShowModal(false);
+        document.body.style.overflow = "auto";
+      }
+    } catch (error) {
+      toast.error(error.response.data.message || "Something went wrong", {
+        duration: 1000,
+      });
+    }
   };
 
   const handleCloseModal = () => {
     setShowModal(false);
-    document.body.style.overflow = 'auto';
+    document.body.style.overflow = "auto";
   };
 
   return (
@@ -127,7 +227,7 @@ const CarBookingForm = ({ carId, userId, sellerId, price }) => {
               <input
                 type="text"
                 name="name"
-                value={formData.name}
+                value={user?.fullname}
                 onChange={handleChange}
                 className="w-full p-2 border rounded-md"
                 placeholder="Your name"
@@ -139,7 +239,7 @@ const CarBookingForm = ({ carId, userId, sellerId, price }) => {
               <input
                 type="email"
                 name="email"
-                value={formData.email}
+                value={user?.email}
                 onChange={handleChange}
                 className="w-full p-2 border rounded-md"
                 placeholder="Your email"
@@ -166,7 +266,7 @@ const CarBookingForm = ({ carId, userId, sellerId, price }) => {
               <input
                 type="number"
                 name="duration"
-                value={formData.duration}
+                value={formData?.duration}
                 onChange={handleDurationChange}
                 className="w-full p-2 border rounded-md"
                 min="1"
@@ -266,7 +366,7 @@ const CarBookingForm = ({ carId, userId, sellerId, price }) => {
           <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-xl font-bold">Booking Summary</h3>
-              <button 
+              <button
                 onClick={handleCloseModal}
                 className="text-gray-500 hover:text-gray-700"
               >
@@ -280,11 +380,23 @@ const CarBookingForm = ({ carId, userId, sellerId, price }) => {
                 <div className="grid grid-cols-2 gap-2 text-sm">
                   <div>
                     <p className="text-gray-600">Duration</p>
-                    <p className="font-medium">{formData.duration} {formData.durationType}s</p>
+                    <p className="font-medium">
+                      {formData.duration} {formData.durationType}s
+                    </p>
                   </div>
                   <div>
                     <p className="text-gray-600">Start Date</p>
-                    <p className="font-medium">{new Date(formData.bookingStartDate).toLocaleString()}</p>
+                    <p className="font-medium">
+                      {new Date(formData.bookingStartDate).toLocaleString()}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-gray-600">End Date</p>
+                    <p className="font-medium">
+                      {formData.bookingEndDate
+                        ? new Date(formData.bookingEndDate).toLocaleString()
+                        : "Not calculated"}
+                    </p>
                   </div>
                   <div>
                     <p className="text-gray-600">Passengers</p>
@@ -306,11 +418,22 @@ const CarBookingForm = ({ carId, userId, sellerId, price }) => {
                   </div>
                   <div className="flex justify-between">
                     <span>Service Fee</span>
-                    <span>${(totalPrice * 0.1).toFixed(2)}</span>
+                    <span>
+                      $
+                      {formData.durationType === "hour"
+                        ? (totalPrice * 0.1).toFixed(2)
+                        : (totalPrice * 0.05).toFixed(2)}
+                    </span>
                   </div>
                   <div className="flex justify-between font-bold pt-2 border-t">
                     <span>Total</span>
-                    <span>${(parseFloat(totalPrice) + parseFloat(totalPrice) * 0.1).toFixed(2)}</span>
+                    <span>
+                      $
+                      {(
+                        parseFloat(totalPrice) +
+                        parseFloat(totalPrice) * 0.1
+                      ).toFixed(2)}
+                    </span>
                   </div>
                 </div>
               </div>

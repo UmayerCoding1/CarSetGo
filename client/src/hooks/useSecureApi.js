@@ -27,7 +27,6 @@ const useSecureApi = () => {
         },
         function (error) {
             // Log and reject the request error
-            console.error("Request error:", error);
             return Promise.reject(error);
         }
     );

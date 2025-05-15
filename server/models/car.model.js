@@ -28,6 +28,7 @@ const carSchema = new Schema(
     featured: { type: Boolean, default: false },
     images: [{ type: String }], // Array of image URLs
     bookingBy: [{ type: Schema.Types.ObjectId, ref: "User" }],
+    dealership: [{ type: Schema.Types.ObjectId, ref: "Dealership" }],
     seller: { type: Schema.Types.ObjectId, ref: "User" },
     category: { type: String, required: true },
     postType: { type: String, required: true, enum: ['booking', 'selling'] },

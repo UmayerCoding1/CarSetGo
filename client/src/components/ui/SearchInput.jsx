@@ -3,13 +3,14 @@ import { Camera, Upload } from "lucide-react";
 import { useDropzone } from "react-dropzone";
 import { toast } from "sonner";
 import {motion} from 'motion/react';
+import { useNavigate } from "react-router-dom";
 const SearchInput = () => {
   const [isImageSearchActive, setIsImageSearchActive] = useState(false);
   const [imagePreview, setImagePreview] = useState("");
   const [searchImage, setSearchImage] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
   const [searchTextValue,setSearchTextValue] = useState('');
-
+  const navigate = useNavigate();
   const onDrop = (acceptedFiles) => {
     const file = acceptedFiles[0];
     console.log(file);
@@ -48,6 +49,13 @@ const SearchInput = () => {
 
   const handleTextSubmit = (e) => {
     e.preventDefault();
+    if(searchTextValue.trim() === ''){
+      toast.error('Please enter a search query');
+      return;
+    }
+
+    
+    navigate(`/future-cars?search=${searchTextValue}`);
   };
   const handleImageSubmit = (e) => {
     e.preventDefault();

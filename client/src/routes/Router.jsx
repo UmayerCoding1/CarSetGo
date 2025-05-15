@@ -6,6 +6,13 @@ import Home from "../pages/home/Home";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import CarLists from "../pages/carr-list/CarLists";
 import CarDetails from "../pages/car-details/CarDetails";
+import PrivetRoute from "./PrivetRoute";
+import SaveCars from "../pages/save-cars/SaveCars";
+import MyBooking from "../pages/my-booking/MyBooking";
+import YourCars from "../pages/your-cars/YourCars";
+import SellerRoute from "./SellerRoute";
+import Pricing from "../pages/seller/Pricing/Pricing";
+import Payment from "../pages/payment/Payment";
 const GoogleAuthWrapper = ({ children }) => {
   return (
     <GoogleOAuthProvider clientId={`${import.meta.env.VITE_GOOGLE_CLIENT_ID}`}>
@@ -29,8 +36,34 @@ const router = createBrowserRouter([
       {
         path: '/future-cars/:id',
         element: <CarDetails/>,
-        // loader: ({params}) => fetch(`${import.meta.env.VITE_API_ENDPOINT}/car/${params.id}`)
+      },
+
+      {
+        path: '/payment/:type',
+        element: <PrivetRoute><Payment/></PrivetRoute>
+      },
+      {
+        path: '/saved-cars',
+        element: <PrivetRoute><SaveCars/></PrivetRoute>
+      },
+      {
+        path: '/my-booking',
+        element: <PrivetRoute><MyBooking/></PrivetRoute>
+      },
+      {
+        path: '/your-cars/:id',
+        element: <PrivetRoute><YourCars/></PrivetRoute>
+      },
+
+
+      // seller routes
+      {
+        path: '/pricing',
+        element: <SellerRoute><Pricing /></SellerRoute>
+
       }
+        
+      
     ],
   },
 

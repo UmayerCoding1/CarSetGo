@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
 
 const bookingSchema = new mongoose.Schema(
-  {
-    name: {
+    {
+      name: {
       type: String,
       required: true,
       trim: true,
@@ -20,6 +20,15 @@ const bookingSchema = new mongoose.Schema(
       type: Date,
       required: true,
     },
+    bookingEndDate: {
+      type: Date,
+      required: true,
+    },
+    
+    totalPrice: {
+      type: Number,
+      required: true,
+    },
    
     pickupLocation: {
       type: String,
@@ -32,6 +41,10 @@ const bookingSchema = new mongoose.Schema(
       default: "hour",
     },
     duration: {
+      type: Number,
+      required: true,
+    },
+    numberOfPassengers: { 
       type: Number,
       required: true,
     },
@@ -52,7 +65,7 @@ const bookingSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["pending", "confirmed", "cancelled", "completed"],
+      enum: ["pending", "confirmed", "cancelled", "completed", "processing"],
       default: "pending",
     },
   },
@@ -61,4 +74,4 @@ const bookingSchema = new mongoose.Schema(
   }
 );
 
-export default mongoose.model("Booking", bookingSchema);
+export const Booking =  mongoose.model("Booking", bookingSchema);

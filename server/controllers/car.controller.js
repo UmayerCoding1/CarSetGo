@@ -79,8 +79,7 @@ export const getCarById = async (req, res) => {
 
      car.seller.password = undefined;
 
-     console.log(car);
-     
+    
     
 
     return res.status(200).json({

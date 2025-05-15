@@ -200,3 +200,21 @@ export const logdinUser = async (req, res) => {
     .json({ message: "Internal server error", success: false });
   }
 };
+
+// export const pricing = async (req, res) => {
+//   const { userId, plan } = req.params;
+//   try {
+//     const user = await User.findById(userId);
+//     if(!user || user.role !== "seller"){
+//       return res.status(400).json({ message: "User not found", success: false });
+//     }
+   
+//     if(plan === "free"){
+//       user.plan = "free";
+//     }
+
+    
+//   } catch (error) {
+    
+//   }
+// }

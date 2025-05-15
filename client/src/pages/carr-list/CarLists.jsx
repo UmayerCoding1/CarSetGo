@@ -4,6 +4,7 @@ import "./carlist.css";
 import Filter from "../../components/ui/filter/Filter";
 import useCars from "../../hooks/useCars";
 import { useSearchParams } from "react-router-dom";
+import Loading from "../../components/ui/Loading";
 
 const CarLists = () => {
   const [page, setPage] = useState(1);
@@ -15,12 +16,12 @@ const CarLists = () => {
   const bodyType = searchParams.get('bodyType') || "";
   const fuelType = searchParams.get('fuelType') || "";
 
-  console.log({ price, make, bodyType, fuelType });
+  const search = searchParams.get('search') || "";
 
 
 
-  const { cars,totalPages,currentPage,totalCars, isLoadingCars, isRefetchingCars } = useCars(page,limit,price,make,bodyType,fuelType);
- console.log(totalPages);
+  const { cars,totalPages,currentPage,totalCars, isLoadingCars, isRefetchingCars } = useCars(page,limit,price,make,bodyType,fuelType,search);
+ 
  
   const handlePageChange = (newPage) => {
     setPage(newPage);
@@ -44,9 +45,7 @@ const CarLists = () => {
 
         <div>
           {(isLoadingCars || isRefetchingCars) ? (
-            <div className="flex justify-center items-center h-64">
-              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-            </div>
+            <Loading />
           ) : (
             <>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
