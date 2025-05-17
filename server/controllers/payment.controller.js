@@ -249,8 +249,7 @@ export const handlePaymentSuccess = async (req, res) => {
         }
       );
 
-      console.log("dealership", dealership);
-
+    
       if (dealership) {
         return res.status(200).json({
           success: true,
