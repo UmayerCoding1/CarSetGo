@@ -9,10 +9,10 @@ import CarDetails from "../pages/car-details/CarDetails";
 import PrivetRoute from "./PrivetRoute";
 import SaveCars from "../pages/save-cars/SaveCars";
 import MyBooking from "../pages/my-booking/MyBooking";
-import YourCars from "../pages/your-cars/YourCars";
 import SellerRoute from "./SellerRoute";
 import Pricing from "../pages/seller/Pricing/Pricing";
 import Payment from "../pages/payment/Payment";
+import MyCars from "../pages/your-cars/MyCars";
 const GoogleAuthWrapper = ({ children }) => {
   return (
     <GoogleOAuthProvider clientId={`${import.meta.env.VITE_GOOGLE_CLIENT_ID}`}>
@@ -51,8 +51,8 @@ const router = createBrowserRouter([
         element: <PrivetRoute><MyBooking/></PrivetRoute>
       },
       {
-        path: '/your-cars/:id',
-        element: <PrivetRoute><YourCars/></PrivetRoute>
+        path: '/my-cars/:id',
+        element: <PrivetRoute><MyCars/></PrivetRoute>
       },
 
 

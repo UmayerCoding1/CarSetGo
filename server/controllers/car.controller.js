@@ -9,7 +9,7 @@ export const getCars = async (req, res) => {
 
     // Get filter parameters from query
     const { price, make, bodyType, fuelType,search} = req.query;
-    console.log(req.query);
+  
     // Build filter object
     const filter = {};
 

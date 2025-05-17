@@ -15,11 +15,10 @@ const dealershipSchema = new Schema({
     carId: {type: Schema.Types.ObjectId, ref: 'Car', required: true},
     sellerId: {type: Schema.Types.ObjectId, ref: 'User', required: true},
     paymentInfo: {
-        paymentId: {type: String},
-        paymentMethod: {type: String},
+        paymentId: {type: Schema.Types.ObjectId, ref: 'Payment'},
         paymentDate: {type: Date},
         paymentAmount: {type: Number},
-        paymentStatus: {type: String, default: 'pending', enum: ['pending', 'approved', 'rejected']},
+        paymentStatus: {type: String, default: 'pending', enum: ['pending', 'success', 'failed']},
     },
 },{timestamps: true});
 

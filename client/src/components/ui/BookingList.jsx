@@ -1,14 +1,22 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import useSecureApi from "../../hooks/useSecureApi";
 import { loadStripe } from "@stripe/stripe-js";
-const BookingList = ({ carinfo, sellerinfo, bookinginfo }) => {
+import { toast } from "sonner";
+const BookingList = ({ carinfo, sellerinfo, bookinginfo, refetch}) => {
   const secureApi = useSecureApi();
-
+  const paymentCanceled = Boolean(new URLSearchParams(window.location.search).get("canceled"));
+  const paymentSuccess = new URLSearchParams(window.location.search).get("success");
+  const tranId = new URLSearchParams(window.location.search).get("session_id");
+  console.log(tranId);
+  
   const handleCancelBooking = async () => {
     try {
-      const response = await secureApi.delete(`/booking/${bookinginfo._id}`);
-      console.log(response);
+      const response = await secureApi.delete(`/delete-booking/${bookinginfo._id}`);
+      if(response.data.success){
+        toast.success(response.data.message);
+        refetch();
+      }
     } catch (error) {
       console.log(error);
     }
@@ -30,14 +38,36 @@ const BookingList = ({ carinfo, sellerinfo, bookinginfo }) => {
 
       const stripe = await stripePromise;
      const result = await stripe.redirectToCheckout({sessionId: response.data.sessionId});
+     
      if(result.error){
       toast.error(result.error.message);
      }
     } catch (error) {
       console.log(error);
     }
-    const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
-  };
+  }
+
+  const handlePaymentSuccess = async () => {
+    
+    try {
+      const response = await secureApi.post(`/payment/payment-success`,{sessionId: tranId})
+      if (response.data.success) {
+        toast.success(response.data.message);
+        window.location.href = `/my-booking`;
+      }
+    } catch (error) {
+      console.log(error)
+    }
+ }
+
+   useEffect(() => {
+    if(paymentCanceled){
+      //
+    }
+    if(paymentSuccess){
+      handlePaymentSuccess();
+    }
+  }, [paymentCanceled, paymentSuccess]);
   return (
     <div className="mb-6">
       <div className="bg-white shadow-lg rounded-xl overflow-hidden hover:shadow-xl transition-shadow duration-300">
@@ -102,13 +132,32 @@ const BookingList = ({ carinfo, sellerinfo, bookinginfo }) => {
                     className={`font-medium ${
                       bookinginfo.status === "pending"
                         ? "text-yellow-600"
-                        : bookinginfo.status === "approved"
+                        : bookinginfo.status === "completed"
                         ? "text-green-600"
+                        : bookinginfo.status === "processing"
+                        ? "text-blue-500"
+                        : bookinginfo.status === "Confirmed" 
+                        ? "text-blue-500"
                         : "text-red-600"
                     }`}
                   >
                     {bookinginfo.status.charAt(0).toUpperCase() +
                       bookinginfo.status.slice(1)}
+                  </span>
+                </p>
+                <p className="flex justify-between">
+                  <span className="text-gray-600">Payment Status:</span>
+                  <span
+                    className={`font-medium ${
+                      bookinginfo.paymentStatus === "pending"
+                        ? "text-yellow-600"
+                        : bookinginfo.paymentStatus === "success"
+                        ? "text-green-600"
+                        : "text-red-600"
+                    }`}
+                  >
+                    {bookinginfo.paymentStatus.charAt(0).toUpperCase() +
+                      bookinginfo.paymentStatus.slice(1)}
                   </span>
                 </p>
                 <p className="flex justify-between">
@@ -145,26 +194,26 @@ const BookingList = ({ carinfo, sellerinfo, bookinginfo }) => {
             <div className="flex flex-col gap-3 lg:w-48">
               <Link
                 to={`/future-cars/${carinfo._id}`}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-center font-medium transition-colors duration-200"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-center font-medium transition-colors duration-200 cursor-pointer"
               >
                 View Details
               </Link>
 
-              {bookinginfo.status === "confirmed" && (
+              {bookinginfo.status === "confirmed" && bookinginfo.paymentStatus !== "success" && (
                 <div
                   onClick={handleCarBookingPayment}
-                  className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-center font-medium transition-colors duration-200"
+                  className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-center font-medium transition-colors duration-200 cursor-pointer"
                 >
                   Payment
                 </div>
               )}
 
-              <button
+              {bookinginfo.status === 'pending' && <button
                 onClick={handleCancelBooking}
-                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200"
+                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200 cursor-pointer"
               >
                 Cancel Booking
-              </button>
+              </button>}
             </div>
           </div>
         </div>

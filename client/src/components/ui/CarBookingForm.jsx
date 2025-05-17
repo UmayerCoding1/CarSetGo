@@ -195,8 +195,7 @@ const CarBookingForm = ({ carId, userId, sellerId, price }) => {
     }
 
     try {
-      const response = await secureApi.post(
-        `${import.meta.env.VITE_API_ENDPOINT}/create-booking`,
+      const response = await secureApi.post(`/create-booking`,
         { bookingData }
       );
       if (response.data.success) {

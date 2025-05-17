@@ -1,8 +1,91 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
-
-const YourCarList = ({ dealershipInfo, index }) => {
+import { loadStripe } from "@stripe/stripe-js";
+import useSecureApi from "../../hooks/useSecureApi";
+import { toast } from "sonner";
+const MyCarList = ({ dealershipInfo, index }) => {
+  const secureApi = useSecureApi();
+  const paymentSuccess = new URLSearchParams(window.location.search).get('success');
+  const paymentCanceled = new URLSearchParams(window.location.search).get('canceled');
+  const tranId = new URLSearchParams(window.location.search).get('session_id');
   
+  const handleCarBuyPayment = async() => {
+   try {
+     const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
+     const response = await secureApi.post('/payment/create-car-buy-payment', {
+        carId: dealershipInfo?.carId._id,
+        amount: dealershipInfo?.carId?.price,
+        currency: "usd",
+     })
+     
+     if(!response.data.success){
+       toast.error(response.data.message);
+       return;
+     }
+ 
+     const stripe = await stripePromise;
+     const result = await stripe.redirectToCheckout({sessionId: response.data.sessionId});
+ 
+     if(result.error){
+       toast.error(result.error.message);
+     }
+ 
+   } catch (error) {
+    console.log(error);
+   }
+    
+  };
+
+  const handlePaymentSuccess = async() => {
+    try {
+      const response = await secureApi.post('/payment/payment-success', {
+        sessionId: tranId,
+      })
+
+      if(!response.data.success){
+        toast.error(response.data.message);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const handlePaymentCancel = async() => {
+    try {
+      const response = await secureApi.post('/payment/payment-cancel', {
+        sessionId: tranId,
+      })
+      
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+
+  const handleClearDealership = async() => {
+    try {
+      const response = await secureApi.post('/clear-dealership', {
+        dealershipId: dealershipInfo._id,
+      })
+
+      console.log(response);
+      
+      if(!response.data.success){
+        toast.error(response.data.message);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  useEffect(() => {
+    if(paymentSuccess){
+      handlePaymentSuccess();
+    }
+    if(paymentCanceled){
+      handlePaymentCancel();
+    }
+  },[paymentSuccess, paymentCanceled])
+
   return (
     <div className="flex items-center gap-4 p-3">
       <p className="text-gray-600 text-sm font-semibold">{index}.</p>
@@ -77,9 +160,24 @@ const YourCarList = ({ dealershipInfo, index }) => {
                 <span className="text-gray-600">Dealership Status:</span>
                 <span
                   className={`font-medium ${
-                    dealershipInfo?.paymentInfo.paymentStatus === "pending"
+                    dealershipInfo?.status === "pending"
                       ? "text-orange-500"
                       : "text-green-500"
+                  }`}
+                >
+                  {" "}
+                  {dealershipInfo?.status}
+                </span>
+              </div>
+              <div>
+                <span className="text-gray-600">Payment Status:</span>
+                <span
+                  className={`font-medium ${
+                    dealershipInfo?.paymentInfo.paymentStatus === "pending"
+                      ? "text-orange-500"
+                      : dealershipInfo?.paymentInfo.paymentStatus === "success"
+                      ? "text-green-500"
+                      : "text-red-500"
                   }`}
                 >
                   {" "}
@@ -127,15 +225,17 @@ const YourCarList = ({ dealershipInfo, index }) => {
               </Link>
 
               {/* Payment Buttons */}
-              {dealershipInfo?.paymentInfo.paymentStatus !== "pending" && (
-                <Link to={`/payment/${dealershipInfo?.carId._id}`} className="w-full bg-green-600 text-white px-4 py-2 flex justify-center items-center rounded hover:bg-green-700 transition-colors">
+              {dealershipInfo?.status === "approved" && dealershipInfo?.paymentInfo.paymentStatus === "pending" && (
+                <button onClick={handleCarBuyPayment} className="w-full bg-green-600 text-white px-4 py-2 flex justify-center items-center rounded hover:bg-green-700 transition-colors">
                   Payment
-                </Link>
+                </button>
               )}
 
-              <button className="w-full bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition-colors cursor-pointer">
-                Cancel Dealership
-              </button>
+              { dealershipInfo?.paymentInfo.paymentStatus !== "success" && dealershipInfo?.status === "approved" && (
+                <button onClick={handleClearDealership} className="w-full bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition-colors cursor-pointer">
+                  Cancel Dealership
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -144,4 +244,4 @@ const YourCarList = ({ dealershipInfo, index }) => {
   );
 };
 
-export default YourCarList;
+export default MyCarList;

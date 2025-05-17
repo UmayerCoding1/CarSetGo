@@ -3,8 +3,8 @@ import { asset } from "../../assets/asser";
 import { useQuery } from "@tanstack/react-query";
 import useSecureApi from "../../hooks/useSecureApi";
 import useAuth from "../../hooks/useAuth";
-import YourCarList from "../../components/ui/YourCarList";
-const YourCars = () => {
+import MyCarList from "../../components/ui/MyCarList";
+const MyCars = () => {
   const secureApi = useSecureApi();
   const { user } = useAuth();
 
@@ -31,10 +31,10 @@ const YourCars = () => {
       </div>
 
       <div>
-        {yourCars.map((dealershipInfo ,index) => <YourCarList key={dealershipInfo._id} dealershipInfo={dealershipInfo}  index={index + 1}/>)}
+        {yourCars.map((dealershipInfo ,index) => <MyCarList key={dealershipInfo._id} dealershipInfo={dealershipInfo}  index={index + 1}/>)}
       </div>
     </div>
   );
 };
 
-export default YourCars;
+export default MyCars;

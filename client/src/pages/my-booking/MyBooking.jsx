@@ -20,7 +20,7 @@ const MyBooking = () => {
         { value: 'cancelled', label: 'Cancelled' },
     ];
 
-    const { data: bookings=[], isLoading, error } = useQuery({
+    const { data: bookings=[], isLoading, refetch } = useQuery({
         queryKey: ['bookings'],
         queryFn: async() => {
             const response = await secureApi.get(`/get-bookings/${user._id}`);
@@ -99,7 +99,7 @@ const MyBooking = () => {
             {/* Main Content Area */}
             <div className="container  mx-auto px-4 py-8">
                 {isLoading ? <Loading /> : <>
-                   {bookings.length > 0 && bookings.map(booking => <BookingList key={booking._id} carinfo={booking.carId} sellerinfo={booking.sellerId} bookinginfo={booking} />)}
+                   {bookings.length > 0 && bookings.map(booking => <BookingList key={booking._id} carinfo={booking.carId} sellerinfo={booking.sellerId} bookinginfo={booking} refetch={refetch} />)}
                 </>}
             </div>
         </div>

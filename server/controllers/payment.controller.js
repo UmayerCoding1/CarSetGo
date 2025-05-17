@@ -1,13 +1,30 @@
 import { Booking } from "../models/booking.model.js";
-import {Payment}  from "../models/payment.model.js";
-import {PricingPlan}  from "../models/pricing.model.js";
-import {User} from "../models/user.model.js";
+import { Car } from "../models/car.model.js";
+import { Dealership } from "../models/dealership.model.js";
+import { Payment } from "../models/payment.model.js";
+import { PricingPlan } from "../models/pricing.model.js";
+import { User } from "../models/user.model.js";
 import Stripe from "stripe";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 export const createCarBookingPayment = async (req, res) => {
   const { bookingId, amount, currency } = req.body;
+
+  // Input validation
+  if (!bookingId || !amount || !currency) {
+    return res.status(400).json({
+      success: false,
+      message: "Missing required fields: bookingId, amount, or currency",
+    });
+  }
+
+  if (amount <= 0) {
+    return res.status(400).json({
+      success: false,
+      message: "Amount must be greater than 0",
+    });
+  }
 
   try {
     const booking = await Booking.findById(bookingId).populate("carId");
@@ -18,14 +35,22 @@ export const createCarBookingPayment = async (req, res) => {
       });
     }
 
-    // STEP 1: Set initial booking status to 'pending'
+    // Check if booking is already paid
+    if (booking.paymentStatus === "success") {
+      return res.status(400).json({
+        success: false,
+        message: "Booking is already paid",
+      });
+    }
+
+    // Set initial booking status to 'pending'
     await Booking.findByIdAndUpdate(bookingId, {
       paymentStatus: "pending",
     });
 
     // STEP 2: Create stripe session
     const session = await stripe.checkout.sessions.create({
-      payment_method_types: ['card'],
+      payment_method_types: ["card"],
       line_items: [
         {
           price_data: {
@@ -40,13 +65,13 @@ export const createCarBookingPayment = async (req, res) => {
           quantity: 1,
         },
       ],
-      mode: 'payment',
+      mode: "payment",
       success_url: `http://localhost:5173/my-booking?success=true&session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `http://localhost:5173/my-booking?canceled=true`,
+      cancel_url: `http://localhost:5173/my-booking?canceled=true&session_id={CHECKOUT_SESSION_ID}`,
     });
 
     // STEP 3: Save payment record in DB
-    await Payment.create({
+    const payment = await Payment.create({
       userId: booking.userId,
       bookingId,
       amount,
@@ -55,10 +80,8 @@ export const createCarBookingPayment = async (req, res) => {
       status: "pending", // optional but good
     });
 
-    // STEP 4: Update booking with session ID
-    await Booking.findByIdAndUpdate(bookingId, {
-      paymentId: session.id,
-    });
+    booking.paymentId = session.id;
+    await booking.save();
 
     // STEP 5: Send session ID to frontend
     res.status(201).json({
@@ -66,7 +89,70 @@ export const createCarBookingPayment = async (req, res) => {
       message: "Stripe session created",
       sessionId: session.id,
     });
+  } catch (error) {
+    console.error("Payment creation error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to create payment session",
+    });
+  }
+};
 
+export const createCarBuyPayment = async (req, res) => {
+  const { carId, amount, currency } = req.body;
+
+  try {
+    const car = await Car.findById(carId);
+    if (!car) {
+      return res.status(404).json({
+        success: false,
+        message: "Car not found",
+      });
+    }
+
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      line_items: [
+        {
+          price_data: {
+            currency,
+            unit_amount: amount * 100,
+            product_data: {
+              name: `${car.make} ${car.model}`,
+              description: car.description,
+              images: [car.images[0]],
+            },
+          },
+          quantity: 1,
+        },
+      ],
+      mode: "payment",
+      success_url: `http://localhost:5173/my-cars/${req.userId}?success=true&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `http://localhost:5173/my-cars/${req.userId}?canceled=true&session_id={CHECKOUT_SESSION_ID}`,
+    });
+
+    if (!session) {
+      return res.status(400).json({
+        success: false,
+        message: "Failed to create stripe session",
+      });
+    }
+
+    if (session.id) {
+      const payment = await Payment.create({
+        userId: req.userId,
+        carId,
+        amount,
+        transactionId: session.id,
+        paymentType: "buying",
+      });
+    }
+
+    res.status(201).json({
+      success: true,
+      message: "Stripe session created",
+      sessionId: session.id,
+    });
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -74,8 +160,6 @@ export const createCarBookingPayment = async (req, res) => {
     });
   }
 };
-
-export const createCarBuyPayment = async (req, res) => {};
 export const createPlanPayment = async (req, res) => {
   const { plan, transactionId, userId, amount, date } = req.body;
   try {
@@ -95,27 +179,117 @@ export const createPlanPayment = async (req, res) => {
       date,
     });
 
-    if(payment){
-        const priging = PricingPlan.findOne({name: plan});
-        const planDetails = priging.features;
-        const updatedUser = await User.findByIdAndUpdate(userId, {
-            paymentstatus: 'completed',
-            planDetails: {
-                plan,
-                ...planDetails,
-                startDate: date,
-                endDate: new Date(date.getTime() + 30 * 24 * 60 * 60 * 1000),
-            }
-        })
+    if (payment) {
+      const priging = PricingPlan.findOne({ name: plan });
+      const planDetails = priging.features;
+      const updatedUser = await User.findByIdAndUpdate(userId, {
+        paymentstatus: "completed",
+        planDetails: {
+          plan,
+          ...planDetails,
+          startDate: date,
+          endDate: new Date(date.getTime() + 30 * 24 * 60 * 60 * 1000),
+        },
+      });
 
-        if(updatedUser){
-            res.status(201).json({
-                success: true,
-                message: "Payment created successfully",
-            });
-        }
+      if (updatedUser) {
+        res.status(201).json({
+          success: true,
+          message: "Payment created successfully",
+        });
+      }
+    }
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+export const handlePaymentSuccess = async (req, res) => {
+  const { sessionId } = req.body;
+
+  try {
+    const existingPayment = await Payment.findOne({ transactionId: sessionId });
+    if (!existingPayment) {
+      return res.status(404).json({
+        success: false,
+        message: "Payment not found",
+      });
     }
 
+    if (existingPayment.paymentType === "booking") {
+      const booking = await Booking.findByIdAndUpdate(
+        existingPayment.bookingId,
+        {
+          status: "processing",
+          paymentStatus: "success",
+        }
+      );
+
+      if (booking) {
+        return res.status(200).json({
+          success: true,
+          message: "Payment success",
+        });
+      }
+    }
+
+    if (existingPayment.paymentType === "buying") {
+      const dealership = await Dealership.findOneAndUpdate(
+        { carId: existingPayment.carId },
+        {
+          $set: {
+            "paymentInfo.paymentId": existingPayment._id,
+            "paymentInfo.paymentDate": new Date().toLocaleDateString(),
+            "paymentInfo.paymentAmount": existingPayment.amount,
+            "paymentInfo.paymentStatus": "success",
+          },
+        }
+      );
+
+      console.log("dealership", dealership);
+
+      if (dealership) {
+        return res.status(200).json({
+          success: true,
+          message: "Payment success",
+        });
+      }
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+export const handlePaymentCancel = async (req, res) => {
+  const { sessionId } = req.body;
+  try {
+    const existingPayment = await Payment.findOne({ transactionId: sessionId });
+    if (!existingPayment) {
+      return res.status(404).json({
+        success: false,
+        message: "Payment not found",
+      });
+    }
+
+    const booking = await Booking.findByIdAndUpdate(existingPayment.bookingId, {
+      paymentStatus: "failed",
+    });
+
+    if (booking) {
+      await Payment.findByIdAndDelete(existingPayment._id);
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Payment canceled",
+    });
   } catch (error) {
     res.status(500).json({
       success: false,

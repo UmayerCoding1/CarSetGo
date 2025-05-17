@@ -1,4 +1,5 @@
 import { Booking } from "../models/booking.model.js";
+import { Car } from "../models/car.model.js";
 
 export const getAllBookings = async (req, res) => {
   try {
@@ -48,6 +49,8 @@ export const createBooking = async (req, res) => {
       carId,
       status: "pending",
     });
+   
+    
 
     if (existingBooking) {
       return res
@@ -59,10 +62,18 @@ export const createBooking = async (req, res) => {
       totalPrice: totalPriceAndServiceFee.toFixed(2),
     });
 
+    const bookingCar = await Car.findByIdAndUpdate(carId, {
+      $push: {
+        bookingBy: booking._id,
+      },
+    });
+
     return res
       .status(201)
       .json({ message: "Booking created successfully", success: true });
   } catch (error) {
+    console.log(error);
+    
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -144,7 +155,7 @@ export const updateBooking = async (req, res) => {
 };
 
 export const deleteBooking = async (req, res) => {
-  const { bookingId } = req.params;
+  const bookingId  = req.params.bookingId;
   try {
     const booking = await Booking.findByIdAndDelete(bookingId);
     if (!booking) {
@@ -156,6 +167,7 @@ export const deleteBooking = async (req, res) => {
       .status(200)
       .json({ message: "Booking deleted successfully", success: true });
   } catch (error) {
+    console.log(error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };

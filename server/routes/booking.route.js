@@ -11,6 +11,6 @@ router.get("/get-all-bookings",verifyUser,verifyAdmin, getAllBookings);
 router.get("/get-bookings/:userId",verifyUser, getBookings);
 router.get("/get-bookings-by-seller/:sellerId",verifyUser , verifySeller, getBookingsBySeller);
 router.put("/update-booking/:bookingId",verifyUser, verifySeller, updateBooking);
-router.delete("/delete-booking/:bookingId",verifyUser, verifySeller, deleteBooking);
+router.delete("/delete-booking/:bookingId",verifyUser, deleteBooking);
 
 export default router;

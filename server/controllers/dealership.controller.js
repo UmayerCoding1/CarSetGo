@@ -62,6 +62,26 @@ export const getDealership = async (req, res) => {
 };
 
 
+export const clearDealership = async (req,res) => {
+   const {dealershipId} = req.body;
+   try {
+    const dealership = await Dealership.findByIdAndUpdate(dealershipId, {
+      $set: {status: "cancelled"}
+    });
+    if(!dealership){
+      return res.status(400).json({message: "Dealership not found", success: false});
+    }
+    await Car.findByIdAndUpdate(dealership.carId, {
+      $pull: {dealership: dealershipId},
+      $set: {status: "available"}
+    });
+    
+    return res.status(200).json({message: "Dealership cancelled successfully", success: true});
+   } catch (error) {
+    res.status(500).json({message: "Internal server error", success: false});
+   }
+}
+
 export const getDealershipBySeller = async (req, res) => {
   const { sellerId } = req.body;
   try {

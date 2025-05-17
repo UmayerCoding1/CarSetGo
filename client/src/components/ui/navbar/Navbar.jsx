@@ -192,9 +192,9 @@ const Navbar = () => {
                       </div>
                     </div>
 
-                    <Link to={`/your-cars/${user?._id}`} className=" flex items-center gap-3 shadow my-3 p-3 border border-gray-300 rounded-lg cursor-pointer">
+                    <Link to={`/my-cars/${user?._id}`} className=" flex items-center gap-3 shadow my-3 p-3 border border-gray-300 rounded-lg cursor-pointer">
                       <Car size={18} />
-                      <p className="font-medium text-sm">Your cars</p>
+                      <p className="font-medium text-sm">My cars</p>
                     </Link>
 
                     {user?.role === "user" && (
