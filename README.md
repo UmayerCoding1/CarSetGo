@@ -221,10 +221,8 @@ Note: All endpoints marked with "requires authentication" need a valid JWT token
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
+.
 
 ## Support
 
-For support, email support@carsetgo.com or create an issue in the repository.
+For support, email [support](http://lovalhost:5173/support) or create an issue in the repository.
