@@ -13,6 +13,9 @@ import SellerRoute from "./SellerRoute";
 import Pricing from "../pages/seller/Pricing/Pricing";
 import Payment from "../pages/payment/Payment";
 import MyCars from "../pages/your-cars/MyCars";
+import SellerDeshboard from "../pages/seller/seller-deshboard/SellerDeshboard";
+import Overview from "../components/seller/Overview";
+
 const GoogleAuthWrapper = ({ children }) => {
   return (
     <GoogleOAuthProvider clientId={`${import.meta.env.VITE_GOOGLE_CLIENT_ID}`}>
@@ -59,12 +62,28 @@ const router = createBrowserRouter([
       // seller routes
       {
         path: '/pricing',
-        element: <SellerRoute><Pricing /></SellerRoute>
+        element: <PrivetRoute><Pricing/></PrivetRoute>
+      },
 
-      }
+
+     
         
       
     ],
+  },
+
+  // seller routes
+
+  {
+    path: "/seller-dashboard",
+    element: <SellerRoute><SellerDeshboard/></SellerRoute>,
+    children: [
+      {
+        path: "/seller-dashboard",
+        element: <Overview/>
+      },
+
+    ]
   },
 
   {

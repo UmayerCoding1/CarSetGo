@@ -1,12 +1,24 @@
-import { LayoutDashboard, Zap } from "lucide-react";
+import { Home, LayoutDashboard, Zap } from "lucide-react";
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 const SellerNav = ({user}) => {
-  console.log(user);
+  const isSellerDashboard = useLocation().pathname === "/seller-dashboard";
   
   return (
     <div className="flex items-center gap-4">
+
+      {isSellerDashboard ?  
       <div>
+        <Link
+          to={"/"}
+          className="flex items-center gap-2 px-5 py-2 rounded-lg select-none cursor-pointer bg-black text-white"
+        >
+          <Home size={18}  />
+          <span className="text-sm font-medium">Back to App</span>
+        </Link>
+      </div>
+  :
+  <div>
         <Link
           to={"/seller-dashboard"}
           className="flex items-center gap-2 border px-5 py-2 rounded-lg select-none cursor-pointer"
@@ -15,7 +27,7 @@ const SellerNav = ({user}) => {
           <span className="text-sm font-medium">Seller Dashboard</span>
         </Link>
       </div>
-
+}
      
 
       {user?.paymentstatus === "pending" &&  <Link

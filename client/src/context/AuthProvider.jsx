@@ -17,7 +17,7 @@ const AuthProvider = ({ children }) => {
   }
 
   const logout = async () => {
-    console.log('ok');
+    
     
     return await secureApi.post("/auth/logout");
   }
