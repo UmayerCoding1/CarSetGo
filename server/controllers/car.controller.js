@@ -1,6 +1,6 @@
 import { Car } from "../models/car.model.js";
 import { User } from "../models/user.model.js";
-
+import { AlAnalyzeCarImage } from "../utils/car.js";
 export const getCars = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
@@ -160,6 +160,73 @@ export const postCar = async (req, res) => {
     return res.status(500).json({message: 'Internal server error', error: error.message});
   }
 }
+
+
+// AI car image analysis
+
+
+
+
+// AI car description generation
+ export const generateCarDescription = async (req, res) => {
+  try {
+    const file = req.file;
+    const userId = req.userId;
+    console.log(file);
+    
+    if(!file){
+      return res.status(400).json({message: 'No image file provided'});
+    }
+
+    const user = await User.findById(userId);
+    if(!user){
+      return res.status(404).json({message: 'User not found'});
+    }
+
+    if(user.role !== 'seller'){
+      return res.status(403).json({message: 'Only sellers can post cars'});
+    }
+
+    if(!user.isPlanActive){
+      return res.status(403).json({message: 'Please activate your plan to post cars'});
+    }
+
+    if(user.planType === 'free'){
+      return res.status(403).json({message: 'Please upgrade your plan to use AI features'});
+    }
+
+    if(user.planDetails.aiDescriptionGenerator <= 0){
+      return res.status(403).json({message: 'You have no remaining AI description generator.'});
+    }
+
+    const carDetails = await AlAnalyzeCarImage(file);
+
+    if(!carDetails.success){
+      return res.status(500).json({
+        success: false,
+        message: 'Failed to analyze car image',
+        error: carDetails.error
+      });
+    }
+
+    user.planDetails.aiDescriptionGenerator -= 1;
+    await user.save();
+
+    return res.status(200).json({
+      success: true,
+      message: 'Car description generated successfully',
+      carDetails: carDetails.data
+    });
+     
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      success: false,
+      message: 'Internal server error',
+      error: error.message
+    });
+  }
+ }
 
 
 

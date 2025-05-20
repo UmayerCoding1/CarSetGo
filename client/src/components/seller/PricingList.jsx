@@ -1,13 +1,16 @@
 import React from "react";
-import { Check, X } from "lucide-react";
+import { Check, X,Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 
-const PricingList = ({ plan }) => {
+const PricingList = ({ plan, handleActivePlan, isLoading }) => {
   const { name, price, features } = plan;
   const {selingpostpermunth, bookingManagement, testDriveRequests,aiDescriptionGenerator,prioritySupport,verifiedSellerBadge,editpost,deletepost,carPromotion,unlimitedChat,adCreditsForPost} = features;
   const navigate = useNavigate();
 
+
+   
+   
 
   return (
     <div className="shadow-md border border-gray-300 rounded-lg p-8   w-full lg:w-1/3 mb-10">
@@ -36,11 +39,9 @@ const PricingList = ({ plan }) => {
         </p>
 
         <button
-        onClick={() => {
-            navigate(`/payment/upgrade-plan?plan=${name}`)
-        }}
+        onClick={() => handleActivePlan(plan)}
         className="bg-black w-full text-white px-4 py-2 rounded-md ny-4 mt-5 cursor-pointer">
-          Get started
+          {isLoading &&  plan.name === name? <Loader2 className="animate-spin"/> : "Get started"}
         </button>
 
         <hr className="my-4" />

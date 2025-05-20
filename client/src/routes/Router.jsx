@@ -11,11 +11,15 @@ import SaveCars from "../pages/save-cars/SaveCars";
 import MyBooking from "../pages/my-booking/MyBooking";
 import SellerRoute from "./SellerRoute";
 import Pricing from "../pages/seller/Pricing/Pricing";
-import Payment from "../pages/payment/Payment";
 import MyCars from "../pages/your-cars/MyCars";
 import SellerDeshboard from "../pages/seller/seller-deshboard/SellerDeshboard";
 import Overview from "../components/seller/Overview";
-
+import AllCarLists from "../pages/seller/Cars/car-lists/CarLists";
+import AddCars from "../pages/seller/Cars/add-cars/AddCars";
+import AllBookings from "../pages/seller/all-bookings/AllBookings";
+import DealershipRequest from "../pages/seller/dealership/delalership-request/DealershipRequest";
+import SehedulMeeting from "../pages/seller/dealership/sehedul-meeting/SehedulMeeting";
+import ReceivedPayment from "../pages/seller/payment/ReceviedPayment";
 const GoogleAuthWrapper = ({ children }) => {
   return (
     <GoogleOAuthProvider clientId={`${import.meta.env.VITE_GOOGLE_CLIENT_ID}`}>
@@ -41,10 +45,7 @@ const router = createBrowserRouter([
         element: <CarDetails/>,
       },
 
-      {
-        path: '/payment/:type',
-        element: <PrivetRoute><Payment/></PrivetRoute>
-      },
+     
       {
         path: '/saved-cars',
         element: <PrivetRoute><SaveCars/></PrivetRoute>
@@ -72,7 +73,7 @@ const router = createBrowserRouter([
     ],
   },
 
-  // seller routes
+  // seller dashboard routes
 
   {
     path: "/seller-dashboard",
@@ -82,6 +83,30 @@ const router = createBrowserRouter([
         path: "/seller-dashboard",
         element: <Overview/>
       },
+      {
+        path: "/seller-dashboard/car-lists",
+        element: <AllCarLists />
+      },
+      {
+        path: "/seller-dashboard/add-cars",
+        element: <AddCars />
+      },
+      {
+        path: "/seller-dashboard/all-bookings",
+        element: <AllBookings />
+      },
+      {
+        path: '/seller-dashboard/dealership-requests',
+        element: <DealershipRequest />
+      },
+      {
+        path: '/seller-dashboard/schedile-mecting',
+        element: <SehedulMeeting />
+      },
+      {
+        path: '/seller-dashboard/received-payments',
+        element: <ReceivedPayment />
+      }
 
     ]
   },

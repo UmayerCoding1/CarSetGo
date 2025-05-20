@@ -16,7 +16,16 @@ const userSchema = new Schema({
         enum: ["pending", 'completed'],
         default: 'pending'
      },
-     isGoogleAccount: {type: Boolean, default: false}
+     isGoogleAccount: {type: Boolean, default: false},
+     plan: {
+        type: String,
+        enum: ["free", 'pro','advanced']
+     },
+     isPlanActive: {type: Boolean, default: false},
+     planDetails: {
+        type: Schema.Types.ObjectId,
+        ref: 'PricingPlan'
+     }
 },{timestamps: true});
 
 userSchema.pre('save', function (next) {

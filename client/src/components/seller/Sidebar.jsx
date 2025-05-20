@@ -125,7 +125,7 @@ const Sidebar = () => {
                     }`}
                   >
                     <NavLink
-                      to="/seller-dashboard/view-cars"
+                      to="/seller-dashboard/car-lists"
                       className={({ isActive }) =>
                         `flex items-center gap-2 p-2 rounded-lg transition-all duration-200 ${
                           isActive
@@ -138,7 +138,7 @@ const Sidebar = () => {
                       <span className="text-sm font-medium">View all cars</span>
                     </NavLink>
                     <NavLink
-                      to="/seller-dashboard/add-car"
+                      to="/seller-dashboard/add-cars"
                       className={({ isActive }) =>
                         `flex items-center gap-2 p-2 rounded-lg transition-all duration-200 ${
                           isActive

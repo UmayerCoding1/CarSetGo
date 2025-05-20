@@ -188,7 +188,7 @@ export const logdinUser = async (req, res) => {
   try {
     const user = await User.findOne({ _id: req.userId }).select(
       "-password -createdAt -updatedAt"
-    );
+    ).populate("planDetails");
     if (!user) {
       return res.status(400).json({ message: "User not found", success: false });
     }

@@ -56,6 +56,8 @@ const CarDetails = () => {
     enabled: !!id,
   });
 
+  console.log(car);
+
   // Add review mutation
   const addReviewMutation = useMutation({
     mutationFn: async (reviewData) => {

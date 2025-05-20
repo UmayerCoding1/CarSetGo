@@ -1,9 +1,12 @@
 import { Home, LayoutDashboard, Zap } from "lucide-react";
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import useAuth from "../../../hooks/useAuth";
 const SellerNav = ({user}) => {
   const isSellerDashboard = useLocation().pathname === "/seller-dashboard";
+  console.log(user);
   
+   
   return (
     <div className="flex items-center gap-4">
 
@@ -20,7 +23,7 @@ const SellerNav = ({user}) => {
   :
   <div>
         <Link
-          to={"/seller-dashboard"}
+          to={!user?.isPlanActive ? "/pricing" : "/seller-dashboard"}
           className="flex items-center gap-2 border px-5 py-2 rounded-lg select-none cursor-pointer"
         >
           <LayoutDashboard strokeWidth={1} />
@@ -30,7 +33,7 @@ const SellerNav = ({user}) => {
 }
      
 
-      {user?.paymentstatus === "pending" &&  <Link
+      {user?.isPlanActive === false &&  <Link
           to="/pricing" 
           className={`flex items-center ${
             "bg-gray-300"
@@ -46,11 +49,11 @@ const SellerNav = ({user}) => {
           <span className="font-card text-xs font-semibold ">Upgrade to Pro</span>
         </Link> }
 
-        {user?.paymentstatus === "completed" && <div
+        {user?.isPlanActive && <div
           className={`flex items-center bg-yellow-100 px-2 py-1 rounded-lg cursor-pointer`}
         >
           <Zap strokeWidth={1} size={18} className={`text-yellow-500 `} />
-          <span className="font-card text-xs font-semibold ">Pro</span>
+          <span className="font-card text-xs font-semibold ">{user?.plan} plan</span>
         </div>}
     </div>
   );

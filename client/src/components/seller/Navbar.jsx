@@ -51,8 +51,13 @@ const Navbar = () => {
       <div>
         {/* desktop */}
         <div className="flex items-center gap-4">
+          {user?.isPlanActive && <div className="flex items-center gap-2">
+            <span className="font-card text-xs font-semibold  bg-amber-200 p-2 rounded-lg">{user?.plan} plan</span>
+          </div>}
           <div>
+            
             <div className="relative flex items-center justify-center w-10 h-10 bg-gray-200 rounded-lg cursor-pointer">
+            
               <MessageCircle size={20} />
               <span className="absolute top-0 right-0 w-4 h-4 text-xs text-white flex items-center justify-center bg-red-500 rounded-full">
                 2
