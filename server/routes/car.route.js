@@ -8,12 +8,13 @@ const router = express.Router();
 
 
 router.get('/cars', verifyFrontendOnly, getCars);
-router.get('/car/:id', getCarById);
-router.get('/car-by-category/:category', getCarByCategory);
+router.get('/car/:id',verifyFrontendOnly, getCarById);
+router.get('/car-by-category/:category',verifyFrontendOnly, getCarByCategory);
 
-router.post('/add-car',verifyUser, verifySeller, postCar);
+router.post('/add-car',verifyUser, verifySeller,verifyFrontendOnly, postCar);
 
-router.post('/generate-car-description',verifyUser, verifySeller,upload.single('carImage'), generateCarDescription);
+router.post('/generate-car-description',verifyUser, verifySeller,verifyFrontendOnly, upload.single('carImage'), generateCarDescription);
+
 
 
 

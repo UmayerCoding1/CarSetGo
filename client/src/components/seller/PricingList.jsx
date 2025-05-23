@@ -39,9 +39,15 @@ const PricingList = ({ plan, handleActivePlan, isLoading, user, selectedPlan }) 
         </p>
 
         <button
-        onClick={() => handleActivePlan(plan,price)}
-        className="bg-black w-full text-white px-4 py-2 rounded-md ny-4 mt-5 cursor-pointer flex items-center justify-center gap-2">
-          {isLoading &&  plan.name === selectedPlan? <Loader2 className="animate-spin"/> : "Get started"}
+          onClick={() => handleActivePlan(plan, price)}
+          className="bg-black w-full text-white px-4 py-2 rounded-md ny-4 mt-5 cursor-pointer flex items-center justify-center gap-2"
+          disabled={user?.isPlanActive && user?.plan !== "free" && plan.name === "free"}
+          style={{
+            opacity: user?.isPlanActive && user?.plan !== "free" && plan.name === "free" ? 0.5 : 1,
+            cursor: user?.isPlanActive && user?.plan !== "free" && plan.name === "free" ? "not-allowed" : "pointer"
+          }}
+        >
+          {isLoading && plan.name === selectedPlan ? <Loader2 className="animate-spin" /> : "Get started"}
         </button>
 
         <hr className="my-4" />

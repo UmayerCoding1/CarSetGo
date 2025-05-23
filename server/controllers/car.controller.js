@@ -1,6 +1,9 @@
+import mongoose from "mongoose";
 import { Car } from "../models/car.model.js";
 import { User } from "../models/user.model.js";
 import { AlAnalyzeCarImage } from "../utils/car.js";
+
+
 export const getCars = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
@@ -162,6 +165,9 @@ export const postCar = async (req, res) => {
 }
 
 
+
+
+
 // AI car image analysis
 
 
@@ -229,5 +235,5 @@ export const postCar = async (req, res) => {
  }
 
 
-
+ 
 

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import usePublicApi  from "../../../hooks/usePublicApi";
 import useSecureApi from "../../../hooks/useSecureApi";
@@ -13,6 +13,13 @@ const publicApi = usePublicApi();
 const secureApi = useSecureApi();
 const navigate = useNavigate();
 const {user} = useAuth();
+const successPayment = new URLSearchParams(window.location.search).get('success');
+const clencledPayment = new URLSearchParams(window.location.search).get('canceled');
+const planName = new URLSearchParams(window.location.search).get('planName');
+const sessionId = new URLSearchParams(window.location.search).get('session_id');
+
+
+  // Fetch all pricing plans
   const {data: pricingPlans, isLoading: isLoadingPricingPlans, error: errorPricingPlans} = useQuery({
     queryKey: ["pricingPlans"],
       queryFn: async () => {
@@ -51,7 +58,21 @@ const {user} = useAuth();
 
     async function handlePlanPayment(plan,price){
       try {
-        const response = await secureApi.post('/payment/create-plan-payment',{planName: plan.name,price,userId:user._id});
+        const response = await secureApi.post('/payment/create-plan-payment',{planName: plan.name,price, currency: 'usd' });
+        console.log(response.data);
+
+        if(response.data.success){
+          const sessionId = response.data.sessionId;
+          const stripe = window.Stripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
+          const { error } = await stripe.redirectToCheckout({
+            sessionId,
+          });
+          if (error) {
+            toast.error(error.message);
+            setIsLoading(false);
+          }
+        }
+        
       } catch (error) {
         console.log(error);
         toast.error(error.response.data.message);
@@ -59,6 +80,38 @@ const {user} = useAuth();
       }
     }
 
+
+   
+
+console.log(clencledPayment,successPayment , planName, sessionId);
+    async function handlePaymentSuccess() {
+      try {
+      const response = await secureApi.post(`/payment/payment-success&planName=${planName}`,{sessionId} )
+      if (response.data.success) {
+        console.log(response.data);
+        
+        toast.success(response.data.message);
+        // navigate("/seller-dashboard");
+      }
+      } catch (error) {
+        console.log(error);
+        toast.error(error.response.data.message);
+        
+      }
+     
+    }
+
+
+    useEffect(() => {
+      
+      if (successPayment) {
+        handlePaymentSuccess();
+      }
+      if (clencledPayment) {
+        toast.error("Payment canceled");
+      }
+      
+    },[successPayment, clencledPayment]);
   return (
     <div>
       <section className="bg-black  text-white py-16 text-center mb-20">

@@ -1,10 +1,10 @@
-import { Home, LayoutDashboard, Zap } from "lucide-react";
-import React from "react";
+import { Crown, Home, LayoutDashboard, Zap } from "lucide-react";
+
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import useAuth from "../../../hooks/useAuth";
+
 const SellerNav = ({user}) => {
   const isSellerDashboard = useLocation().pathname === "/seller-dashboard";
-  console.log(user);
+  
   
    
   return (
@@ -24,10 +24,12 @@ const SellerNav = ({user}) => {
   <div>
         <Link
           to={!user?.isPlanActive ? "/pricing" : "/seller-dashboard"}
-          className="flex items-center gap-2 border px-5 py-2 rounded-lg select-none cursor-pointer"
+          className="flex items-center gap-2 border p-2 lg:px-5 lg:py-2 rounded-lg select-none cursor-pointer relative"
         >
           <LayoutDashboard strokeWidth={1} />
-          <span className="text-sm font-medium">Seller Dashboard</span>
+          <span className="text-sm font-medium hidden lg:block">Seller Dashboard</span>
+
+          {!user?.isPlanActive && <Crown size={15} className=" text-yellow-500"/>}
         </Link>
       </div>
 }

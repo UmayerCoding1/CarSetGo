@@ -22,7 +22,7 @@ app.use(cors({
 
 import auhRoute from './routes/auth.route.js';
 import sellerReqRoute from './routes/requestforseller.route.js';
-import carRoute from './routes/cat.route.js';
+import carRoute from './routes/car.route.js';
 import messageRoute from './routes/message.route.js';
 import dealershipRoute from './routes/dealership.route.js';
 import saveCarRoute from './routes/saveCar.route.js';
