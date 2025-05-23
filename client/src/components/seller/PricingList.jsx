@@ -1,9 +1,9 @@
 import React from "react";
-import { Check, X,Loader2 } from "lucide-react";
+import { Check, X,Loader2, Star } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 
-const PricingList = ({ plan, handleActivePlan, isLoading }) => {
+const PricingList = ({ plan, handleActivePlan, isLoading, user, selectedPlan }) => {
   const { name, price, features } = plan;
   const {selingpostpermunth, bookingManagement, testDriveRequests,aiDescriptionGenerator,prioritySupport,verifiedSellerBadge,editpost,deletepost,carPromotion,unlimitedChat,adCreditsForPost} = features;
   const navigate = useNavigate();
@@ -13,7 +13,7 @@ const PricingList = ({ plan, handleActivePlan, isLoading }) => {
    
 
   return (
-    <div className="shadow-md border border-gray-300 rounded-lg p-8   w-full lg:w-1/3 mb-10">
+    <div className="shadow-md border border-gray-300 rounded-lg p-8   w-full lg:w-1/3 mb-10 relative">
       <div className="flex items-center justify-between">
         <h1 className="text-5xl font-semibold">{name}</h1>
         <h2 className="text-3xl font-semibold">
@@ -39,9 +39,9 @@ const PricingList = ({ plan, handleActivePlan, isLoading }) => {
         </p>
 
         <button
-        onClick={() => handleActivePlan(plan)}
-        className="bg-black w-full text-white px-4 py-2 rounded-md ny-4 mt-5 cursor-pointer">
-          {isLoading &&  plan.name === name? <Loader2 className="animate-spin"/> : "Get started"}
+        onClick={() => handleActivePlan(plan,price)}
+        className="bg-black w-full text-white px-4 py-2 rounded-md ny-4 mt-5 cursor-pointer flex items-center justify-center gap-2">
+          {isLoading &&  plan.name === selectedPlan? <Loader2 className="animate-spin"/> : "Get started"}
         </button>
 
         <hr className="my-4" />
@@ -108,6 +108,8 @@ const PricingList = ({ plan, handleActivePlan, isLoading }) => {
 
           </ul>
         </div>
+
+        {user?.isPlanActive && user?.plan === name && <button className="text-xs  mt-4 bg-black  p-2 rounded-full text-white font-medium absolute top-0 right-0 "><Star size={16} className="text-white"/></button>}
       </div>
     </div>
   );

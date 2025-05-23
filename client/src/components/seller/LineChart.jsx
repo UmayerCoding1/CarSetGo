@@ -175,7 +175,7 @@ const LineChart = () => {
   };
 
   return (
-    <div className="w-full block h-[50%]  max-w-5xl bg-white p-8 rounded-xl shadow-lg relative ">
+    <div className="w-full block   max-w-5xl bg-white p-8 rounded-xl shadow-lg relative ">
       <div className='flex items-center  justify-between'>
          <h1 className="text-2xl font-bold text-center text-slate-800 mb-2">Monthly Sales & Bookings</h1>
 

@@ -85,7 +85,11 @@ const MyCarList = ({ dealershipInfo, index }) => {
       handlePaymentCancel();
     }
   },[paymentSuccess, paymentCanceled])
+console.log(dealershipInfo);
 
+  if(!dealershipInfo){
+    return <div>Loading...</div>
+  }
   return (
     <div className="flex items-center gap-4 p-3">
       <p className="text-gray-600 text-sm font-semibold">{index}.</p>
@@ -194,7 +198,7 @@ const MyCarList = ({ dealershipInfo, index }) => {
             </h3>
             <div className="space-y-2">
               <img
-                src={dealershipInfo?.sellerId.avatar}
+                src={dealershipInfo?.sellerId?.avatar || ''}
                 alt="seller-avatar"
                 loading="lazy"
                 className="w-10 h-10 rounded-full"

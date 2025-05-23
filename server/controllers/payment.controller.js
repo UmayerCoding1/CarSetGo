@@ -160,45 +160,67 @@ export const createCarBuyPayment = async (req, res) => {
     });
   }
 };
+
+
 export const createPlanPayment = async (req, res) => {
-  const { plan, transactionId, userId, amount, date } = req.body;
+  const { planName, price, currency } = req.body;
+  const userId = req.userId;
+
+  if(!planName || !price || !currency ){
+    return res.status(404).json({message: 'All field is requrid', success: false})
+  }
   try {
-    const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: "User not found",
-      });
+    const plan = PricingPlan.findOne({name: planName});
+    if(!plan){
+      return res.status(404).json({message: "This plan is not found", success: false})
     }
 
-    const payment = await Payment.create({
-      userId,
-      paymentType: plan,
-      transactionId,
-      amount,
-      date,
-    });
-
-    if (payment) {
-      const priging = PricingPlan.findOne({ name: plan });
-      const planDetails = priging.features;
-      const updatedUser = await User.findByIdAndUpdate(userId, {
-        paymentstatus: "completed",
-        planDetails: {
-          plan,
-          ...planDetails,
-          startDate: date,
-          endDate: new Date(date.getTime() + 30 * 24 * 60 * 60 * 1000),
-        },
-      });
-
-      if (updatedUser) {
-        res.status(201).json({
-          success: true,
-          message: "Payment created successfully",
-        });
+   const session = await stripe.checkout.sessions.create({
+     payment_method_types: ["card"],
+     line_items: [
+      {
+          price_data: {
+            currency,
+            unit_amount: price * 100,
+            product_data: {
+              description: `This is ${planName}: 
+               plan.features :
+              ${Object.entries(plan.features)
+                .map(([key, value]) => `${key}: ${value}`)
+                .join('\n')}
+              `
+            },
+            quantity: 1,
+          }
       }
-    }
+     ],
+     mode: "payment",
+     success_url: `http://localhost:5173/seller-dashboard?success=true&session_id={CHECKOUT_SESSION_ID}`,
+     cancel_url: `http://localhost:5173/seller-dashboard?canceled=true&session_id={CHECKOUT_SESSION_ID}`,
+   });
+
+   if(!session){
+    return res.status(400).json({
+      success: false,
+      message: "Failed to create stripe session",
+    });
+   }
+
+   if(session.id){
+    const payment = await Payment.create({
+      userId: userId,
+      amount,
+      transactionId: session.id,
+      paymentType: 'plan'
+    })
+   }
+
+   res.status(201).json({
+    success: true,
+    message: "Stripe session created",
+    sessionId: session.id,
+  });
+    
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -209,6 +231,7 @@ export const createPlanPayment = async (req, res) => {
 
 export const handlePaymentSuccess = async (req, res) => {
   const { sessionId } = req.body;
+  const planName = req.query;
 
   try {
     const existingPayment = await Payment.findOne({ transactionId: sessionId });
@@ -257,6 +280,29 @@ export const handlePaymentSuccess = async (req, res) => {
         });
       }
     }
+
+
+    if(existingPayment.paymentType === 'plan'){
+      const plan = await PricingPlan.findOne({name: planName});
+      const user = await User.findByIdAndUpdate(
+        existingPayment.userId,
+        {
+          $set: {
+            'isPlanActive': true,
+            "plan": plan.name,
+            "planDetails": plan._id,
+          }
+
+        },
+        {new: true}
+      )
+      if(user){
+        return res.status(200).json({
+          success: true,
+          message: "Payment success",
+        });
+      }
+    }
   } catch (error) {
     console.log(error);
     res.status(500).json({
@@ -296,3 +342,5 @@ export const handlePaymentCancel = async (req, res) => {
     });
   }
 };
+
+

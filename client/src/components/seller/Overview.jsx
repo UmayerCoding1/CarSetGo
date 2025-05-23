@@ -1,9 +1,14 @@
-import { Calendar, Car, CreditCard, Star, Users } from "lucide-react";
-import React from "react";
+import { Calendar, Car, CreditCard, Sparkles, Star, Users } from "lucide-react";
+import React, { useState } from "react";
 import LineChart from "./LineChart";
 import PeiChart from "./PeiChart";
+import useAuth from "../../hooks/useAuth";
+import AiFeature from "./ai-features/AiFeature";
 
 const Overview = () => {
+  const {user} = useAuth();
+  const [showAiModal, setShowAiModal] = useState(false);
+  
   const sellerAllInfo = [
     {
       label: "Total Cars",
@@ -67,8 +72,18 @@ const Overview = () => {
 
       {/* Charts Section */}
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
-        {/* Line Chart */}
         <div className="lg:col-span-3 bg-white rounded-lg shadow-md border border-gray-200 p-4">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-medium text-gray-700">AI Features</h2>
+            <button
+              onClick={() => setShowAiModal(true)}
+              className="text-blue-500 hover:text-blue-600 text-sm font-medium cursor-pointer"
+            >
+              See All Features
+            </button>
+          </div>
+          
+        {/* Line Chart */}
           <LineChart />
         </div>
 
@@ -78,12 +93,21 @@ const Overview = () => {
           <div className="bg-white shadow-md border border-gray-200 p-4 rounded-lg">
             <div className="flex items-center justify-between mb-3">
               <div>
-                <h2 className="text-base sm:text-lg font-medium text-gray-500">User Review</h2>
-                <p className="text-blue-500 text-sm cursor-pointer hover:text-blue-600">See all</p>
+                <h2 className="text-base sm:text-lg font-medium text-gray-500">
+                  User Review
+                </h2>
+                <p className="text-blue-500 text-sm cursor-pointer hover:text-blue-600">
+                  See all
+                </p>
               </div>
-              <Star size={28} className="bg-blue-500 text-white p-1.5 rounded-full" />
+              <Star
+                size={28}
+                className="bg-blue-500 text-white p-1.5 rounded-full"
+              />
             </div>
-            <p className="font-medium text-sm sm:text-base">Total review in this month: {'120'}</p>
+            <p className="font-medium text-sm sm:text-base">
+              Total review in this month: {"120"}
+            </p>
           </div>
 
           {/* Pie Chart */}
@@ -92,6 +116,26 @@ const Overview = () => {
           </div>
         </div>
       </div>
+
+      {/* AI Features Modal */}
+      {showAiModal && (
+        <div className="fixed inset-0 bg-black/70 bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-2xl w-full mx-4 max-h-[80vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-semibold text-gray-800 flex items-center gap-2  "> <Sparkles className='w-6 h-6 text-blue-500'/> Available AI Features</h2>
+              <button
+                onClick={() => setShowAiModal(false)}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="space-y-4">
+              <AiFeature planDetails={user?.planDetails} showAll={true} />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

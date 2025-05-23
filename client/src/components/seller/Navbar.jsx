@@ -44,7 +44,7 @@ const Navbar = () => {
           to="/"
           className="flex items-center gap-2 bg-black  text-white p-2 rounded-lg font-medium"
         >
-          <Home size={20} /> Back to app
+          <Home size={20} /> <span className="hidden lg:block">Back to app</span>
         </Link>
       </div>
 
@@ -53,6 +53,8 @@ const Navbar = () => {
         <div className="flex items-center gap-4">
           {user?.isPlanActive && <div className="flex items-center gap-2">
             <span className="font-card text-xs font-semibold  bg-amber-200 p-2 rounded-lg">{user?.plan} plan</span>
+
+           
           </div>}
           <div>
             
