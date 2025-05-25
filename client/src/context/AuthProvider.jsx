@@ -28,6 +28,7 @@ const AuthProvider = ({ children }) => {
       setIsLoading(true);
       try {
           const res = await secureApi.get('/auth/logdin-user');
+          console.log(isLoading);
           
           
           if (res.data) {
@@ -38,8 +39,13 @@ const AuthProvider = ({ children }) => {
           console.log(error);
           setIsLoading(false);
       }
+      finally{
+        setIsLoading(false)
+      }
   }
-
+setTimeout(() => {
+      !user && setIsLoading(false) ;
+    }, 1000)
 
   getLoginUser();
   },[secureApi])
