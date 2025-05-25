@@ -7,7 +7,7 @@ import {upload} from '../middlewares/multer.middleware.js';
 const router = express.Router();
 
 
-router.get('/cars', verifyFrontendOnly, getCars);
+router.get('/cars', getCars);
 router.get('/car/:id', getCarById);
 router.get('/car-by-category/:category',verifyFrontendOnly, getCarByCategory);
 router.get('/car-by-seller/:sellerId', getCarsBySeller); // Assuming this is the same as category for seller
