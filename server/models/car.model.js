@@ -44,6 +44,10 @@ const carSchema = new Schema(
         },
       },
     ],
+    addCredits : {
+      type: Boolean,
+      default: false,
+    }
   },
   { timestamps: true }
 );

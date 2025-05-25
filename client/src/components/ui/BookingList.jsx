@@ -8,7 +8,7 @@ const BookingList = ({ carinfo, sellerinfo, bookinginfo, refetch}) => {
   const paymentCanceled = Boolean(new URLSearchParams(window.location.search).get("canceled"));
   const paymentSuccess = new URLSearchParams(window.location.search).get("success");
   const tranId = new URLSearchParams(window.location.search).get("session_id");
-  console.log(tranId);
+  console.log(carinfo, );
   
   const handleCancelBooking = async () => {
     try {

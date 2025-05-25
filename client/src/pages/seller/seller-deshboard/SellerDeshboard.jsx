@@ -50,7 +50,7 @@ const sessionId = new URLSearchParams(window.location.search).get('session_id');
 
    
   return (
-    <div className="mix-h-screen lg:flex ">
+    <div className="mix-h-screen lg:flex font-IBM">
       <Sidebar />
       <div className="flex-1">
         <Navbar />

@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import { Car } from "../models/car.model.js";
 import { User } from "../models/user.model.js";
 import { AlAnalyzeCarImage } from "../utils/car.js";
+import { log } from "console";
 
 
 export const getCars = async (req, res) => {
@@ -71,8 +72,11 @@ export const getCars = async (req, res) => {
 export const getCarById = async (req, res) => {
   try {
     const { id } = req.params;
+    console.log(id);
+    
     const car = await Car.findById(id).populate('seller').select('-password');
-
+    console.log(car);
+    
     if (!car) {
       return res.status(404).json({
         success: false,
@@ -80,7 +84,7 @@ export const getCarById = async (req, res) => {
       });
     }
 
-     car.seller.password = undefined;
+    //  car.seller.password = undefined;
 
     
     
@@ -164,6 +168,49 @@ export const postCar = async (req, res) => {
   }
 }
 
+
+
+export const getCarsBySeller = async (req, res) => {
+  try {
+    const { sellerId } = req.params;
+
+    // Validate sellerId
+    if (!mongoose.Types.ObjectId.isValid(sellerId)) {
+      return res.status(400).json({ message: 'Invalid seller ID' });
+    }
+
+    // Optional: Check if seller actually exists
+    const user = await User.findById(sellerId);
+    if (!user) {
+      return res.status(404).json({ message: 'Seller not found' });
+    }
+
+    // Debug: Log the seller ID being searched
+    console.log('Searching cars for seller ID:', sellerId);
+
+    // Fetch cars posted by the seller
+    const cars = await Car.find({ seller: sellerId }).populate('seller', 'name email role');
+
+    // Check if any cars found
+    if (!cars || cars.length === 0) {
+      return res.status(404).json({ message: 'No cars found for this seller' });
+    }
+
+    // Success response
+    return res.status(200).json({
+      success: true,
+      data: cars,
+      message: 'Cars fetched successfully',
+    });
+  } catch (error) {
+    console.error('Error fetching cars by seller:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Internal server error',
+      error: error.message,
+    });
+  }
+};
 
 
 

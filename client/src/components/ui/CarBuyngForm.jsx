@@ -98,7 +98,7 @@ const CarBuyngForm = ({ carId, userId, sellerId, price, status }) => {
         toast.success(res.data.message, {duration: 1000});
         setFormData({});
         setShowEmiModal(false);
-        navigate("/payment/buy-car");
+        // navigate("/payment/buy-car");
       }
     } catch (error) {
       console.log("error", error);

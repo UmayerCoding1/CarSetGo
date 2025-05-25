@@ -86,7 +86,7 @@ const Sidebar = () => {
 
             {/* Car Management Section */}
             <li  className="w-full relative">
-              <div className="w-full">
+              <NavLink to={'car-lists'} className="w-full">
                 <button
                   onClick={() => handleDropdownClick("car")}
                   className={`flex items-center gap-3 p-3 rounded-lg w-full transition-all duration-200 hover:bg-gray-100 text-gray-700 cursor-pointer`}
@@ -97,62 +97,13 @@ const Sidebar = () => {
                       isOpen ? "block" : "hidden"
                     } text-base font-medium flex-1 text-left`}
                   >
-                    Car Management
+                    Car Lists
                   </span>
-                  <svg
-                    className={`w-4 h-4 transition-transform duration-200 ${
-                      activeDropdown === "car" ? "rotate-180" : ""
-                    } ${!isOpen && "hidden"}`}
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M19 9l-7 7-7-7"
-                    />
-                  </svg>
+                  
                 </button>
 
-                {activeDropdown === "car" && (
-                  <div
-                    className={`flex flex-col gap-2 mt-2 ${
-                      !isOpen
-                        ? "fixed top-[15%] left-[65px] bg-white shadow-lg rounded-lg p-2 min-w-[200px] z-50"
-                        : "pl-12"
-                    }`}
-                  >
-                    <NavLink
-                      to="/seller-dashboard/car-lists"
-                      className={({ isActive }) =>
-                        `flex items-center gap-2 p-2 rounded-lg transition-all duration-200 ${
-                          isActive
-                            ? "bg-blue-50 text-blue-600"
-                            : "hover:bg-gray-100 text-gray-700"
-                        }`
-                      }
-                    >
-                      <Car size={18} />
-                      <span className="text-sm font-medium">View all cars</span>
-                    </NavLink>
-                    <NavLink
-                      to="/seller-dashboard/add-cars"
-                      className={({ isActive }) =>
-                        `flex items-center gap-2 p-2 rounded-lg transition-all duration-200 ${
-                          isActive
-                            ? "bg-blue-50 text-blue-600"
-                            : "hover:bg-gray-100 text-gray-700"
-                        }`
-                      }
-                    >
-                      <PlusCircle size={18} />
-                      <span className="text-sm font-medium">Add Car</span>
-                    </NavLink>
-                  </div>
-                )}
-              </div>
+                
+              </NavLink>
             </li>
 
             {/* Booking Management Section */}

@@ -44,7 +44,9 @@ const MyBooking = () => {
     const selectedStatus = statusOptions.find(option => option.value === statusFilter);
 
 
-     console.log(bookings);
+     if(!bookings && !isLoading) {
+        return <div className="text-center py-10">No bookings found.</div>;
+     }
      
     return (
         <div className="min-h-screen bg-gray-50">
@@ -99,7 +101,7 @@ const MyBooking = () => {
             {/* Main Content Area */}
             <div className="container  mx-auto px-4 py-8">
                 {isLoading ? <Loading /> : <>
-                   {bookings.length > 0 && bookings.map(booking => <BookingList key={booking._id} carinfo={booking.carId} sellerinfo={booking.sellerId} bookinginfo={booking} refetch={refetch} />)}
+                   {bookings && bookings.length > 0 && bookings.map(booking => <BookingList key={booking._id} carinfo={booking.carId} sellerinfo={booking.sellerId} bookinginfo={booking} refetch={refetch} />)}
                 </>}
             </div>
         </div>

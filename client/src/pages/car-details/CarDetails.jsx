@@ -103,7 +103,7 @@ const CarDetails = () => {
     <div className="container mx-auto py-8">
       <div className="lg:flex gap-5">
         <div className="lg:w-[60%] h-[500px] shadow-md p-2">
-          <ImageSlider images={car.images} />
+          <ImageSlider images={car.images} height={'400px'}/>
         </div>
 
         <div className="lg:w-[40%]">

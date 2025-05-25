@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./ImageSlider.css";
 
-const ImageSlider = ({ images }) => {
+const ImageSlider = ({ images ,height}) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [dragStartX, setDragStartX] = useState(0);
@@ -57,7 +57,7 @@ const ImageSlider = ({ images }) => {
   return (
     <div className="image-slider relative">
       <div
-        className="slider-container"
+        className={`relative w-full overflow-hidden cursor-grab h-[${height }] active:cursor-grabbing`}
         onMouseDown={handleDragStart}
         onMouseMove={handleDragMove}
         onMouseUp={handleDragEnd}
