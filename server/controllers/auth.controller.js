@@ -80,14 +80,19 @@ export const userLogin = async (req, res) => {
         message: "Token generation failed. Please try again later.",
         success: false,
       });
-    const option = {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      maxAge: 24 * 60 * 60 * 1000,
-    };
+    // const option = {
+    //   httpOnly: false,
+    //   secure: process.env.NODE_ENV === "production",
+    //   sameSite: "lax",
+    //   maxAge: 24 * 60 * 60 * 1000,
+    // };
     return res
-      .cookie("token", token, option)
+      .cookie("token", token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "None", 
+        maxAge: 24 * 60 * 60 * 1000,
+      })
       .status(200)
       .json({ message: "Welcome to CarSetGo", user, token, success: true });
   } catch (error) {
@@ -138,8 +143,8 @@ export const googleLogin = async (req, res) => {
       .json({ message: "Welcome to CarSetGo", user, token, success: true });
   } catch (error) {
     return res
-    .status(500)
-    .json({ message: "Internal server error", success: false });
+      .status(500)
+      .json({ message: "Internal server error", success: false });
   }
 };
 
@@ -186,18 +191,20 @@ export const logout = async (req, res) => {
 
 export const logdinUser = async (req, res) => {
   try {
-    const user = await User.findOne({ _id: req.userId }).select(
-      "-password -createdAt -updatedAt"
-    ).populate("planDetails");
+    const user = await User.findOne({ _id: req.userId })
+      .select("-password -createdAt -updatedAt")
+      .populate("planDetails");
     if (!user) {
-      return res.status(400).json({ message: "User not found", success: false });
+      return res
+        .status(400)
+        .json({ message: "User not found", success: false });
     }
-  
+
     return res.status(200).json({ user });
   } catch (error) {
     return res
-    .status(500)
-    .json({ message: "Internal server error", success: false });
+      .status(500)
+      .json({ message: "Internal server error", success: false });
   }
 };
 
@@ -208,13 +215,12 @@ export const logdinUser = async (req, res) => {
 //     if(!user || user.role !== "seller"){
 //       return res.status(400).json({ message: "User not found", success: false });
 //     }
-   
+
 //     if(plan === "free"){
 //       user.plan = "free";
 //     }
 
-    
 //   } catch (error) {
-    
+
 //   }
 // }
