@@ -75,7 +75,7 @@ export const getCarById = async (req, res) => {
     console.log(id);
     
     const car = await Car.findById(id).populate('seller').select('-password');
-    console.log(car);
+    
     
     if (!car) {
       return res.status(404).json({

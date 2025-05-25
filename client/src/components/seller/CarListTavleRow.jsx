@@ -41,7 +41,7 @@ const CarListTavleRow = ({datas,setSelectedCar,selectedCar}) => {
                     
                     
                     
-                    <td className="py-2 px-4">
+                    <td className="py-2 px-4 text-center">
                       <button
                         className="px-3 py-1 bg-black text-white rounded hover:bg-gray-700 transition  cursor-pointer"
                         onClick={() => setSelectedCar(car)}
