@@ -1,7 +1,7 @@
 import React, { createContext, useEffect, useState } from "react";
 import usePublicApi from "../hooks/usePublicApi";
 import useSecureApi from "../hooks/useSecureApi";
-
+import Loding from '../components/ui/Loading'
 export const AuthContext = createContext(null);
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState('');
@@ -60,7 +60,7 @@ console.log('token', token);
     isLoading
   };
   return <AuthContext.Provider value={value}>
-    {children}
+    {isLoading ? <Loding /> : children}
   </AuthContext.Provider>;
 };
 
