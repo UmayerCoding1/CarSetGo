@@ -2,7 +2,7 @@ import jwt, { decode } from "jsonwebtoken";
 
 const verifyUser = async (req, res, next) => {
   const token = req.cookies?.token ;
-  console.log(token);
+  
   
   
   if (!token)
