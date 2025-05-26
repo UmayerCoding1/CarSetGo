@@ -8,6 +8,7 @@ const AuthProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
   const publicApi = usePublicApi();
   const secureApi = useSecureApi();
+  const token = localStorage.getItem('xytz5T');
 
   const userRegister = async (data) => {
     return await publicApi.post("/auth/register",data);
@@ -24,6 +25,7 @@ const AuthProvider = ({ children }) => {
 
 
   useEffect(() => {
+    
     const getLoginUser  = async () => {
       setIsLoading(true);
       try {
@@ -43,9 +45,8 @@ const AuthProvider = ({ children }) => {
         setIsLoading(false)
       }
   }
-setTimeout(() => {
-      !user && setIsLoading(false) ;
-    }, 1000)
+console.log('token', token);
+
 
   getLoginUser();
   },[secureApi])

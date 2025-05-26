@@ -11,7 +11,7 @@ router.post('/login', userLogin);
 router.get('/google-login',googleLogin);
 router.post('/logout',verifyUser,logout)
 router.post('/upload-avatar',verifyUser,upload.single('avatar'),uploadAvatar);
-router.get('/logdin-user',verifyUser,verifyFrontendOnly,logdinUser);
+router.get('/logdin-user',verifyUser,logdinUser);
 
 
 export default router;
