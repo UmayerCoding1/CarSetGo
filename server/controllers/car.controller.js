@@ -3,6 +3,7 @@ import { Car } from "../models/car.model.js";
 import { User } from "../models/user.model.js";
 import { AlAnalyzeCarImage } from "../utils/car.js";
 import { log } from "console";
+import { uploadCloudinary } from "../utils/cloudinary.service.js";
 
 
 export const getCars = async (req, res) => {
@@ -72,7 +73,7 @@ export const getCars = async (req, res) => {
 export const getCarById = async (req, res) => {
   try {
     const { id } = req.params;
-    console.log(id);
+   
     
     const car = await Car.findById(id).populate('seller').select('-password');
     
@@ -133,10 +134,11 @@ export const getCarByCategory = async (req, res) => {
 
 export const postCar = async (req, res) => {
   try {
-    const {make,model,year,price,mileage, color, fuelType, transmission, bodyType, seats, description, status, featured, images, bookingBy, seller, category, postType, paymentsystem} = req.body;
-
-
-    const requiredFields = ['make', 'model', 'year', 'price', 'mileage', 'color', 'fuelType', 'transmission', 'bodyType', 'seats', 'description', 'status', 'featured', 'images', 'bookingBy', 'seller', 'category', 'postType', 'paymentsystem'];
+    const {make,model,year,price,mileage, color, fuelType, transmission, bodyType, seats, description,   seller, category, postType} = req.body;
+   
+  
+  
+    const requiredFields = ['make', 'model', 'year', 'price', 'mileage', 'color', 'fuelType', 'transmission', 'bodyType', 'seats', 'description',    'seller', 'category', 'postType', ];
 
     for(const field of requiredFields){
       if ( !req.body[field]) {
@@ -144,28 +146,101 @@ export const postCar = async (req, res) => {
       }
     }
 
-    if (postType !== 'sell' && postType !== 'rent') {
+    if (postType !== "selling" && postType !== 'booking') {
       return res.status(400).json({message: 'Invalid post type'});
     } 
 
     const user = await User.findById( seller);
 
-    if(user.role !== 'seller'){
+    if(!user && user.role !== 'seller'){
       return res.status(403).json({message: 'Only sellers can post cars'});
     }
 
-    
-    
+     const carImages = req.files;
+    const imageUrl = [];
+
+    for (const image of carImages) {
+      const isValidUrl =await uploadCloudinary(image.path);
+
+      if(isValidUrl){
+        imageUrl.push(isValidUrl.url);
+      }
+    }
+
+   
     
 
-    const car = await Car.create({make,model,year,price,mileage, color, fuelType, transmission, bodyType, seats, description, status, featured, images, bookingBy, seller, category, postType, paymentsystem});
+    
+    
+    if (imageUrl.length === 0) {
+      return res.status(400).json({message: 'At least one image is required'});
+    }
+    
+    const car = await Car.create({
+      make,
+      model,
+      year,
+      price,
+      mileage,
+      color,
+      fuelType,
+      transmission,
+      bodyType,
+      seats,
+      description,
+      images: imageUrl,
+      seller,
+      category,
+      postType
+    });
 
+    if(car){
+    await user.addedCar.push(car._id);
+    }
+    
+
+ 
     return res.status(201).json({message: 'Car posted successfully', car, success: true});
   } catch (error) {
     console.log(error);
     
     return res.status(500).json({message: 'Internal server error', error: error.message});
   }
+};
+
+
+export const updateCarById = async (req, res) => {
+  try {
+    const id = req.query.id;
+    const data = req.body;
+
+    const existinCarAndUpdate = await Car.findOneAndUpdate({ _id: id }, data, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!existinCarAndUpdate) {
+      return res.status(400).json({ message: "Car not found", success: false });
+    }
+
+    return res
+      .status(200)
+      .json({ message: "Car updated successfully.", success: true });
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(500)
+      .json({ message: "Internal server error", success: false });
+  }
+};
+
+
+export const deleteSellerCarById = async(req,res) => {
+  const {carId,sellerId} = req.query;
+
+  console.log(carId,sellerId);
+  
+   
 }
 
 
@@ -173,34 +248,55 @@ export const postCar = async (req, res) => {
 export const getCarsBySeller = async (req, res) => {
   try {
     const { sellerId } = req.params;
+    const { postType, searchValue, page, limit } = req.query;
 
+   
     // Validate sellerId
     if (!mongoose.Types.ObjectId.isValid(sellerId)) {
-      return res.status(400).json({ message: 'Invalid seller ID' });
+      return res.status(400).json({ message: "Invalid seller ID" });
     }
 
     // Optional: Check if seller actually exists
     const user = await User.findById(sellerId);
     if (!user) {
-      return res.status(404).json({ message: 'Seller not found' });
+      return res.status(404).json({ message: "Seller not found" });
     }
 
-    // Debug: Log the seller ID being searched
-    console.log('Searching cars for seller ID:', sellerId);
+    const filter = {};
+
+    if (postType) filter.postType = postType;
+
+    if (searchValue) filter.make = { $regex: searchValue, $options: "i" };
+    if (sellerId) filter.seller = sellerId;
+
+    const totalCars = await Car.countDocuments(filter);
+    const totalPages = Math.ceil(totalCars / (limit ? parseInt(limit) : 10));
+    const skip =
+      (page ? parseInt(page) - 1 : 1) * (limit ? parseInt(limit) : 10);
 
     // Fetch cars posted by the seller
-    const cars = await Car.find({ seller: sellerId }).populate('seller', 'name email role');
+    const cars = await Car.find(filter)
+      .populate("seller", "name email role")
+      .skip(skip)
+      .limit(limit ? parseInt(limit) : 10)
+      .sort({ createdAt: -1 })
+      .lean();
 
     // Check if any cars found
     if (!cars || cars.length === 0) {
-      return res.status(404).json({ message: 'No cars found for this seller' });
+      return res.status(404).json({ message: "No cars found for this seller" });
     }
 
     // Success response
     return res.status(200).json({
       success: true,
-      data: cars,
-      message: 'Cars fetched successfully',
+      data: {
+        cars,
+        totalPages,
+        totalCars,
+        currentPage: Number(page)
+      },
+      message: "Cars fetched successfully",
     });
   } catch (error) {
     console.error('Error fetching cars by seller:', error);
@@ -225,7 +321,6 @@ export const getCarsBySeller = async (req, res) => {
   try {
     const file = req.file;
     const userId = req.userId;
-    console.log(file);
     
     if(!file){
       return res.status(400).json({message: 'No image file provided'});

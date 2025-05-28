@@ -36,13 +36,10 @@ const carSchema = new Schema(
       {
         type: {
           type: String,
-          required: true,
           enum: ["upfront", "emi", "full payment"],
-        },
-        description: {
-          type: String,
-        },
-      },
+          default: "upfront",
+        } 
+      }
     ],
     addCredits : {
       type: Boolean,
@@ -52,7 +49,7 @@ const carSchema = new Schema(
   { timestamps: true }
 );
 
-// Indexes (similar to Prisma's @@index directive)
+
 carSchema.index({ make: 1, model: 1 });
 carSchema.index({ bodyType: 1 });
 carSchema.index({ price: 1 });

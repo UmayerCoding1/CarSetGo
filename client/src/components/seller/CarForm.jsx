@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { Car, Calendar, DollarSign, Users, Fuel, Gauge, Settings, Palette, Upload, X, Sparkles, Loader2, Image } from 'lucide-react';
 import useAuth from '../../hooks/useAuth';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import useSecureApi from '../../hooks/useSecureApi';
+import { callGetApis, callPostApis, callPutApis } from '../../api/api';
+import Loading from '../ui/Loading';
 const CarForm = ({ initialData, onSubmit, isEditing = false }) => {
-  const { register, handleSubmit, formState: { errors }, setValue, watch } = useForm({
+  const { register, handleSubmit, formState: { errors }, setValue, reset,getValues } = useForm({
     defaultValues: initialData || {
       make: '',
       model: '',
@@ -23,30 +25,43 @@ const CarForm = ({ initialData, onSubmit, isEditing = false }) => {
       status: 'available',
       featured: false,
       category: 'compact',
-      images: []
+      images: [],
     }
   });
+  // const formData = getValues()
 
-  const [images, setImages] = useState(initialData?.images || []);
+  const [imagesPreview, setImagesPreview] = useState(initialData?.images || []);
+  const [images,setImages] = useState([]);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [aiPreview, setAiPreview] = useState(null);
   const [previewImage, setPreviewImage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  
+  //store updated car data
+  const [updatedCar,setUpdatedCar] = useState(null);
+
+  // user
   const {user} = useAuth();
   const {features} = user?.planDetails;
   const {aiDescriptionGenerator,selingpostpermunth} = features;
   const navigate = useNavigate();
   const secureApi = useSecureApi();
+  const [searchParams] = useSearchParams();
+  const updatedCarId = searchParams.get('updated-carId');
+  
 
+ 
+  
 
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
     const newImages = files.map(file => URL.createObjectURL(file));
-    setImages([...images, ...newImages]);
+    setImagesPreview([...imagesPreview, ...newImages]);
+    setImages((prev) => [...prev, ...files]);    
   };
 
   const removeImage = (index) => {
-    setImages(images.filter((_, i) => i !== index));
+    setImagesPreview(imagesPreview.filter((_, i) => i !== index));
   };
 
   const analyzeCarImage = async (imageFile) => {
@@ -68,7 +83,7 @@ const CarForm = ({ initialData, onSubmit, isEditing = false }) => {
     try {
 
    
-       const response = await secureApi.post(`/generate-car-description`,formData);
+       const response = await secureApi.post(`/cars/generate-description`,formData);
        if (!response.data) {
          throw new Error('Failed to get response from server');
        }
@@ -97,37 +112,116 @@ const CarForm = ({ initialData, onSubmit, isEditing = false }) => {
   const applyAiDetails = () => {
     if (aiPreview) {
       Object.entries(aiPreview).forEach(([key, value]) => {
-        if (key !== 'images') {
+        if (key !== "images") {
           setValue(key, value);
         }
       });
       setAiPreview(null);
       setPreviewImage(null);
-      toast.success('AI details applied to form!');
+      toast.success("AI details applied to form!");
     }
   };
 
-  const onSubmitForm = (data) => {
-    if(selingpostpermunth < 1){
-      toast.error('Please upgrade to a pro plan to use AI features')
-      setTimeout(()=>{
-        navigate('/pricing');
-      },1000)
+  const onSubmitForm = async (data) => {
+    if (selingpostpermunth < 1) {
+      toast.error("Please upgrade to a pro plan to use AI features");
+      setTimeout(() => {
+        navigate("/pricing");
+      }, 1000);
       return;
     }
-    const formData = {
-      ...data,
-      images,
-      price: Number(data.price),
-      mileage: Number(data.mileage),
-      year: Number(data.year),
-      seats: Number(data.seats)
-    };
-    console.log(formData);
-    
-    onSubmit(formData);
+
+    const formData = new FormData();
+
+    Object.entries(data).forEach(([key, value]) => {
+      formData.append(key, value);
+    });
+
+    formData.append("seller", user?._id);
+
+    images.forEach((image) => {
+      formData.append("carimages", image);
+    });
+
+    try {
+      setIsLoading(true);
+      const response = await secureApi.post("/cars", formData);
+
+      if (response.data.success) {
+        setIsLoading(false);
+        toast.success(response.data.message);
+        navigate('/seller-dashboard/car-lists');
+      }
+    } catch (error) {
+      console.log(error);
+    }
+
+    // onSubmit(formData);
   };
 
+
+  const handleGetUpdatedCar =async (id) =>{
+    setIsLoading(true);
+    try {
+      const response =await callGetApis(`/car/${id}`);
+      if(response){
+          setIsLoading(false);
+        setUpdatedCar(!updatedCar && response.data );
+      }
+      
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  }
+
+
+  const handleGetUpdatedCarDetails = async (id, data) => {
+    try {
+      const response = await callPutApis(`/cars?id=${id}`, data);
+      if (response.success) {
+        toast.success(response.message);
+        navigate("/seller-dashboard/car-lists");
+      }
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  };
+  
+
+   useEffect(() => {
+     if (updatedCarId) {
+    handleGetUpdatedCar(updatedCarId)
+  }
+  
+
+   },[updatedCarId])
+
+  
+  useEffect(() => {
+    if(updatedCar){
+      reset({
+        make: updatedCar?.make ,
+        model: updatedCar?.model,
+        year: updatedCar?.year,
+        fuelType: updatedCar?.fuelType,
+        transmission: updatedCar?.transmission,
+        bodyType: updatedCar?.bodyType,
+        price: updatedCar?.price,
+        mileage: updatedCar?.mileage,
+        seats: updatedCar?.seats,
+        color: updatedCar?.color,
+        category: updatedCar?.category,
+        postType: updatedCar?.postType,
+        description : updatedCar?.description
+      });
+
+      console.log(updatedCar);
+      
+    }
+  },[reset,updatedCar])
+   
   return (
     <form onSubmit={handleSubmit(onSubmitForm)} className="max-w-7xl mx-auto p-6 bg-white rounded-2xl shadow-lg">
       {/* AI Car Analysis Section */}
@@ -240,6 +334,7 @@ const CarForm = ({ initialData, onSubmit, isEditing = false }) => {
               <input
                 type="text"
                 {...register('make', { required: 'Make is required' })}
+                defaultValue={updatedCar?.make}
                 className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                 placeholder="Enter car make"
               />
@@ -410,6 +505,35 @@ const CarForm = ({ initialData, onSubmit, isEditing = false }) => {
                 <option value="booking">Booking</option>
               </select>
             </div>
+           
+
+<div className="bg-gray-50 p-6 rounded-xl shadow-sm">
+  <h3 className="text-xl font-semibold flex items-center gap-2 text-gray-800 mb-6">
+    <DollarSign className="w-6 h-6 text-blue-600" /> Payment System
+  </h3>
+  
+
+  <div className="space-y-5">
+    <div>
+      <label className="block text-sm font-medium text-gray-700 mb-2">Select Payment System</label>
+      <div className="flex gap-4">
+        {['upfront', 'emi', 'full payment'].map((option) => (
+          <label key={option} className="flex items-center gap-2 cursor-pointer">
+            <input
+              type="checkbox"
+              value={option}
+              // checked={option === updatedCar.paymentsystem}
+              {...register('paymentsystem', { required: 'At least one payment system is required' })}
+              className="form-checkbox text-blue-600 focus:ring-blue-500"
+            />
+            <span className="text-gray-700">{option}</span>
+          </label>
+        ))}
+      </div>
+      {errors.paymentsystem && <p className="mt-1.5 text-sm text-red-600">{errors.paymentsystem.message}</p>}
+    </div>
+  </div>
+</div>
           </div>
         </div>
       </div>
@@ -427,10 +551,10 @@ const CarForm = ({ initialData, onSubmit, isEditing = false }) => {
       </div>
 
       {/* Images */}
-      <div className="mt-8 bg-gray-50 p-6 rounded-xl shadow-sm">
+      {updatedCar ? <></> : <div className="mt-8 bg-gray-50 p-6 rounded-xl shadow-sm">
         <label className="block text-sm font-medium text-gray-700 mb-4">Images</label>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-          {images.map((image, index) => (
+          {imagesPreview.map((image, index) => (
             <div key={index} className="relative group">
               <img
                 src={image}
@@ -460,16 +584,26 @@ const CarForm = ({ initialData, onSubmit, isEditing = false }) => {
             />
           </label>
         </div>
-      </div>
+      </div>} 
 
       {/* Submit Button */}
       <div className="mt-8 flex justify-end">
+        {updatedCar ? <>
+          <button
+          type="button"
+          onClick={() => handleGetUpdatedCarDetails(updatedCarId,getValues())}
+          className="px-8 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 shadow-lg shadow-blue-500/20"
+        >
+          {isLoading ? <Loader2 className='animate-spin'/> : "Update Car"}
+        </button>
+        </> : <>
         <button
           type="submit"
           className="px-8 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 shadow-lg shadow-blue-500/20"
         >
-          {isEditing ? 'Update Car' : 'Add Car'}
+          {isLoading ? <Loader2 className='animate-spin'/> : 'Add Car'}
         </button>
+        </>}
       </div>
     </form>
   );

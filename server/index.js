@@ -19,6 +19,7 @@ app.use(cors({
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
 }));
+app.use(express.urlencoded({ extended: true }));
 
 
 import auhRoute from './routes/auth.route.js';

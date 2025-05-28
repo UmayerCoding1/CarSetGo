@@ -25,12 +25,16 @@ const userSchema = new Schema({
      planDetails: {
         type: Schema.Types.ObjectId,
         ref: 'PricingPlan'
-     }
+     },
+     addedCar: [
+      {type: Schema.Types.ObjectId, ref: 'Car'}
+     ]
 },{timestamps: true});
 
 userSchema.pre('save', function (next) {
     if(this.role !== 'seller'){
      this.paymentstatus = undefined;
+     this.addedCar = undefined
     };
     
     next();
