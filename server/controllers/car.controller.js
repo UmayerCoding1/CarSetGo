@@ -150,7 +150,7 @@ export const postCar = async (req, res) => {
       return res.status(400).json({message: 'Invalid post type'});
     } 
 
-    const user = await User.findById( seller);
+    const user = await User.findById( seller).populate('planDetails');
 
     if(!user && user.role !== 'seller'){
       return res.status(403).json({message: 'Only sellers can post cars'});
@@ -194,10 +194,14 @@ export const postCar = async (req, res) => {
       postType
     });
 
-    if(car){
-    await user.addedCar.push(car._id);
-    }
     
+    
+ 
+    await User.findByIdAndUpdate(
+      seller,
+      { $inc: { "planDetails.features.selingpostpermunth": -1 } }
+    );
+    console.log(user);
 
  
     return res.status(201).json({message: 'Car posted successfully', car, success: true});
@@ -235,13 +239,32 @@ export const updateCarById = async (req, res) => {
 };
 
 
-export const deleteSellerCarById = async(req,res) => {
-  const {carId,sellerId} = req.query;
+export const deleteSellerCarById = async (req, res) => {
+  try {
+    const { carId, sellerId } = req.params;
+    console.log(carId, sellerId);
+    
+    const user = await User.findById(sellerId);
 
-  console.log(carId,sellerId);
-  
-   
-}
+    if(!user) return res.status(404).json({message: "User not found", success: false})
+    const deletedCar = await Car.findOneAndDelete({
+      _id: carId,
+      seller: sellerId,
+    });
+
+    if (!deletedCar) {
+      return res.status(404).json({ message: "Car not found", success: false });
+    }
+
+
+
+
+    return res.status(200).json({ message: "Delete car in successfully", success: true });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
 
 
 
@@ -326,7 +349,7 @@ export const getCarsBySeller = async (req, res) => {
       return res.status(400).json({message: 'No image file provided'});
     }
 
-    const user = await User.findById(userId);
+    const user = await User.findById(userId).populate('planDetails');
     if(!user){
       return res.status(404).json({message: 'User not found'});
     }
@@ -357,8 +380,11 @@ export const getCarsBySeller = async (req, res) => {
       });
     }
 
-    user.planDetails.aiDescriptionGenerator -= 1;
-    await user.save();
+    
+
+
+    console.log(user);
+    
 
     return res.status(200).json({
       success: true,

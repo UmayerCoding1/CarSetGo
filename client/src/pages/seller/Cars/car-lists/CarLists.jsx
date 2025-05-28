@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import useCars from "../../../../hooks/useCars";
+import {toast} from 'sonner';
 import useAuth from "../../../../hooks/useAuth";
-import { Car, Delete, Edit, Plus, Trash } from "lucide-react";
+import { Car, Delete, Edit, Plus, Trash, TriangleAlert } from "lucide-react";
 import Table from "../../../../components/ui/table/Table";
 import CarListTavleRow from "../../../../components/seller/CarListTavleRow";
 import ImageSlider from "../../../../components/ui/image-slider/ImageSlider";
@@ -31,12 +31,14 @@ const AllCarLists = () => {
   const [selectedCar, setSelectedCar] = useState(null);
   const [selectType, setselectType] = useState("");
   const [searchValue, setSearchValue] = useState("");
+  const [openDeleteDailog,setOpenDeleteDailog] = useState(false);
+  const [deleteDailogValue,setDeleteDailogValue]= useState(null);
   const { user } = useAuth();
   const navigate = useNavigate();
 
 
 
-  const { data: cars = [], isLoading } = useQuery({
+  const { data: cars = [], isLoading,refetch } = useQuery({
     queryKey: ["cars", user?._id, selectType, searchValue, page, limit],
     refetchOnWindowFocus: false,
     queryFn: async () => {
@@ -64,18 +66,38 @@ const AllCarLists = () => {
   // console.log(displayCars);
 
   const handleEiditCar = async (id) => {
-    navigate(`/seller-dashboard/add-cars?updated-carId=${id}`)
+    console.log(user.planDetails.features);
+    
+    if (user.planDetails.features.editpost) {
+      navigate(`/seller-dashboard/add-cars?updated-carId=${id}`)
+    }else{
+      navigate('/pricing')
+    }
   };
 
   const handleDeleteCar = async (id) => {
-    console.log(id);
     
-    try {
-      const response = await callDeleteApis(`/cars/delete?carId=${id}&sellerId=${user?._id}`)
+    
+      try {
+      const response = await callDeleteApis(`/cars/delete/${id}/${user?._id}`);
+      console.log(response);
+      
+      if (response.success) {
+        setSelectedCar(null);
+        setOpenDeleteDailog(false);
+        toast.success(response.message, {duration: 1000});
+        refetch();
+      }
+
+      if(!response.success){
+        toast.error(response.message, {duration: 1000});
+      }
+      
     } catch (error) {
       console.log(error);
       throw error
     }
+ 
   };
 
   
@@ -104,23 +126,37 @@ const AllCarLists = () => {
           </h2>
 
           <div className="flex items-center gap-4">
-              <div className="flex items-center gap-3 space-x-2">
-                <motion.button
-                 onClick={() => setPage((prev) => prev - 1)}
-                 disabled={page === 1}
-                 whileTap={{scale: 0.9}}
-                 className={`bg-black text-white px-4 py-2 rounded-lg cursor-pointer disabled:cursor-not-allowed disabled:bg-gray-500 text-xl`}>-</motion.button>
-                    
-                    {[...Array(totalPages)].map((_,index) => <div key={index} onClick={() => setPage(index + 1)} className={`border px-3 py-2 rounded-lg cursor-pointer ${page === (index + 1)  && "bg-black text-white"}`}>
-                      {index + 1}
-                    </div>)}
-                    
-                <motion.button 
+            <div className="flex items-center gap-3 space-x-2">
+              <motion.button
+                onClick={() => setPage((prev) => prev - 1)}
+                disabled={page === 1}
+                whileTap={{ scale: 0.9 }}
+                className={`bg-black text-white px-4 py-2 rounded-lg cursor-pointer disabled:cursor-not-allowed disabled:bg-gray-500 text-xl`}
+              >
+                -
+              </motion.button>
+
+              {[...Array(totalPages)].map((_, index) => (
+                <div
+                  key={index}
+                  onClick={() => setPage(index + 1)}
+                  className={`border px-3 py-2 rounded-lg cursor-pointer ${
+                    page === index + 1 && "bg-black text-white"
+                  }`}
+                >
+                  {index + 1}
+                </div>
+              ))}
+
+              <motion.button
                 onClick={() => setPage((prev) => prev + 1)}
                 disabled={page === totalPages}
-                whileTap={{scale: 0.9}} 
-                className="bg-black text-white px-4 py-2 rounded-lg cursor-pointer disabled:cursor-not-allowed disabled:bg-gray-500 text-xl">+</motion.button>
-              </div>
+                whileTap={{ scale: 0.9 }}
+                className="bg-black text-white px-4 py-2 rounded-lg cursor-pointer disabled:cursor-not-allowed disabled:bg-gray-500 text-xl"
+              >
+                +
+              </motion.button>
+            </div>
 
             <form>
               <div className="border border-gray-300 p-2 rounded-lg flex items-center lg:w-80">
@@ -174,7 +210,6 @@ const AllCarLists = () => {
                 setSelectedCar={setSelectedCar}
                 selectedCar={selectedCar}
               />
-              
             </Table>
           </div>
 
@@ -203,7 +238,7 @@ const AllCarLists = () => {
                       stiffness: 300,
                       damping: 30,
                     }}
-                    className="relative w-[900px]  rounded-xl  border-gray-300 z-20 p-8 flex flex-col items-center"
+                    className="relative w-[900px]  max-h-[600px]  rounded-xl  border-gray-300 z-20 p-8 flex flex-col items-center"
                   >
                     <button
                       onClick={() => setSelectedCar(null)}
@@ -225,7 +260,7 @@ const AllCarLists = () => {
                         </motion.div>
 
                         <motion.div
-                          onClick={() => handleDeleteCar(selectedCar._id)}
+                          onClick={() => setOpenDeleteDailog(true)}
                           whileTap={{ scale: 0.9 }}
                           className="flex items-center gap-2 bg-red-500 p-2 rounded-xl text-white font-medium cursor-pointer"
                         >
@@ -238,7 +273,7 @@ const AllCarLists = () => {
                           <ImageSlider images={selectedCar.images} />
                         </div>
 
-                        <div>
+                        <div className="w-full msx">
                           <CarInformation car={selectedCar} />
                         </div>
                       </div>
@@ -246,6 +281,55 @@ const AllCarLists = () => {
                   </motion.div>
                 </>
               </AnimatePresence>
+
+              {openDeleteDailog && (
+                <div className="absolute top-0 left-0 w-full h-screen bg-black/70 z-100 flex items-center justify-center">
+                  <div className="w-[500px]  bg-white rounded-lg p-3 flex flex-col gap-5">
+                    <div>
+                      <h2 className="text-xl flex items-center gap-2 font-medium">
+                        <TriangleAlert size={15} className="text-yellow-500" />{" "}
+                        Are you sure you want to delete this car?
+                      </h2>
+                      <p className="text-gray-600 pl-4 text-sm">
+                        This action cannot be undone. The car will be
+                        permanently removed from your listings.
+                      </p>
+                    </div>
+
+                    {/* Deleted car details */}
+                    <div className="flex items-center gap-2  text-lg font-medium">
+                      <Car size={18} />
+
+                      <span>
+                        {selectedCar?.make} {selectedCar?.model}{" "}
+                        {selectedCar?.year}{" "}
+                      </span>
+                    </div>
+
+                    {/* action */}
+                    <div className="flex items-center justify-end gap-2">
+                      <motion.button
+                        onClick={() => {
+                          setOpenDeleteDailog(false);
+                          setDeleteDailogValue(false);
+                        }}
+                        whileTap={{ scale: 0.9 }}
+                        className="border border-gray-400 text-sm font-medium px-5 py-2 rounded-lg cursor-pointer"
+                      >
+                        Clear
+                      </motion.button>
+
+                      <motion.button
+                        onClick={() => handleDeleteCar(selectedCar._id)}
+                        whileTap={{ scale: 0.9 }}
+                        className="bg-black text-white text-sm font-medium px-5 py-2 rounded-lg cursor-pointer"
+                      >
+                        Confirm
+                      </motion.button>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </div>

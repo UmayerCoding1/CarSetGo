@@ -5,7 +5,7 @@ import path from 'path';
 
 // Function to convert file to base64
 async function fileToBase64(file){
-  console.log(file, 'file');
+
    const absolutePath = path.resolve(file.path);
    const buffer = await fs.promises.readFile(absolutePath);
     return buffer.toString('base64');
@@ -78,8 +78,7 @@ export const AlAnalyzeCarImage = async (file) => {
      const response = await resilt.response;
      const text = response.text();
      const cleanText = text.replace(/```(?:json)?\n?/g,"").trim();
-     console.log(cleanText, 'cleanText');
-
+    
      try {
         const carDetails = JSON.parse(cleanText);
         

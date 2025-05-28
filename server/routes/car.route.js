@@ -14,7 +14,7 @@ router.get('/cars/seller/:sellerId', getCarsBySeller); // Assuming this is the s
 router.post('/cars',verifyUser, verifySeller,verifyFrontendOnly,upload.array('carimages',15), postCar);
 router.put('/cars', verifyUser,verifySeller,updateCarById);
 router.post('/cars/generate-description',verifyUser, verifySeller,verifyFrontendOnly, upload.single('carImage'), generateCarDescription);
-router.delete('/cars/delete', verifyUser,verifySeller,deleteSellerCarById)
+router.delete('/cars/delete/:carId/:sellerId', verifyUser,verifySeller,deleteSellerCarById)
 
 
 
