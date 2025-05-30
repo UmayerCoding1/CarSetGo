@@ -5,7 +5,7 @@ const pricingPlanSchema = new mongoose.Schema(
     name: {
       type: String,
       required: true,
-      enum: ["Free", "Pro", "Advanced"],
+      enum: ["free", "pro", "advanced"],
     },
     price: {
       type: Number,
@@ -36,7 +36,7 @@ const pricingPlanSchema = new mongoose.Schema(
 // Middleware to auto-assign feature values based on plan name
 pricingPlanSchema.pre("save", function (next) {
   const planFeatures = {
-    Free: {
+    free: {
       selingpostpermunth: 1,
       bookingManagement: false,
       testDriveRequests: false,
@@ -49,7 +49,7 @@ pricingPlanSchema.pre("save", function (next) {
       unlimitedChat: false,
       adCreditsForPost: false,
     },
-    Pro: {
+    pro: {
       selingpostpermunth: 6,
       bookingManagement: true,
       testDriveRequests: true,
@@ -62,7 +62,7 @@ pricingPlanSchema.pre("save", function (next) {
       unlimitedChat: true,
       adCreditsForPost: false,
     },
-    Advanced: {
+    advanced: {
       selingpostpermunth: 12,
       bookingManagement: true,
       testDriveRequests: true,

@@ -15,14 +15,19 @@ import React, { useState } from "react";
 import { asset } from "../../assets/asser";
 import { NavLink } from "react-router-dom";
 import { motion } from "motion/react";
+
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [activeDropdown, setActiveDropdown] = useState(null);
+  const [activeSellerPath, setActiveSellerPath] = useState('seller-dashboard');
 
   const handleDropdownClick = (dropdownName) => {
-    setActiveDropdown(activeDropdown === dropdownName ? null : dropdownName);
+    const location = window.location.pathname;  
+    setActiveSellerPath(activeSellerPath === dropdownName ? null : dropdownName);
   };
 
+  
+
+  
   return (
     <div
       className={`${
@@ -64,13 +69,10 @@ const Sidebar = () => {
             {/* Dashboard Link */}
             <motion.li whileTap={{scale: 0.9}} className="w-full">
               <NavLink
+               onClick={() => handleDropdownClick("dashboard")}
                 to="/seller-dashboard"
                 className={({ isActive }) =>
-                  `flex items-center gap-3 p-3 rounded-lg transition-all duration-200 ${
-                    isActive
-                      ? "bg-blue-50 text-blue-600"
-                      : "hover:bg-gray-50 text-gray-700"
-                  }`
+                  `flex items-center gap-3 p-3 rounded-lg transition-all duration-200 actite  ${activeSellerPath === 'dashboard' && 'bg-blue-100 text-blue-500'}`
                 }
               >
                 <LayoutDashboard size={22} />
@@ -85,8 +87,8 @@ const Sidebar = () => {
             </motion.li>
 
             {/* Car Management Section */}
-            <li  className="w-full relative">
-              <NavLink to={'car-lists'} className="w-full">
+            <motion.li whileTap={{scale: 0.9}}  className={`w-full relative  rounded-lg ${activeSellerPath === 'car' && 'bg-blue-100 text-blue-500'}`}>
+              <NavLink to={'car-lists'} className="w-full ">
                 <button
                   onClick={() => handleDropdownClick("car")}
                   className={`flex items-center gap-3 p-3 rounded-lg w-full transition-all duration-200 hover:bg-gray-100 text-gray-700 cursor-pointer`}
@@ -104,11 +106,11 @@ const Sidebar = () => {
 
                 
               </NavLink>
-            </li>
+            </motion.li>
 
             {/* Booking Management Section */}
-            <li className="w-full relative">
-              <div className="w-full">
+            <motion.li whileTap={{scale: 0.9}} className="w-full relative">
+              <NavLink to={'all-bookings'} className="w-full">
                 <button
                   onClick={() => handleDropdownClick("booking")}
                   className={`flex items-center gap-3 p-3 rounded-lg w-full transition-all duration-200 hover:bg-gray-100 text-gray-700 cursor-pointer`}
@@ -121,48 +123,12 @@ const Sidebar = () => {
                   >
                     Booking Management
                   </span>
-                  <svg
-                    className={`w-4 h-4 transition-transform duration-200 ${
-                      activeDropdown === "booking" ? "rotate-180" : ""
-                    } ${!isOpen && "hidden"}`}
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M19 9l-7 7-7-7"
-                    />
-                  </svg>
+                 
                 </button>
 
-                {activeDropdown === "booking" && (
-                  <div
-                    className={`flex flex-col gap-2 mt-2 ${
-                      !isOpen
-                        ? "fixed top-[25%] left-[65px] bg-white shadow-lg rounded-lg p-2 min-w-[200px] z-50"
-                        : "pl-12"
-                    }`}
-                  >
-                    <NavLink
-                      to="/seller-dashboard/all-bookings"
-                      className={({ isActive }) =>
-                        `flex items-center gap-2 p-2 rounded-lg transition-all duration-200 ${
-                          isActive
-                            ? "bg-blue-50 text-blue-600"
-                            : "hover:bg-gray-100 text-gray-700"
-                        }`
-                      }
-                    >
-                      <Calendar size={18} />
-                      <span className="text-sm font-medium">All bookings</span>
-                    </NavLink>
-                  </div>
-                )}
-              </div>
-            </li>
+                
+              </NavLink>
+            </motion.li>
 
             {/* Buyer Requests Section */}
             <li className="w-full relative">
@@ -179,63 +145,10 @@ const Sidebar = () => {
                   >
                     Buyer Requests
                   </span>
-                  <svg
-                    className={`w-4 h-4 transition-transform duration-200 ${
-                      activeDropdown === "buyer" ? "rotate-180" : ""
-                    } ${!isOpen && "hidden"}`}
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M19 9l-7 7-7-7"
-                    />
-                  </svg>
+                  
                 </button>
 
-                {activeDropdown === "buyer" && (
-                  <div
-                    className={`flex flex-col gap-2 mt-2 ${
-                      !isOpen
-                        ? "fixed top-[30%] left-[65px] bg-white shadow-lg rounded-lg p-2 min-w-[200px] z-50"
-                        : "pl-12"
-                    }`}
-                  >
-                    <NavLink
-                      to="/seller-dashboard/dealership-requests"
-                      className={({ isActive }) =>
-                        `flex items-center gap-2 p-2 rounded-lg transition-all duration-200 ${
-                          isActive
-                            ? "bg-blue-50 text-blue-600"
-                            : "hover:bg-gray-100 text-gray-700"
-                        }`
-                      }
-                    >
-                      <Handshake size={18} />
-                      <span className="text-sm font-medium">
-                        Dealership requests
-                      </span>
-                    </NavLink>
-                    <NavLink
-                      to="/seller-dashboard/schedile-mecting"
-                      className={({ isActive }) =>
-                        `flex items-center gap-2 p-2 rounded-lg transition-all duration-200 ${
-                          isActive
-                            ? "bg-blue-50 text-blue-600"
-                            : "hover:bg-gray-100 text-gray-700"
-                        }`
-                      }
-                    >
-                      <CalendarClock size={18} />
-                      <span className="text-sm font-medium">
-                        Schedule meeting
-                      </span>
-                    </NavLink>
-                  </div>
-                )}
+               
               </div>
             </li>
 
@@ -254,48 +167,10 @@ const Sidebar = () => {
                   >
                     Payment
                   </span>
-                  <svg
-                    className={`w-4 h-4 transition-transform duration-200 ${
-                      activeDropdown === "payment" ? "rotate-180" : ""
-                    } ${!isOpen && "hidden"}`}
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M19 9l-7 7-7-7"
-                    />
-                  </svg>
+                  
                 </button>
 
-                {activeDropdown === "payment" && (
-                  <div
-                    className={`flex flex-col gap-2 mt-2 ${
-                      !isOpen
-                        ? "fixed top-[42%] left-[65px] bg-white shadow-lg rounded-lg p-2 min-w-[200px] z-50"
-                        : "pl-12"
-                    }`}
-                  >
-                    <NavLink
-                      to="/seller-dashboard/received-payments"
-                      className={({ isActive }) =>
-                        `flex items-center gap-2 p-2 rounded-lg transition-all duration-200 ${
-                          isActive
-                            ? "bg-blue-50 text-blue-600"
-                            : "hover:bg-gray-100 text-gray-700"
-                        }`
-                      }
-                    >
-                      <CreditCard size={18} />
-                      <span className="text-sm font-medium">
-                        Received payments
-                      </span>
-                    </NavLink>
-                  </div>
-                )}
+              
               </div>
             </li>
           </ul>

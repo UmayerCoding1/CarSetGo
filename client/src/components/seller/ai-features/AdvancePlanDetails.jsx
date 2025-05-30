@@ -14,7 +14,8 @@ const AdvancePlanDetails = ({ features }) => {
     unlimitedChat,
     adCreditsForPost,
   } = features;
-
+ console.log("features");
+ 
   const freePlanFeatures = [
     { name: "Seling post per month", value: "12" },
     { name: "Booking Management", value: true },
@@ -62,6 +63,7 @@ const AdvancePlanDetails = ({ features }) => {
             <th className="px-4 py-3 text-left text-sm font-semibold text-gray-600 border-b">
               Plan Features
             </th>
+            
             <th className="px-4 py-3 text-left text-sm font-semibold text-gray-600 border-b">
               Free Plan
             </th>

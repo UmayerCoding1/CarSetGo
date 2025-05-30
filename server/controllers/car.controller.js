@@ -136,6 +136,7 @@ export const postCar = async (req, res) => {
   try {
     const {make,model,year,price,mileage, color, fuelType, transmission, bodyType, seats, description,   seller, category, postType} = req.body;
    
+
   
   
     const requiredFields = ['make', 'model', 'year', 'price', 'mileage', 'color', 'fuelType', 'transmission', 'bodyType', 'seats', 'description',    'seller', 'category', 'postType', ];
@@ -155,6 +156,17 @@ export const postCar = async (req, res) => {
     if(!user && user.role !== 'seller'){
       return res.status(403).json({message: 'Only sellers can post cars'});
     }
+
+
+    const plan = user.planDetails;
+
+    if(!plan || plan.features.selingpostpermunth  <= 0) {
+      return res.status(403).json({ message: 'Post limit reached. Upgrade your plan.'});
+    }
+
+
+    
+    
 
      const carImages = req.files;
     const imageUrl = [];
@@ -197,13 +209,11 @@ export const postCar = async (req, res) => {
     
     
  
-    await User.findByIdAndUpdate(
-      seller,
-      { $inc: { "planDetails.features.selingpostpermunth": -1 } }
-    );
-    console.log(user);
+    plan.features.selingpostpermunth -= 1;
+    await user.save();
+   
+   
 
- 
     return res.status(201).json({message: 'Car posted successfully', car, success: true});
   } catch (error) {
     console.log(error);
@@ -382,8 +392,14 @@ export const getCarsBySeller = async (req, res) => {
 
     
 
+    user.planDetails.features.aiDescriptionGenerator -= 1;
+    await user.save();
 
-    console.log(user);
+    
+    
+
+
+    
     
 
     return res.status(200).json({

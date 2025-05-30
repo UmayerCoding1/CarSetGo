@@ -15,6 +15,8 @@ const FreePlanDeatils = ({ features }) => {
     unlimitedChat,
     adCreditsForPost,
   } = features;
+  console.log(features);
+  
 
   const freePlanFeatures = [
     { name: "Seling post per month", value: "1" },

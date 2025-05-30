@@ -5,6 +5,8 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 const SellerNav = ({user}) => {
   const isSellerDashboard = useLocation().pathname === "/seller-dashboard";
   
+  console.log(user);
+  
   
    
   return (

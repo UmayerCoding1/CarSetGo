@@ -46,7 +46,7 @@ export const AlAnalyzeCarImage = async (file) => {
       6: Fuel Type (your best guess)
       7: Body Type (SUV, Sedan, etc.)
       8: Transmission (your best guess)
-      9: Price (your best guess)
+      9: Price (your best guess(usd doller))
       10: Seats (number of seats)
       11: Category (your best guess)
       12: Description (a detailed description of the car (min 50 and max 120 words))

@@ -295,6 +295,8 @@ export const handlePaymentSuccess = async (req, res) => {
 
     if(existingPayment.paymentType === 'plan'){
       const plan = await PricingPlan.findOne({name: planName});
+      console.log(plan);
+      
       if(!plan){
         return res.status(404).json({message: "This plan is not found", success: false})
       }
@@ -304,7 +306,12 @@ export const handlePaymentSuccess = async (req, res) => {
           $set: {
             'isPlanActive': true,
             "plan": plan.name,
-            "planDetails": plan._id,
+            "paymentStatus": "success",
+            "planDetails":{
+              "name": plan.name,
+              "price": plan.price,
+              "features": plan.features
+            }  ,
           }
 
         },
