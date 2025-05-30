@@ -10,7 +10,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 export const createCarBookingPayment = async (req, res) => {
   const { bookingId, amount, currency } = req.body;
-
+// log
   // Input validation
   if (!bookingId || !amount || !currency) {
     return res.status(400).json({
@@ -250,7 +250,7 @@ export const handlePaymentSuccess = async (req, res) => {
       });
     }
 
-    console.log(existingPayment);
+    console.log("existingPayment");
     
 
     if (existingPayment.paymentType === "booking") {
@@ -259,6 +259,7 @@ export const handlePaymentSuccess = async (req, res) => {
         {
           status: "processing",
           paymentStatus: "success",
+          paymentId: existingPayment._id,
         }
       );
 

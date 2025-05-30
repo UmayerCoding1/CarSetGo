@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { checkExistingBookings, createBooking, deleteBooking, getAllBookings, getBookings, getBookingsBySeller, updateBooking } from "../controllers/booking.contriller.js";
+import { checkExistingBookings, createBooking, deleteBooking, getAllBookings, getBookings, getBookingsBySeller, updateBooking } from "../controllers/booking.controller.js";
 import verifyUser from "../middlewares/verify.user.js";
 import verifySeller from "../middlewares/verify.seller.js";
 import verifyAdmin from "../middlewares/verify.admin.js";

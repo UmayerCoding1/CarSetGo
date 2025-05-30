@@ -31,6 +31,10 @@ import saveCarRoute from './routes/saveCar.route.js';
 import bookingRoute from './routes/booking.route.js';
 import pricingRoute from './routes/pricing.route.js';
 import paymentRoute from './routes/payment.route.js';
+import analyticsRoute from './routes/analytics.route.js';
+
+
+app.use('/api/v1/analytics', analyticsRoute);
 app.use('/api/v1/auth', auhRoute);
 app.use('/api/v1', sellerReqRoute);
 app.use('/api/v1', carRoute);
@@ -40,6 +44,10 @@ app.use('/api/v1', saveCarRoute);
 app.use('/api/v1', bookingRoute);
 app.use('/api/v1', pricingRoute);
 app.use('/api/v1/payment', paymentRoute);
+
+
+
+
 app.listen(port, () => {
     console.log(`Server running port:${port}`);
     

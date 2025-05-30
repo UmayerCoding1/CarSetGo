@@ -44,6 +44,10 @@ const carSchema = new Schema(
     addCredits : {
       type: Boolean,
       default: false,
+    },
+    availableCar:{
+      type: Boolean,
+      default: true
     }
   },
   { timestamps: true }
