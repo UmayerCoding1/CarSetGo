@@ -9,7 +9,7 @@ router.post("/create-booking",verifyUser, createBooking);
 router.get("/check-bookings",verifyUser, checkExistingBookings);
 router.get("/get-all-bookings",verifyUser,verifyAdmin, getAllBookings);
 router.get("/get-bookings/:userId",verifyUser, getBookings);
-router.get("/get-bookings-by-seller/:sellerId",verifyUser , verifySeller, getBookingsBySeller);
+router.get("/bookings/seller/:sellerId",verifyUser , verifySeller, getBookingsBySeller);
 router.put("/update-booking/:bookingId",verifyUser, verifySeller, updateBooking);
 router.delete("/delete-booking/:bookingId",verifyUser, deleteBooking);
 

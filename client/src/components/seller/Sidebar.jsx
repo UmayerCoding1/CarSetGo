@@ -22,11 +22,11 @@ const Sidebar = () => {
 
   const handleDropdownClick = (dropdownName) => {
     setActiveSellerPath(dropdownName);
-    localStorage.setItem('currentSellerPath', dropdownName);
+    sessionStorage.setItem('currentSellerPath', dropdownName);
   };
 
   useEffect(() => {
-    const currentPath = localStorage.getItem('currentSellerPath');
+    const currentPath = sessionStorage.getItem('currentSellerPath');
     if (currentPath) {
       setActiveSellerPath(currentPath);
     }
@@ -73,10 +73,10 @@ const Sidebar = () => {
             {/* Dashboard Link */}
             <motion.li whileTap={{ scale: 0.9 }} className="w-full">
               <NavLink
-                onClick={() => handleDropdownClick("dashboard")}
+                onClick={() => handleDropdownClick("seller-dashboard")}
                 to="/seller-dashboard"
                 className={`flex items-center gap-3 p-3 rounded-lg transition-all duration-200 ${
-                  activeSellerPath === "dashboard"
+                  activeSellerPath === "seller-dashboard"
                     ? "bg-blue-100 text-blue-500"
                     : "hover:bg-gray-100 text-gray-700"
                 }`}

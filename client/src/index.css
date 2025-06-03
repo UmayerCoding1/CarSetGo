@@ -18,3 +18,6 @@ html{
   --shadow-primary: 2px 2px 12px 2px #00000071
 }
 
+button{
+  cursor: pointer;
+}
