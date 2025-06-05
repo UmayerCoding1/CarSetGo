@@ -26,6 +26,9 @@ export const createCarBookingPayment = async (req, res) => {
     });
   }
 
+
+  console.log("amount", amount);
+  
   try {
     const booking = await Booking.findById(bookingId).populate("carId");
     if (!booking) {
@@ -70,6 +73,9 @@ export const createCarBookingPayment = async (req, res) => {
       cancel_url: `http://localhost:5173/my-booking?canceled=true&session_id={CHECKOUT_SESSION_ID}`,
     });
 
+
+
+
     // STEP 3: Save payment record in DB
     const payment = await Payment.create({
       userId: booking.userId,
@@ -90,7 +96,7 @@ export const createCarBookingPayment = async (req, res) => {
       sessionId: session.id,
     });
   } catch (error) {
-    console.error("Payment creation error:", error);
+    console.error("Payment creation error:", error.message);
     res.status(500).json({
       success: false,
       message: "Failed to create payment session",
@@ -231,12 +237,12 @@ export const createPlanPayment = async (req, res) => {
 export const handlePaymentSuccess = async (req, res) => {
   const { sessionId } = req.body;
   const planName = req.query.planName;
-  console.log(planName);
+  console.log(sessionId);
 
-  if (!sessionId || !planName) {
+  if (!sessionId ) {
     return res.status(400).json({
       success: false,
-      message: "Missing required fields: sessionId or planName",
+      message: "Missing required fields: sessionId",
     });
   }
 
@@ -259,7 +265,9 @@ export const handlePaymentSuccess = async (req, res) => {
         {
           status: "processing",
           paymentStatus: "success",
-          paymentId: existingPayment._id,
+        },
+        {
+          new: true,
         }
       );
 
@@ -295,6 +303,12 @@ export const handlePaymentSuccess = async (req, res) => {
 
 
     if(existingPayment.paymentType === 'plan'){
+      if(!planName){
+        return res.status(400).json({
+          success: false,
+          message: "Missing required fields: planName",
+        });
+      }
       const plan = await PricingPlan.findOne({name: planName});
       console.log(plan);
       

@@ -148,7 +148,14 @@ const BookingTable = ({ data, refetchSellerBookings }) => {
                     onChange={(e) => handleBookingStatus(_id, e.target.value)}
                     value={isBookingStatus ? isBookingStatus : status}
                   >
-                    {statusEnum.map((statusOption) => (
+                    {(paymentStatus === 'success'
+                     ? statusEnum.filter((status) => status === 'completed' || status === 'processing')
+                     : status === 'pending'
+                     ? statusEnum.filter((status) => status === 'pending' || status === 'confirmed' || status === 'cancelled')
+                     : status === 'confirmed'
+                     ? statusEnum.filter((status) => status === 'pending' || status === 'confirmed' || status === 'cancelled')
+                     : statusEnum
+                     ).map((statusOption) => (
                       <option
                         className={`font-medium 
                       ${statusColors[statusOption] || "text-gray-600"}

@@ -74,8 +74,7 @@ const bookingSchema = new mongoose.Schema(
       default: "pending",
     },
     paymentId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Payment",
+      type: String
     },
     
 
