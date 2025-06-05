@@ -1,7 +1,8 @@
 import { Loader2, X } from "lucide-react";
 import React, { useState } from "react";
 import CarInformation from "../../ui/car-details/CarInformation";
-
+import { callPutApis } from "../../../api/api";
+import {toast} from 'sonner';
 export const statusEnum = [
   "pending",
   "confirmed",
@@ -10,19 +11,51 @@ export const statusEnum = [
   "processing",
 ];
 
-const BookingTable = ({ data, handleBookingStatus, isProcessing }) => {
-  const [isOpenCarDetails, setIsOpenCarDetails] = useState(null); // holds index
+export const statusColors = {
+  pending: "text-yellow-600 bg-yellow-50",
+  confirmed: "text-blue-600 bg-blue-50",
+  cancelled: "text-red-600 bg-red-50",
+  completed: "text-green-600 bg-green-50",
+  processing: "text-purple-600 bg-purple-50",
+};
 
+const BookingTable = ({ data, refetchSellerBookings }) => {
+  const [isOpenCarDetails, setIsOpenCarDetails] = useState(null); // holds index
+  const [isBookingStatus, setIsBookingStatus] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   const formattedDate = (date) => {
     const isDate = new Date(date);
     const options = { year: "numeric", month: "long", day: "numeric" };
     return isDate.toLocaleDateString("en-US", options);
   };
 
+   
+
+        const handleBookingStatus = async (bookingId, status) => {
+          if (!bookingId || !status) {
+            throw new Error("Missing required fields");
+          }
+
+          setIsBookingStatus(status);
+          setIsLoading(true);
+          try {
+            const response = await callPutApis(`/bookings/${bookingId}/status`,{ status });
+            if (response.success) {
+              toast.success(response.message, {duration: 1000});
+              setIsLoading(false);
+               refetchSellerBookings();
+            }
+          } catch (error) {console.log(error);
+            toast.error(error.response.data.message, {duration: 1000});
+            setIsLoading(false);
+          }
+        };
+
   return (
     <>
       {data.map((item, inx) => {
         const {
+          _id,
           phone,
           bookingStartDate,
           bookingEndDate,
@@ -35,7 +68,10 @@ const BookingTable = ({ data, handleBookingStatus, isProcessing }) => {
           paymentId,
           createdAt,
           pickupLocation,
+          totalPrice,
         } = item;
+
+       
 
         return (
           <React.Fragment key={inx}>
@@ -73,6 +109,9 @@ const BookingTable = ({ data, handleBookingStatus, isProcessing }) => {
               <th className="font-medium text-sm text-gray-500 border">
                 <span>{duration}</span> <span>{durationType}</span>
               </th>
+              <th className="font-medium text-sm text-gray-500 border">
+                <span>$ {totalPrice}</span>
+              </th>
 
               <th className="font-medium text-sm text-gray-500 border">
                 {pickupLocation}
@@ -95,7 +134,7 @@ const BookingTable = ({ data, handleBookingStatus, isProcessing }) => {
               </th>
 
               <th className="font-medium text-sm text-gray-500 border">
-                {isProcessing ? (
+                {isLoading ? (
                   <div className="flex items-center justify-center">
                     <Loader2 size={15} className="animate-spin" />
                   </div>
@@ -103,12 +142,20 @@ const BookingTable = ({ data, handleBookingStatus, isProcessing }) => {
                   <select
                     name="status"
                     id="status"
-                    className="p-2 outline-none rounded-lg font-medium text-sm w-full"
-                    onChange={(e) => handleBookingStatus(e.target.value)}
-                    value={status}
+                    className={`p-2 outline-none rounded-lg font-medium text-sm w-full "
+                    ${statusColors[status] || "text-gray-600"}
+                    `}
+                    onChange={(e) => handleBookingStatus(_id, e.target.value)}
+                    value={isBookingStatus ? isBookingStatus : status}
                   >
                     {statusEnum.map((statusOption) => (
-                      <option key={statusOption} value={statusOption}>
+                      <option
+                        className={`font-medium 
+                      ${statusColors[statusOption] || "text-gray-600"}
+                      `}
+                        key={statusOption}
+                        value={statusOption}
+                      >
                         {statusOption.charAt(0).toUpperCase() +
                           statusOption.slice(1)}
                       </option>

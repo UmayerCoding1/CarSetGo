@@ -20,7 +20,7 @@ const AllBookings = () => {
   const {user} = useAuth();
   const secureApi = useSecureApi();
   const isProcessing = false;
-  const {data: bookings= [], refetch, isLoading} = useQuery({
+  const {data: bookings= [], refetch: refetchSellerBookings, isLoading} = useQuery({
     queryKey: ['bookings',user?._id,page,limit,search,paymentStatus,bookingStatus,searchBydate],
     // enabled: !!user?._id,/
     queryFn: async() => {
@@ -32,16 +32,13 @@ const AllBookings = () => {
 
   const isAllFiltered = search || paymentStatus || bookingStatus || searchBydate;
 
-  console.log(isAllFiltered ? "filtered" : "not filtered");
+
   
 
 
  
 
-const handleBookingStatus = (status) => {
-        console.log(status);
-        setUpdateStatus(status);
-    }
+
 
   
   return (
@@ -185,7 +182,7 @@ const handleBookingStatus = (status) => {
 
 
 
-      <div className="mt-10 overflow-x-auto">
+      <div className="mt-10 overflow-x-auto lg:overflow-visible">
         {isLoading ? <Loading /> : <Table 
          thValue={[
                 '#',
@@ -196,6 +193,7 @@ const handleBookingStatus = (status) => {
                 "Booking end date",
                 "Car Details",
                 "total days",
+                "Amount",
                 'Pickup Location',
                 "payment Id",
                 "payment status",
@@ -205,7 +203,7 @@ const handleBookingStatus = (status) => {
         >
           
            
-            <BookingTable data={bookings} handleBookingStatus={handleBookingStatus} isProcessing={isProcessing}/>
+            <BookingTable data={bookings} refetchSellerBookings={refetchSellerBookings}/>
           
         </Table>}
         

@@ -186,27 +186,9 @@ export const getBookingsBySeller = async (req, res) => {
     console.log(error);
     return res.status(500).json({ message: "Internal server error" });
   }
-
-  // try {
-  //   const bookings = await Booking.find({ sellerId: sellerId }).populate("carId").populate({
-  //     path: "userId",
-  //     select: "-  password",
-  //   });
-
-  //    console.log(bookings);
-  //   if (!bookings) {
-  //     return res
-  //       .status(404)
-  //       .json({ message: "Booking not found", success: false });
-  //   }
-
-  // return res.status(200).json({ bookings, success: true });
-  // } catch (error) {
-  //   return res.status(500).json({ message: "Internal server error" });
-  // }
 };
 
-export const updateBooking = async (req, res) => {
+export const updateBookingDetails = async (req, res) => {
   const { bookingId } = req.params;
   const { status } = req.body;
   try {
@@ -227,6 +209,34 @@ export const updateBooking = async (req, res) => {
     return res.status(500).json({ message: "Internal server error" });
   }
 };
+
+
+export const updateBookingStatus = async (req, res) => {
+  const { bookingId } = req.params;
+  const { status } = req.body;
+  try {
+    const booking = await Booking.findByIdAndUpdate(
+      bookingId,
+      { status },
+      { new: true }
+    );
+    if (!booking) {
+      return res
+        .status(404)
+        .json({ message: "Booking not found", success: false });
+    }
+    return res
+      .status(200)
+      .json({ message: "Booking status updated successfully", success: true });
+  } catch (error) {
+    return res.status(500).json({ message: "Internal server error" });
+  }
+
+
+  console.log(bookingId, status);
+  
+}
+
 
 export const deleteBooking = async (req, res) => {
   const bookingId = req.params.bookingId;

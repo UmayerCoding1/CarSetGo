@@ -31,6 +31,8 @@ export const callPostApis = async (endpoint,data) => {
     }
 }
 export const callPutApis = async (endpoint,data) => {
+
+    
     try {
         const response = await api.put(endpoint,data);
         
