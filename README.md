@@ -12,6 +12,8 @@ CarSetGo is a full-stack web application designed for car rental and dealership 
 - **Car Categories**: Browse cars by categories like SUV, Crossover, MPV, etc.
 - **Responsive Design**: Fully responsive UI built with TailwindCSS.
 - **Dynamic Content**: Features like testimonials, FAQs, and car details.
+- **AI Features**: Analyze car images to generate specifications using AI.
+- **Pagination**: Modern and responsive pagination for car lists.
 
 ### Server-Side
 - **Authentication**: JWT-based authentication with role management.
@@ -29,6 +31,7 @@ CarSetGo is a full-stack web application designed for car rental and dealership 
 - **TailwindCSS**: For styling.
 - **React Router**: For client-side routing.
 - **Axios**: For API requests.
+- **Framer Motion**: For animations.
 
 ### Backend
 - **Node.js**: For server-side logic.
@@ -148,11 +151,13 @@ CarSetGo is a full-stack web application designed for car rental and dealership 
 ---
 
 ### Updates Made:
-1. **Added Caching Feature**:
-   - Mentioned HTTP caching for static assets under **Server-Side** features.
-2. **Improved Formatting**:
+1. **Added AI Features**:
+   - Mentioned AI-powered car image analysis under **Client-Side** features.
+2. **Added Pagination**:
+   - Included modern and responsive pagination for car lists.
+3. **Expanded Tech Stack**:
+   - Added Framer Motion for animations.
+4. **Improved Formatting**:
    - Ensured consistent formatting across all sections.
-3. **Expanded Car Model**:
-   - Included additional fields like `price`, `mileage`, `fuelType`, and `transmission`.
-
-Let me know if you need further updates or additional sections!
+5. **Expanded Car Model**:
+   - Included additional fields like `paymentsystem` for payment options.
