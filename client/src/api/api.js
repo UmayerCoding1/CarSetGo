@@ -22,7 +22,6 @@ export const callGetApis = async (endpoint) => {
 }
 
 export const callPostApis = async (endpoint,data) => {
-    console.log(endpoint,data);
     
     try {
         const response = await api.post(endpoint,data);

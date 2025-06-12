@@ -1,23 +1,34 @@
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Aldrich&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Aldrich&display=swap");
 @import "tailwindcss";
 
-html{
+html {
   scroll-behavior: smooth;
 }
 
-@theme{
-  --color-primary: #fff,;
-  --color-secendary: #EDECE8;
+@theme {
+  --color-primary: #fff;
+  --color-secendary: #edece8;
   --font-IBM: "IBM Plex Sans", sans-serif;
   --font-card: "DM Sans", sans-serif;
   --font-bannerText: "Aldrich", sans-serif;
   --font-DM-MONO: "DM Mono", monospace;
-  --shadow-primary: 2px 2px 12px 2px #00000071
+  --shadow-primary: 2px 2px 12px 2px #00000071;
 }
 
-button{
+button {
   cursor: pointer;
+}
+
+@layer utilities {
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
 }

@@ -11,7 +11,7 @@ const OurVehicle = () => {
                     <p className='text-center text-gray-600'>Driving your dreams to reality with an exquisite fleet of versatile vehicles for unforgettable journeys.</p>
                 </div>
 
-                <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-20 mt-10 lg:p-10 '>
+                <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-20 mt-10 lg:p-10 w-full lg:w-[90%]'>
                     {cars?.map((car,inx) => (
                         <CarCard key={inx} car={car}/>
                     ))}
