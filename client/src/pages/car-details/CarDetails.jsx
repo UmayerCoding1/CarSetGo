@@ -29,7 +29,7 @@ import ChatInterface from "../../components/ui/ChatInterface";
 import { toast } from "sonner";
 import CarInformation from "../../components/ui/car-details/CarInformation";
 import Savecar from "../../components/ui/car-details/Savecar";
-
+import {callPostApis} from "../../api/api";
 const CarDetails = () => {
   const { id } = useParams();
   const publicApi = usePublicApi();
@@ -56,12 +56,12 @@ const CarDetails = () => {
     enabled: !!id,
   });
 
-  console.log(car);
+
 
   // Add review mutation
   const addReviewMutation = useMutation({
     mutationFn: async (reviewData) => {
-      const res = await publicApi.post(`/reviews/${id}`, reviewData);
+      const res = await callPostApis(`/reviews/${car._id}`, reviewData);
       return res.data;
     },
     onSuccess: () => {
@@ -85,10 +85,11 @@ const CarDetails = () => {
       toast.error("Please select a rating");
       return;
     }
+
+
     addReviewMutation.mutate({
       rating,
       comment: review,
-      userId: user._id,
     });
   };
 
@@ -205,8 +206,9 @@ const CarDetails = () => {
       </div>
 
       {/* Reviews Section */}
-      <div className="mt-8 bg-white rounded-2xl shadow-xl p-8">
-        <div className="flex items-center justify-between mb-8">
+      <div className="mt-8 bg-white rounded-2xl shadow-xl p-8 lg:flex  gap-5">
+       <div className="w-full lg:w-1/2">
+         <div className="flex items-center justify-between mb-8">
           <div>
             <h2 className="text-3xl font-bold text-gray-900">Reviews & Ratings</h2>
             <p className="text-gray-600 mt-2">Share your experience with this car</p>
@@ -221,6 +223,7 @@ const CarDetails = () => {
                   {[...Array(5)].map((_, index) => (
                     <Star
                       key={index}
+                      
                       className={`w-5 h-5 ${
                         index < Math.round(car.reviews.reduce((acc, review) => acc + review.rating, 0) / car.reviews.length)
                           ? "text-yellow-400 fill-current"
@@ -253,6 +256,7 @@ const CarDetails = () => {
                 <div className="flex gap-2">
                   {[1, 2, 3, 4, 5].map((star) => (
                     <motion.button
+                      
                       key={star}
                       type="button"
                       onClick={() => setRating(star)}
@@ -263,7 +267,7 @@ const CarDetails = () => {
                       className="focus:outline-none transform transition-transform"
                     >
                       <Star
-                        className={`w-10 h-10 ${
+                        className={`w-5 h-5 ${
                           star <= (hoveredRating || rating)
                             ? "text-yellow-400 fill-current"
                             : "text-gray-300"
@@ -315,9 +319,10 @@ const CarDetails = () => {
             </form>
           </motion.div>
         )}
+       </div>
 
         {/* Reviews List */}
-        <div className="space-y-8">
+        <div className="space-y-8 w-full lg:w-1/2">
           {car.reviews && car.reviews.length > 0 ? (
             car.reviews.map((review, index) => (
               <motion.div

@@ -4,8 +4,13 @@ const reviewSchema = new Schema(
   {
     userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
     carId: { type: Schema.Types.ObjectId, ref: "Car", required: true },
-    message: {
+    sellerId: { type: Schema.Types.ObjectId, ref: "User", required: true },
+    comment: {
       type: String,
+      required: true,
+    },
+    rating: {
+      type: Number,
       required: true,
     },
   },
