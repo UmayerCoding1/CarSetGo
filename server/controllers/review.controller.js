@@ -50,8 +50,32 @@ export const getReviews = async (req, res) => {
 };
 
 
+export const updateReview = async (req, res) => {
+  const { reviewId } = req.params;
+  const { comment } = req.body;
+
+  
+  
+  try {
+    const review = await Review.findById(reviewId);
+    if (!review) {
+      return res
+        .status(404)
+        .json({ message: "Review not found", success: false });
+    }
+    review.comment = comment;
+    await review.save();
+    res
+      .status(200)
+      .json({ message: "Review updated successfully", success: true });
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error", success: false });
+  }
+};
+
 export const deleteReview = async (req, res) => {
   const { reviewId } = req.params;
+
   try {
     const review = await Review.findByIdAndDelete(reviewId);
     if (!review) {

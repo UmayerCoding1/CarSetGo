@@ -5,16 +5,16 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { callGetApis, callPostApis } from "../../../api/api";
 import { toast } from "sonner";
 import { useEffect } from "react";
+import ReviewCard from "./ReviewCard";
 const Review = ({ car, user, paramsID }) => {
   const [rating, setRating] = useState(0);
   const [review, setReview] = useState("");
   const [hoveredRating, setHoveredRating] = useState(0);
   const queryClient = useQueryClient();
-  const [isOpenReviewConfirm, setIsOpenReviewConfirm] = useState(false);
-  const { data: reviews = [] } = useQuery({
+  const { data: reviews = [], refetch: reviewsRefetch } = useQuery({
     queryKey: ["reviews"],
     queryFn: async () => {
-      const response = await callGetApis(`/reviews/car/${car._id}`);
+      const response = await callGetApis(`/reviews/${car._id}`);
       return response.reviews;
     },
 
@@ -204,87 +204,7 @@ const Review = ({ car, user, paramsID }) => {
       <div className="space-y-8 w-full lg:w-1/2  max-h-[500px] overflow-y-scroll scrollbar-hide">
         {reviews && reviews.length > 0 ? (
           reviews.map((review, index) => (
-            <motion.div
-              key={review._id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
-              className="bg-white rounded-xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-300"
-            >
-              <div className="flex items-start gap-4">
-                <div className="flex-shrink-0">
-                  {review.userId?.avatar ? (
-                    <img
-                      src={review.userId?.avatar}
-                      alt={review.userId?.fullname}
-                      className="w-14 h-14 rounded-full border-2 border-blue-100"
-                    />
-                  ) : (
-                    <div className="w-14 h-14 rounded-full bg-gradient-to-br from-blue-50 to-blue-100 border-2 border-blue-100 flex items-center justify-center">
-                      <User className="w-7 h-7 text-blue-600" />
-                    </div>
-                  )}
-                </div>
-                <div className="flex-1">
-                  <div className="flex items-center justify-between mb-3">
-                    <div>
-                      <h4 className="font-semibold text-gray-900">
-                        {review.userId?.fullname}
-                      </h4>
-                      <p className="text-sm text-gray-500">
-                        {new Date(review.createdAt).toLocaleDateString(
-                          "en-US",
-                          {
-                            year: "numeric",
-                            month: "long",
-                            day: "numeric",
-                          }
-                        )}
-                      </p>
-                    </div>
-
-                    <div className="flex items-center ap-2">
-                      <div className="flex items-center gap-1 bg-blue-50 px-3 py-1 rounded-full">
-                        {[...Array(5)].map((_, index) => (
-                          <Star
-                            key={index}
-                            className={`w-4 h-4 ${
-                              index < review.rating
-                                ? "text-yellow-400 fill-current"
-                                : "text-gray-300"
-                            }`}
-                          />
-                        ))}
-                      </div>
-
-                   {user._id === review.userId._id && 
-                      <div className="relative">
-                        <EllipsisVertical size={20} onClick={() => setIsOpenReviewConfirm(!isOpenReviewConfirm)}  className="cursor-pointer"/>
-
-
-                       {isOpenReviewConfirm && 
-                        <div className="absolute bg-white shadow-md w-40 rounded-lg p-2 top-8 right-0 ">
-                            <span onClick={() => setIsOpenReviewConfirm(false)} className="flex items-center gap-2 hover:bg-gray-200 py-2 px-3 rounded-lg cursor-pointer">
-                                <Pencil size={15} className=""/>
-                                <span>Edit</span>
-                            </span>
-
-                            <span onClick={() => setIsOpenReviewConfirm(false)} className="flex items-center gap-2 hover:bg-red-200 py-2 px-3 rounded-lg cursor-pointer">
-                                <Trash size={15} className=""/>
-                                <span>Delete</span>
-                            </span>
-                        </div>
-}
-                      </div>
-}
-                    </div>
-                  </div>
-                  <p className="text-gray-700 leading-relaxed">
-                    {review.comment}
-                  </p>
-                </div>
-              </div>
-            </motion.div>
+            <ReviewCard key={review._id} review={review} index={index} user={user} reviewsRefetch={reviewsRefetch}/>
           ))
         ) : (
           <motion.div
