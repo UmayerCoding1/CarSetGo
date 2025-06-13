@@ -80,6 +80,7 @@ export const AlAnalyzeCarImage = async (file) => {
      const cleanText = text.replace(/```(?:json)?\n?/g,"").trim();
     
      try {
+      
         const carDetails = JSON.parse(cleanText);
         
         const requriedFields = ['make','model','year','color','mileage','fuelType','bodyType','transmission','price','seats','category','description'];
@@ -101,7 +102,7 @@ export const AlAnalyzeCarImage = async (file) => {
 
      
   } catch (error) {
-    console.log(error);
+    console.log(error.message);
     return {
       success: false,
       error: error.message || 'Failed to analyze car image'

@@ -345,8 +345,30 @@ export const getCarsBySeller = async (req, res) => {
 
 
 // AI car image analysis
+export const analyzeCarImage = async (req, res) => {
+  try {
+      const file = req.file;
+    const userId = req.userId;
 
+    if(!file){
+      return res.status(400).json({message: 'No image file provided'});
+    }
 
+    const carDetails = await AlAnalyzeCarImage(file);
+
+    if(!carDetails.success){
+      return res.status(400).json({message: carDetails.error});
+    } else {
+      return res.status(200).json({message: carDetails.message, data: carDetails.data});
+    }
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+  
+    
+    
+}
 
 
 // AI car description generation

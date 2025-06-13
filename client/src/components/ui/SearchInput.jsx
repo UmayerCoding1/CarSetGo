@@ -4,12 +4,15 @@ import { useDropzone } from "react-dropzone";
 import { toast } from "sonner";
 import {motion} from 'motion/react';
 import { useNavigate } from "react-router-dom";
+import { callPostApis } from "../../api/api";
 const SearchInput = () => {
   const [isImageSearchActive, setIsImageSearchActive] = useState(false);
   const [imagePreview, setImagePreview] = useState("");
   const [searchImage, setSearchImage] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
   const [searchTextValue,setSearchTextValue] = useState('');
+  const [searchImageUploadActive, setSearchImageUploadActive] = useState(false);
+  
   const navigate = useNavigate();
   const onDrop = (acceptedFiles) => {
     const file = acceptedFiles[0];
@@ -60,6 +63,29 @@ const SearchInput = () => {
   const handleImageSubmit = (e) => {
     e.preventDefault();
   };
+
+  const handleImageSearch =async () => {
+    setSearchImageUploadActive(true);
+    const formData = new FormData();
+    formData.append("carImage", searchImage);
+
+    try {
+      const res = await callPostApis(`/cars/image-search`, formData);
+      console.log(res.data);
+ 
+      if (res.data) {
+        setSearchImageUploadActive(false);
+        navigate(`/future-cars?make=${res.data.make}&model=${res.data.model}&year=${res.data.fuelType}&price=${res.data.price}`);
+      }else{
+        toast.error(res.data.message);
+      }
+      
+    } catch (error) {
+      console.log(error);
+    }
+    
+  };
+console.log(isImageSearchActive);
 
   return (
     <div className="w-full md:w-[470px] lg:w-[670px]">
@@ -123,8 +149,8 @@ const SearchInput = () => {
                     Remove Image
                   </motion.button>
 
-                  <motion.button whileTap={{scale: 0.8}} type="submit" disabled={isUploading} className="mt-2 p-2 bg-black text-white rounded-lg cursor-pointer">
-                        {isUploading 
+                  <motion.button onClick={() => handleImageSearch()} whileTap={{scale: 0.8}} type="submit" disabled={isUploading} className="mt-2 p-2 bg-black text-white rounded-lg cursor-pointer">
+                        {searchImageUploadActive 
                         ? 'Uploding'
                         : "Search with this Image" //after fecth car by image to add Analyzing image
                       }
