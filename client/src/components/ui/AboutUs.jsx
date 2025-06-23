@@ -9,7 +9,7 @@ const AboutUs = () => {
           <img className=" w-full h-full" src={asset.aboutImg} alt="" />
         </section>
 
-        <section className="w-1/2">
+        <section className="w-full lg:w-1/2">
           <h2 className="text-4xl font-bold">Only Quality For Clients</h2>
 
           <div>
@@ -40,7 +40,7 @@ const AboutUs = () => {
               </button>
             </div>
 
-            <div className="w-[60%] mt-3 text-gray-700">
+            <div className="w-full lg:w-[60%] mt-3 text-gray-700">
               {openTab === "luxury" && (
                 <p>
                   We offer a meticulously curated collection of the most

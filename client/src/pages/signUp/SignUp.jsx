@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { asset } from "../../assets/asser";
-import { EyeClosed, Mail, User } from "lucide-react";
+import { Eye, EyeClosed, Mail, User } from "lucide-react";
 import GoogleLogin from "../../components/ui/GoogleLogin";
 import {Link, useNavigate} from 'react-router-dom';
 import {motion} from 'motion/react'
@@ -14,6 +14,7 @@ const SignUp = () => {
     password: "",
     role: "",
   });
+  const [isShowPassword,setIsShowPassword]= useState(false);
   const {userRegister} = useAuth();
   const navigate = useNavigate();
 
@@ -160,14 +161,19 @@ const SignUp = () => {
               <div className="flex items-center justify-between p-2 border border-gray-300 rounded-sm w-72">
                 <input
                   className="text-sm outline-none pl-1 w-full "
-                  type="password"
+                  type={isShowPassword ? 'text': 'password'}
                   name="password"
                   value={signUpData.password}
                   onChange={handleInputChane}
                   placeholder="Enter your name"
                   required
                 />
-                <EyeClosed size={12} className="text-gray-500 cursor-pointer" />
+                <div onClick={() => setIsShowPassword(!isShowPassword)} className="cursor-pointer">
+                   {isShowPassword ? 
+                  <Eye  size={12} className="text-gray-500 " />
+                  : <EyeClosed  size={12} className="text-gray-500 " />
+                   }
+                </div>
               </div>
             </div>
 

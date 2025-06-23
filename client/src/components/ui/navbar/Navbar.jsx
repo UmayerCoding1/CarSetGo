@@ -152,7 +152,7 @@ const Navbar = () => {
                 {isOpenUserMenage && (
                   <div
                     ref={userManageRef}
-                    className="absolute w-full lg:w-[300px]  top-[52px] shadow-primary rounded-lg bg-white right-0 p-2"
+                    className="absolute w- lg:w-[300px]  top-[52px] shadow-primary rounded-lg  bg-white -right-2  lg:right-0 p-2"
                   >
                     <div className="border-b border-gray-400">
                       <div className="flex  gap-3">
@@ -192,7 +192,7 @@ const Navbar = () => {
                       </div>
                     </div>
 
-                    <Link to={`/my-cars/${user?._id}`} className=" flex items-center gap-3 shadow my-3 p-3 border border-gray-300 rounded-lg cursor-pointer">
+                    <Link to={`/my-cars/${user?._id}`} onClick={() => setIsOpenUserMenage(false)} className=" flex items-center gap-3 shadow my-3 p-3 border border-gray-300 rounded-lg cursor-pointer">
                       <Car size={18} />
                       <p className="font-medium text-sm">My cars</p>
                     </Link>
@@ -202,6 +202,7 @@ const Navbar = () => {
                         onClick={() => {
                           document.body.style.overflow = "hidden";
                           setIsOpenRequestForSeller(true);
+                          setIsOpenUserMenage(false);
                         }}
                         className=" flex items-center gap-3 shadow my-3 p-3 border border-gray-300 rounded-lg cursor-pointer"
                       >
@@ -213,13 +214,13 @@ const Navbar = () => {
                     )}
 
                     {user?.role === "seller" && (
-                      <div className=" flex items-center gap-3 shadow my-3 p-3 border border-gray-300 rounded-lg cursor-pointer">
+                      <div onClick={() => setIsOpenUserMenage(false)} className=" flex items-center gap-3 shadow my-3 p-3 border border-gray-300 rounded-lg cursor-pointer">
                         <MessageCircle size={18} />
                         <p className="font-medium text-sm">Message </p>
                       </div>
                     )}
 
-                    <div className=" flex items-center gap-3 shadow my-3 p-3 border border-gray-300 rounded-lg cursor-pointer">
+                    <div onClick={() => setIsOpenUserMenage(false)} className=" flex items-center gap-3 shadow my-3 p-3 border border-gray-300 rounded-lg cursor-pointer">
                       <Info size={18} />
                       <p className="font-medium text-sm">About Us</p>
                     </div>

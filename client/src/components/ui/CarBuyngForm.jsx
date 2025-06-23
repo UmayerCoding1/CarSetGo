@@ -93,7 +93,7 @@ const CarBuyngForm = ({ carId, userId, sellerId, price, status }) => {
     }
 
     try {
-      const res = await secureApi.post("/create-dealership", formData);
+      const res = await secureApi.post("/dealership", formData);
       if(res.data.success){
         toast.success(res.data.message, {duration: 1000});
         setFormData({});

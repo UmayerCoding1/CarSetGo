@@ -11,7 +11,7 @@ const MyCars = () => {
   const { data: yourCars = [] } = useQuery({
     queryKey: ["yourCars"],
     queryFn: async () => {
-      const response = await secureApi.get(`/get-dealership/${user._id}`);
+      const response = await secureApi.get(`/dealership/${user._id}`);
       return response.data.dealership;
     },
   });

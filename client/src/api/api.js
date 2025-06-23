@@ -9,8 +9,6 @@ export const api = axios.create({
 
 
 export const callGetApis = async (endpoint) => {
-    console.log(endpoint);
-    
     
     try {
         const response = await api.get(endpoint);

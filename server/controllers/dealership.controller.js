@@ -83,13 +83,9 @@ export const clearDealership = async (req,res) => {
 }
 
 export const getDealershipBySeller = async (req, res) => {
-  const { sellerId } = req.body;
-  try {
-    const dealership = await Dealership.find({ sellerId });
-    return res.status(200).json({ message: "Dealership fetched successfully", success: true, dealership });
-  } catch (error) { 
-    res.status(500).json({ message: "Internal server error", success: false });
-  }
+  // const { sellerId } = req.params;
+  console.log("sellerId");
+  
 };
 
 
