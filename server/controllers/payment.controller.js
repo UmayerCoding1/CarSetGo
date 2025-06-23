@@ -105,7 +105,7 @@ export const createCarBookingPayment = async (req, res) => {
 };
 
 export const createCarBuyPayment = async (req, res) => {
-  const { carId, amount, currency } = req.body;
+  const { carId, amount, currency,dealershipId } = req.body;
 
   try {
     const car = await Car.findById(carId);
@@ -153,6 +153,8 @@ export const createCarBuyPayment = async (req, res) => {
         paymentType: "buying",
       });
     }
+
+
 
     res.status(201).json({
       success: true,
@@ -256,7 +258,7 @@ export const handlePaymentSuccess = async (req, res) => {
       });
     }
 
-    console.log("existingPayment");
+    console.log(existingPayment);
     
 
     if (existingPayment.paymentType === "booking") {

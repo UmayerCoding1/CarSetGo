@@ -6,7 +6,7 @@ const router = Router();
 
 router.post("/dealership",verifyUser, createDealership);
 router.get("/dealership/:userId", verifyUser, getDealership);
-router.get("/dealership/:sellerId", verifyUser, verifySeller, getDealershipBySeller);
+router.get("/dealership/seller/:sellerId", verifyUser, verifySeller, getDealershipBySeller);
 router.put("/clear-dealership", verifyUser, clearDealership);
 
 export default router;

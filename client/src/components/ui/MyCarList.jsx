@@ -8,6 +8,7 @@ const MyCarList = ({ dealershipInfo, index }) => {
   const paymentSuccess = new URLSearchParams(window.location.search).get('success');
   const paymentCanceled = new URLSearchParams(window.location.search).get('canceled');
   const tranId = new URLSearchParams(window.location.search).get('session_id');
+  console.log(dealershipInfo._id);
   
   const handleCarBuyPayment = async() => {
    try {
@@ -16,6 +17,7 @@ const MyCarList = ({ dealershipInfo, index }) => {
         carId: dealershipInfo?.carId._id,
         amount: dealershipInfo?.carId?.price,
         currency: "usd",
+        dealershipId: dealershipInfo._id
      })
      
      if(!response.data.success){

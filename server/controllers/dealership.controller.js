@@ -83,9 +83,19 @@ export const clearDealership = async (req,res) => {
 }
 
 export const getDealershipBySeller = async (req, res) => {
-  // const { sellerId } = req.params;
-  console.log("sellerId");
+  const { sellerId } = req.params;
+ 
   
+  const dealership = await Dealership.find({ sellerId })
+    .populate({path: "carId", select: "make model year images price"})
+    .populate({path: "userId", select: "fullname email avatar"});
+  return res
+    .status(200)
+    .json({
+      message: "Dealership fetched successfully",
+      success: true,
+      dealership,
+    });
 };
 
 
