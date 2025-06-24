@@ -84,18 +84,53 @@ export const clearDealership = async (req,res) => {
 
 export const getDealershipBySeller = async (req, res) => {
   const { sellerId } = req.params;
+
  
   
   const dealership = await Dealership.find({ sellerId })
     .populate({path: "carId", select: "make model year images price"})
     .populate({path: "userId", select: "fullname email avatar"});
+
+  const validDealership = dealership.filter((dealership) => dealership.status !== "rejected");
+  
+  
   return res
     .status(200)
     .json({
       message: "Dealership fetched successfully",
       success: true,
-      dealership,
+      validDealership,
     });
 };
+
+
+export const rejectedDealershipRequest = async (req,res) => {
+  try {
+    const {requestId,status} = req.body;
+
+    if (!requestId || !status) {
+      return res.status(400).json({message: 'All credential are requried', success: false});
+    }
+
+    const existRequest = await Dealership.findByIdAndUpdate(
+      requestId,
+      {$set: {
+        "status": status
+      }},
+      {new: true}
+    );
+    if (!existRequest) {
+      return res.status(404).json({message: 'Request not found', success: false});
+    }
+
+    return res.status(200).json({message: 'Request rejected successfully', success: true});
+
+  } catch (error) {
+    console.log(error);
+    
+    return res.status(500).json({message: 'Internal server error'})
+  }
+
+}
 
 
