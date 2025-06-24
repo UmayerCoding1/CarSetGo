@@ -355,7 +355,8 @@ export const analyzeCarImage = async (req, res) => {
     }
 
     const carDetails = await AlAnalyzeCarImage(file);
-
+    
+    
     if(!carDetails.success){
       return res.status(400).json({message: carDetails.error});
     } else {

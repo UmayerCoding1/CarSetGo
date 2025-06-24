@@ -10,7 +10,7 @@ const dealershipSchema = new Schema({
     },
     phone: {type: String, required: true},
     email: {type: String, required: true},
-    status: {type: String, default: 'pending', enum: ['pending', 'approved', 'rejected']},
+    status: {type: String, default: 'pending', enum: ['pending', 'approved', 'rejected', "completed"]},
     userId: {type: Schema.Types.ObjectId, ref: 'User', required: true},
     carId: {type: Schema.Types.ObjectId, ref: 'Car', required: true},
     sellerId: {type: Schema.Types.ObjectId, ref: 'User', required: true},

@@ -2,7 +2,7 @@ import { X } from 'lucide-react';
 import React from 'react';
 import { useState } from 'react';
 
-const DealershipTavleRow = ({requestsData,handleDealearshipRejected}) => {
+const DealershipTavleRow = ({requestsData,handleDealershipStatusChange}) => {
    const [isOpenBuyerDetails, setIsOpenBuyerDetails] = useState(false); 
    const [updateRequestStatus,setUpdateRequestStatus] = useState('');
     console.log( requestsData);
@@ -57,10 +57,10 @@ const DealershipTavleRow = ({requestsData,handleDealearshipRejected}) => {
                     </td>
 
                     <td className='text-center border cursor-pointer'>
-                         <select className='w-full  outline-none  ' name="" id="" value={request.status}
-                          onChange={(e) => setUpdateRequestStatus(e.target.value)}
+                         <select className='w-full  outline-none  ' name="" id="" defaultValue={request.status}
+                          onChange={(e) => handleDealershipStatusChange(request._id,e.target.value)}
                          >
-                          <option value="pending">Pending</option>
+                          <option value="pending" className={`${request.paymentInfo.paymentStatus === 'success' && 'hidden'}`}>Pending</option>
                           <option value="approved">Approved</option>
                          </select>
                     </td>
@@ -68,13 +68,21 @@ const DealershipTavleRow = ({requestsData,handleDealearshipRejected}) => {
                     
                     
                     
-                    <td className="py-2 px-4 text-center">
-                      <button
+                    <td className="py-2 px-4 text-center border">
+                      {
+                        request.status === 'approved' ? <button  onClick={() => handleDealershipStatusChange(request._id, 'completed')} className='px-3 py-1 bg-emerald-500 text-black rounded hover:bg-emerald-600 transition  cursor-pointer'>
+                        <span className="">Completed</span>
+                        </button>
+
+                        :
+                        <button
                         className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition  cursor-pointer"
-                        onClick={() => handleDealearshipRejected(request._id)}
+                        onClick={() => handleDealershipStatusChange(request._id, 'rejected')}
                       >
                         Rejected
                       </button>
+                      }
+                      
                     </td>
 
                      {isOpenBuyerDetails === inx && <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50  bg-white shadow-md border border-gray-300 rounded-lg w-[400px] flex items-center justify-center">
@@ -92,7 +100,7 @@ const DealershipTavleRow = ({requestsData,handleDealearshipRejected}) => {
                                       </div>
                                     <div className='bg-gray-100 p-2 mt-2 rounded-sm'>
                                       <p><span className="font-semibold">Payment Amount:</span> {request?.paymentInfo.paymentAmount ? request?.paymentInfo.paymentAmount : 'Not paid'}</p>
-                                    <p><span className="font-semibold">Payment Date:</span> {request?.paymentInfo.paymentDate ? (new Date(request?.paymentInfo.paymentDate)).toDateString() : 'Not paid'}</p>
+                                    <p><span className="font-semibold">Request Date:</span> {request?.createdAt ? (new Date(request?.createdAt)).toDateString() : 'Not paid'}</p>
                                     </div>
                                   </div>
                                         
