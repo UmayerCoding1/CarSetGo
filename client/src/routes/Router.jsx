@@ -20,6 +20,7 @@ import AllBookings from "../pages/seller/all-bookings/AllBookings";
 import DealershipRequest from "../pages/seller/dealership/delalership-request/DealershipRequest";
 import SehedulMeeting from "../pages/seller/dealership/sehedul-meeting/SehedulMeeting";
 import ReceivedPayment from "../pages/seller/payment/ReceviedPayment";
+import RequestRecord from "../pages/seller/dealership/request-record/RequestRecord";
 const GoogleAuthWrapper = ({ children }) => {
   return (
     <GoogleOAuthProvider clientId={`${import.meta.env.VITE_GOOGLE_CLIENT_ID}`}>
@@ -98,6 +99,10 @@ const router = createBrowserRouter([
       {
         path: '/seller-dashboard/dealership-requests',
         element: <DealershipRequest />
+      },
+      {
+        path:'/seller-dashboard/dealership-requests/record',
+        element: <RequestRecord/>
       },
       {
         path: '/seller-dashboard/schedile-mecting',
