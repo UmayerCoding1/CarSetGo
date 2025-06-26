@@ -1,4 +1,4 @@
-import { Loader2, X } from "lucide-react";
+import { Copy, Loader2, X } from "lucide-react";
 import React, { useState } from "react";
 import CarInformation from "../../ui/car-details/CarInformation";
 import { callPutApis } from "../../../api/api";
@@ -50,6 +50,16 @@ const BookingTable = ({ data, refetchSellerBookings }) => {
             setIsLoading(false);
           }
         };
+
+
+        const handlePaymentIdCopy =  (id) => {
+          if(!id) return;
+
+          navigator.clipboard.writeText(id)
+          .then(() => toast.success('Payment id copy', {duration: 1000}))
+          .catch(() => toast.error('Try agian', {duration: 1000}))
+          
+        }
 
   return (
     <>
@@ -117,8 +127,11 @@ const BookingTable = ({ data, refetchSellerBookings }) => {
                 {pickupLocation}
               </th>
 
-              <th className="font-medium text-sm text-gray-500 border">
-                {paymentId || "N/A"}
+              <th className="font-medium text-sm text-gray-500 border px-2">
+               <div className="flex items-center justify-center gap-4">
+                 <p>{paymentId?.slice(0,20) || "N/A"}</p>
+               {paymentId &&  <Copy onClick={() => handlePaymentIdCopy(paymentId)} size={15} className="text-gray-600 hover:text-black"/>}
+               </div>
               </th>
 
               <th className="font-medium text-sm text-gray-500 border">

@@ -22,11 +22,13 @@ const BookingList = ({ carinfo, sellerinfo, bookinginfo, refetch}) => {
     }
   };
 
+
   const handleCarBookingPayment = async () => {
     try {
       const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
       const response = await secureApi.post("/payment/create-car-booking-payment", {
         bookingId: bookinginfo._id,
+        sellerId:carinfo.seller,
         amount: bookinginfo.totalPrice,
         currency: "usd",
       });

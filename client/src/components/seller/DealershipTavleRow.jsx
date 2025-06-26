@@ -1,4 +1,4 @@
-import { X } from 'lucide-react';
+import { Copy, X } from 'lucide-react';
 import React from 'react';
 import { useState } from 'react';
 
@@ -20,7 +20,13 @@ const DealershipTavleRow = ({requestsData,handleDealershipStatusChange}) => {
                     
 
                     <td className='text-center border'>
-                        <p>{request.paymentInfo.paymentId ? request.paymentInfo.paymentId : 'Not paid'}</p>
+                        <div className='flex items-center justify-center gap-4'>
+                          <p>{request.paymentInfo.paymentId ? request.paymentInfo.paymentId : 'Not paid'}</p>
+
+                          {request.paymentInfo.paymentId &&
+                        <Copy onClick={() => handlePaymentIdCopy(paymentId)} size={15} className="text-gray-600 hover:text-black cursor-pointer"/>
+                          }
+                        </div>
                     </td>
 
 

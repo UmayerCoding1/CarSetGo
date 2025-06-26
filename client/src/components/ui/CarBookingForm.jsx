@@ -176,7 +176,7 @@ const CarBookingForm = ({ carId, userId, sellerId, price }) => {
       duration: Number(formData.duration),
     };
 
-    console.log("bookingData", bookingData);
+    
 
     // Double check for existing bookings before confirming
     const hasExistingBooking = await checkExistingBookings(

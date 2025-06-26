@@ -9,7 +9,7 @@ import Stripe from "stripe";
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 export const createCarBookingPayment = async (req, res) => {
-  const { bookingId, amount, currency } = req.body;
+  const { bookingId, amount, currency,sellerId } = req.body;
 // log
   // Input validation
   if (!bookingId || !amount || !currency) {
@@ -54,6 +54,7 @@ export const createCarBookingPayment = async (req, res) => {
     // STEP 2: Create stripe session
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
+      
       line_items: [
         {
           price_data: {
@@ -81,6 +82,7 @@ export const createCarBookingPayment = async (req, res) => {
       userId: booking.userId,
       bookingId,
       amount,
+      sellerId,
       transactionId: session.id,
       paymentType: "booking",
       status: "pending", // optional but good
@@ -148,6 +150,7 @@ export const createCarBuyPayment = async (req, res) => {
       const payment = await Payment.create({
         userId: req.userId,
         carId,
+        dealershipId,
         amount,
         transactionId: session.id,
         paymentType: "buying",
@@ -380,6 +383,22 @@ export const handlePaymentCancel = async (req, res) => {
     });
   }
 };
+
+
+
+export const getPaymentBySeller = async(req,res) => {
+  try {
+    const sellerId = req.sellerId;
+    if (!sellerId) {
+      return res.status(400).json({message: "This user is not a selller!", success:false})
+    }
+
+
+
+  } catch (error) {
+    return res.status(500).json({message: "Invalid server error", success: false});
+  }
+}
 
 
 
