@@ -27,7 +27,6 @@ export const createCarBookingPayment = async (req, res) => {
   }
 
 
-  console.log("amount", amount);
   
   try {
     const booking = await Booking.findById(bookingId).populate("carId");
@@ -242,7 +241,7 @@ export const createPlanPayment = async (req, res) => {
 export const handlePaymentSuccess = async (req, res) => {
   const { sessionId } = req.body;
   const planName = req.query.planName;
-  console.log(sessionId);
+
 
   if (!sessionId ) {
     return res.status(400).json({
@@ -261,7 +260,7 @@ export const handlePaymentSuccess = async (req, res) => {
       });
     }
 
-    console.log(existingPayment);
+    
     
 
     if (existingPayment.paymentType === "booking") {
@@ -284,7 +283,7 @@ export const handlePaymentSuccess = async (req, res) => {
       }
     }
 
-    if (existingPayment.paymentType === "buying") {
+   else if (existingPayment.paymentType === "buying") {
       const dealership = await Dealership.findOneAndUpdate(
         { carId: existingPayment.carId },
         {
@@ -307,7 +306,7 @@ export const handlePaymentSuccess = async (req, res) => {
     }
 
 
-    if(existingPayment.paymentType === 'plan'){
+   else if(existingPayment.paymentType === 'plan'){
       if(!planName){
         return res.status(400).json({
           success: false,
@@ -315,7 +314,7 @@ export const handlePaymentSuccess = async (req, res) => {
         });
       }
       const plan = await PricingPlan.findOne({name: planName});
-      console.log(plan);
+      
       
       if(!plan){
         return res.status(404).json({message: "This plan is not found", success: false})
@@ -343,6 +342,10 @@ export const handlePaymentSuccess = async (req, res) => {
           message: "Payment success",
         });
       }
+    } 
+
+    else{
+      console.log("Invalid payment type");
     }
   } catch (error) {
     console.log(error);
@@ -393,9 +396,20 @@ export const getPaymentBySeller = async(req,res) => {
       return res.status(400).json({message: "This user is not a selller!", success:false})
     }
 
+  const payments = await Payment.find({sellerId}).populate({
+    path: 'userId',
+    select: '-password -createdAt -isGoogleAccount -isPlanActive -paymentstatus -role -updatedAt -username'
+  });
+  if(!payments) {
+    return res.status(400).json({message: 'Payment not found', success:false})
+  }
 
+
+  return res.status(200).json({message: 'Payment data  successfully fecth', payments, success:true})
+  
 
   } catch (error) {
+    console.log(error);
     return res.status(500).json({message: "Invalid server error", success: false});
   }
 }

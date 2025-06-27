@@ -1,12 +1,20 @@
 import { Copy, X } from 'lucide-react';
 import React from 'react';
 import { useState } from 'react';
-
+import {toast} from 'sonner';
 const DealershipTavleRow = ({requestsData,handleDealershipStatusChange}) => {
    const [isOpenBuyerDetails, setIsOpenBuyerDetails] = useState(false); 
    const [updateRequestStatus,setUpdateRequestStatus] = useState('');
     console.log( requestsData);
     
+
+    const handlePaymentIdCopy = (id) => {
+        if(!id) return;
+
+        navigator.clipboard.writeText(id)
+        .then(() => toast.success('Payment id copy', {duration: 1000}))
+        .catch(() => toast.error('Try agian', {duration: 1000}))
+    }
     return (
 
        <>
@@ -24,7 +32,7 @@ const DealershipTavleRow = ({requestsData,handleDealershipStatusChange}) => {
                           <p>{request.paymentInfo.paymentId ? request.paymentInfo.paymentId : 'Not paid'}</p>
 
                           {request.paymentInfo.paymentId &&
-                        <Copy onClick={() => handlePaymentIdCopy(paymentId)} size={15} className="text-gray-600 hover:text-black cursor-pointer"/>
+                        <Copy onClick={() => handlePaymentIdCopy(request.paymentInfo.paymentId)} size={15} className="text-gray-600 hover:text-black cursor-pointer"/>
                           }
                         </div>
                     </td>
