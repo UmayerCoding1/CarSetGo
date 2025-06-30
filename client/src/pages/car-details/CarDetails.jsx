@@ -45,6 +45,7 @@ const CarDetails = () => {
   });
 
 
+console.log(car);
 
   
 
@@ -113,11 +114,9 @@ const CarDetails = () => {
               <div>
                 <h2 className="font-medium text-lg">{car.seller.fullname}</h2>
                 <p className="text-sm text-gray-600">{car.seller.username}</p>
-                <button className="flex items-center gap-1 text-sm ">
+                <button className={`flex items-center gap-1 text-sm ${car.seller.isPlanActive ? 'text-emerald-600': "text-red-500"}`}>
                   <Shield size={15} />{" "}
-                  {car.seller.paymentstatus === "pending" &&
-                    "Seller is not verified"}{" "}
-                  {car.seller.paymentstatus === "completed" && "Premium Seller"}
+                  {car.seller.isPlanActive  ? "Premium Seller" : "Seller is not verified" }
                 </button>
               </div>
             </div>
