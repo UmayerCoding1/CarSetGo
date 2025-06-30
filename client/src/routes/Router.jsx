@@ -22,6 +22,8 @@ import SehedulMeeting from "../pages/seller/dealership/sehedul-meeting/SehedulMe
 import ReceivedPayment from "../pages/seller/payment/ReceviedPayment";
 import RequestRecord from "../pages/seller/dealership/request-record/RequestRecord";
 import AdminDeshboard from "../pages/admin/AdminDeshboard";
+import AdminOverview from "../components/admin/Overview";
+import AdminRoute from "./AdminRoute";
 const GoogleAuthWrapper = ({ children }) => {
   return (
     <GoogleOAuthProvider clientId={`${import.meta.env.VITE_GOOGLE_CLIENT_ID}`}>
@@ -120,8 +122,14 @@ const router = createBrowserRouter([
 
   // admin desboard route
   {
-    path: '/admin-dashboard',
-    element: <AdminDeshboard />
+    path: '/admin/dashboard',
+    element: <AdminRoute><AdminDeshboard /></AdminRoute>,
+    children: [
+      {
+        path: '/admin/dashboard',
+        element: <AdminOverview />
+      }
+    ]
   },
   {
     path: "/sign-in",

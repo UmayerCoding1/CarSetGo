@@ -6,7 +6,7 @@ const AdminNav = () => {
     <div>
       <div>
         <Link
-          to={"/admin-dashboard"}
+          to={"/admin/dashboard"}
           className="flex items-center gap-2 border px-5 py-2 rounded-lg select-none cursor-pointer"
         >
           <LayoutDashboard strokeWidth={1} />

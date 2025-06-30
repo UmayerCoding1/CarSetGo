@@ -3,14 +3,14 @@ import Loading from '../components/ui/Loading';
 import useAuth from '../hooks/useAuth';
 import { Navigate } from 'react-router-dom';
 
-const SellerRoute = ({children}) => {
+const AdminRoute = ({children}) => {
     const {user,isLoading } = useAuth();        
     
     if(isLoading){
         return <Loading />
     }
 
-    if(user.role === "seller"){
+    if(user.role === "admin"){
         return children;
     }
 
@@ -19,4 +19,4 @@ const SellerRoute = ({children}) => {
     return <Navigate to="/sign-in" />
 };
 
-export default SellerRoute;
+export default AdminRoute;

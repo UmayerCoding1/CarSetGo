@@ -18,31 +18,45 @@ import {
 import React, { useEffect, useState } from "react";
 import { asset } from "../../assets/asser";
 import { motion } from "motion/react";
-import {Link} from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
+import useAuth from "../../hooks/useAuth";
 
 const navLinks = [
-  { label: 'Dashboard', icon: LayoutDashboard, to: '/admin-dashboard' },
-  { label: 'Users', icon: Users, to: '/admin/users' },
-  { label: 'Cars', icon: Car, to: '/admin/cars' },
-  { label: 'Payments', icon: CreditCard, to: '/admin/payments' },
-  { label: 'Messages', icon: MessageCircle, to: '/admin/messages' },
-  { label: 'Analytics', icon: BarChart2, to: '/admin/analytics' },
-  { label: 'Report', icon: ClipboardList, to: '/admin/report' },
-  { label: 'Plan', icon: CalendarClock, to: '/admin/plan' },
-  { label: 'Review', icon: Star, to: '/admin/review' },
-  { label: 'Settings', icon: Settings, to: '/admin/settings' },
+  { label: 'Dashboard', icon: LayoutDashboard, to: '/admin/dashboard' },
+  // { label: 'Users', icon: Users, to: '/admin/users' },
+  // { label: 'Cars', icon: Car, to: '/admin/cars' },
+  // { label: 'Payments', icon: CreditCard, to: '/admin/payments' },
+  // { label: 'Messages', icon: MessageCircle, to: '/admin/messages' },
+  // { label: 'Analytics', icon: BarChart2, to: '/admin/analytics' },
+  // { label: 'Report', icon: ClipboardList, to: '/admin/report' },
+  // { label: 'Plan', icon: CalendarClock, to: '/admin/plan' },
+  // { label: 'Review', icon: Star, to: '/admin/review' },
+  // { label: 'Settings', icon: Settings, to: '/admin/settings' },
 ];
 const Sidebar = () => {
   // Default open on desktop, closed on mobile
   const [isOpen, setIsOpen] = useState(window.innerWidth >= 1024);
   const [activeSellerPath, setActiveSellerPath] = useState("");
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const {logout} = useAuth();
+  const navigate = useNavigate();
+  // const handleDropdownClick = (dropdownName) => {
+  //   setActiveSellerPath(dropdownName);
+  //   sessionStorage.setItem("currentSellerPath", dropdownName);
+  //   if (windowWidth < 1024) setIsOpen(false); // auto close on mobile
+  // };
 
-  const handleDropdownClick = (dropdownName) => {
-    setActiveSellerPath(dropdownName);
-    sessionStorage.setItem("currentSellerPath", dropdownName);
-    if (windowWidth < 1024) setIsOpen(false); // auto close on mobile
-  };
+
+
+  const handleLogout = async () => {
+    logout()
+    .then((res) => {
+        setUser("");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
 
   useEffect(() => {
     const currentPath = sessionStorage.getItem("currentSellerPath");
@@ -118,9 +132,10 @@ const Sidebar = () => {
             <motion.button
               whileTap={{ scale: 0.9 }}
               className="w-full bg-red-500 font-medium cursor-pointer text-sm flex items-center gap-2 justify-center text-white p-2 rounded-lg"
+              onClick={()=>handleLogout()}
             >
               {isOpen ? (
-                <span className="flex items-center gap-2">
+                <span  className="flex items-center gap-2">
                   <LogOut size={18} /> Logout
                 </span>
               ) : (
