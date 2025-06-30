@@ -92,80 +92,74 @@ console.log(isImageSearchActive);
       <div className="relative w-full">
         <form
           onSubmit={handleTextSubmit}
-          className="bg-white w-full md:w-[470px] lg:w-[670px] h-14 rounded-3xl flex items-center justify-between gap-2 mb-2 p-2"
+          className="bg-white w-full md:w-[470px] lg:w-[670px] h-14 rounded-full flex items-center justify-between gap-2 mb-2 p-2 shadow-lg border border-gray-200 transition-all duration-300 focus-within:shadow-2xl"
         >
           <input
             onChange={(e) => setSearchTextValue(e.target.value)}
-            className="h-full w-full text-lg font-medium outline-none pl-1"
+            className="h-full w-full text-lg font-medium outline-none pl-3 bg-transparent placeholder-gray-400 focus:placeholder-gray-300 transition-colors"
             type="text"
-            placeholder="Search your Dream car. Make,model, or use our AI image srarch..."
+            placeholder="Search your dream car: Make, model, or use AI image search..."
           />
 
           <div className="flex items-center h-full gap-2">
             <Camera
               size={32}
               onClick={() => setIsImageSearchActive(!isImageSearchActive)}
-              className={`${
-                isImageSearchActive
-                  ? "bg-black text-white"
-                  : "bg-white text-black"
-              } p-2  rounded-full cursor-pointer`}
+              className={`transition-colors duration-200 p-2 rounded-full cursor-pointer border-2 ${isImageSearchActive ? "bg-black text-white border-black shadow" : "bg-white text-black border-gray-300 hover:bg-gray-100"}`}
+              title="AI Image Search"
             />
-            <motion.button whileTap={{scale: 0.8}} className="bg-black text-white text-sm w-20 h-full rounded-lg cursor-pointer">
+            <motion.button whileTap={{scale: 0.92}} className="bg-black hover:bg-gray-900 text-white text-base w-24 h-full rounded-full cursor-pointer font-semibold shadow transition-colors duration-200">
               Search
             </motion.button>
           </div>
         </form>
 
         {isImageSearchActive && (
-          <div className="w-full  absolute  left-0 ">
+          <div className="w-full absolute left-0 z-20">
             <div
-            className={`bg-white    ${
-              imagePreview ? "h-60" : "h-52"
-            }   rounded-4xl border-2 border-dashed border-black p-2 flex flex-col items-center justify-center w-full`}
-          >
-            <form onSubmit={handleImageSubmit} className="w-full h-full">
-              {imagePreview ? (
-                <div className="flex  flex-col items-center justify-between">
-                  <img
-                    src={imagePreview}
-                    alt="car preview"
-                    loading="lazy"
-                    className="w-64 h-40"
-                  />
-
-                  <div className="flex items-center gap-3">
-                  <motion.button
-                  whileTap={{scale: 0.8}}
-                  onClick={() => {
-                    setIsUploading(false);
-                    setImagePreview(null);
-
-                    toast.info('Image Remove')
-                  }}
-                    type="button"
-                    className="bg-red-500 text-white p-2 mt-2 rounded-lg cursor-pointer"
-                  >
-                    Remove Image
-                  </motion.button>
-
-                  <motion.button onClick={() => handleImageSearch()} whileTap={{scale: 0.8}} type="submit" disabled={isUploading} className="mt-2 p-2 bg-black text-white rounded-lg cursor-pointer">
-                        {searchImageUploadActive 
-                        ? 'Uploding'
-                        : "Search with this Image" //after fecth car by image to add Analyzing image
-                      }
-                   </motion.button>
+              className={`bg-white shadow-2xl ${imagePreview ? "h-60" : "h-52"} rounded-3xl border-2 border-dashed border-gray-300 p-4 flex flex-col items-center justify-center w-full transition-all duration-300`}
+            >
+              <form onSubmit={handleImageSubmit} className="w-full h-full">
+                {imagePreview ? (
+                  <div className="flex flex-col items-center justify-between gap-2">
+                    <img
+                      src={imagePreview}
+                      alt="car preview"
+                      loading="lazy"
+                      className="w-64 h-40 object-cover rounded-xl border border-gray-200 shadow"
+                    />
+                    <div className="flex items-center gap-3 mt-2">
+                      <motion.button
+                        whileTap={{scale: 0.92}}
+                        onClick={() => {
+                          setIsUploading(false);
+                          setImagePreview(null);
+                          toast.info('Image Removed')
+                        }}
+                        type="button"
+                        className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg cursor-pointer font-semibold shadow transition-colors duration-200"
+                      >
+                        Remove Image
+                      </motion.button>
+                      <motion.button
+                        onClick={() => handleImageSearch()}
+                        whileTap={{scale: 0.92}}
+                        type="submit"
+                        disabled={isUploading}
+                        className="px-4 py-2 bg-black hover:bg-gray-900 text-white rounded-lg cursor-pointer font-semibold shadow transition-colors duration-200"
+                      >
+                        {searchImageUploadActive ? 'Uploading...' : "Search with this Image"}
+                      </motion.button>
+                    </div>
                   </div>
-                </div>
-              ) : (
-                <div
-                  {...getRootProps()}
-                  className=" w-full h-full cursor-pointer "
-                >
-                  <input {...getInputProps()} />
-                  <div className="flex flex-col items-center">
+                ) : (
+                  <div
+                    {...getRootProps()}
+                    className="w-full h-full cursor-pointer flex flex-col items-center justify-center transition-all duration-200 hover:bg-gray-50 rounded-2xl"
+                  >
+                    <input {...getInputProps()} />
                     <Upload className="h-12 w-12 text-gray-400 mb-2" />
-                    <p className="text-gray-500 mb-2">
+                    <p className="text-gray-500 mb-2 font-medium">
                       {isDragActive && !isDragReject
                         ? "Leave the file here to upload"
                         : "Drag & drop a car image or click to select"}
@@ -177,16 +171,10 @@ console.log(isImageSearchActive);
                       Supports: JPG, PNG (max 5MB)
                     </p>
                   </div>
-                </div>
-              )}
-            </form>
-            
+                )}
+              </form>
+            </div>
           </div>
-
-         
-          
-          </div>
-                
         )}
       </div>
     </div>
