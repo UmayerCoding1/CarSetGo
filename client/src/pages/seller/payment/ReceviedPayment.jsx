@@ -36,7 +36,7 @@ const ReceviedPayment = () => {
             </div>
 
             <div>
-                <Table thValue={["TransactionId","payment type","buyer info","amount","date"]}>
+                <Table thValue={["TransactionId","payment type","buyer & product info","amount","date"]}>
                      <PaymentTableRow  
                       paymenstData={payments}
                      />
