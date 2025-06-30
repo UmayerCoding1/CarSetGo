@@ -4,35 +4,49 @@ import LineChart from "./LineChart";
 import PeiChart from "./PeiChart";
 import useAuth from "../../hooks/useAuth";
 import AiFeature from "./ai-features/AiFeature";
-
+import {useQuery} from '@tanstack/react-query'
+import { callGetApis } from "../../api/api";
 const Overview = () => {
   const {user} = useAuth();
   const [showAiModal, setShowAiModal] = useState(false);
+
+  const {data: sellerAnalyticsInformation = [] } = useQuery({
+    queryKey: 'sellerAnalyticsInformation',
+    queryFn: async () => {
+      const response = await callGetApis('/analytics/seller');
+      if (response.success) {
+        return response
+      }
+      else{
+        return [];
+      }
+    }
+  })
   
   const sellerAllInfo = [
     {
       label: "Total Cars",
-      count: 2,
+      count: sellerAnalyticsInformation?.totalCar,
       icon: Car,
       description: "Total number of cars in your inventory",
     },
     {
       label: "Active Booking",
-      count: 10,
+      count: sellerAnalyticsInformation?.activeBookings,
       icon: Calendar,
       description: "Total number of active bookings",
     },
     {
       label: "Total Revenue",
-      count: 150000,
+      count: `$ ${sellerAnalyticsInformation?.totalRevenue}`,
       icon: CreditCard,
       description: "Total revenue generated",
     },
     {
-      label: "Total Customers",
-      count: 100,
-      icon: Users,
-      description: "Total number of customers",
+      label: "Total Sells Cars",
+      count: sellerAnalyticsInformation?.totalCarSells,
+      icon: Car,
+      description: "Total number of cars sold",
     },
   ];
   return (
@@ -47,22 +61,22 @@ const Overview = () => {
             >
               <div className="flex-1">
                 <h3 className="text-base sm:text-lg font-semibold text-gray-600 group-hover:text-black transition-colors">
-                  {section.label}
+                  {section?.label}
                 </h3>
                 <p className="text-2xl sm:text-3xl font-extrabold text-gray-900 group-hover:text-blue-600 transition-colors">
-                  {section.count.toLocaleString("en-BD")}
+                  {section?.count}
                 </p>
                 <p className="text-xs sm:text-sm text-gray-500 line-clamp-2 mt-1">
-                  {section.description}
+                  {section?.description}
                 </p>
               </div>
               <section.icon
                 size={32}
                 className={`rounded-full p-2 shadow-lg border-2 border-white text-white group-hover:scale-110 transition-transform
-                  ${section.label === "Total Cars" && "bg-blue-500"}
-                  ${section.label === "Active Booking" && "bg-green-500"}
-                  ${section.label === "Total Revenue" && "bg-yellow-500"}
-                  ${section.label === "Total Customers" && "bg-red-500"}
+                  ${section?.label === "Total Cars" && "bg-blue-500"}
+                  ${section?.label === "Active Booking" && "bg-green-500"}
+                  ${section?.label === "Total Revenue" && "bg-yellow-500"}
+                  ${section?.label === "Total Sells Cars" && "bg-red-500"}
                 `}
               />
             </div>
@@ -102,7 +116,7 @@ const Overview = () => {
             </div>
             <div className="w-full h-px bg-gradient-to-r from-blue-400/30 via-gray-300/30 to-transparent mb-3"></div>
             <p className="font-semibold text-base text-gray-800">
-              Total review in this month: <span className="text-blue-500 font-bold">120</span>
+              Total review : <span className="text-blue-500 font-bold">{sellerAnalyticsInformation?.totalReviews}</span>
             </p>
           </div>
 
