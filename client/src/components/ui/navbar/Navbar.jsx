@@ -152,51 +152,48 @@ const Navbar = () => {
                 {isOpenUserMenage && (
                   <div
                     ref={userManageRef}
-                    className="absolute w- lg:w-[300px]  top-[52px] shadow-primary rounded-lg  bg-white -right-2  lg:right-0 p-2"
+                    className="absolute w-full lg:w-[320px] top-[52px] shadow-2xl border border-gray-200 rounded-2xl bg-white -right-2 lg:right-0 p-4 z-50 animate-fade-in-up"
                   >
-                    <div className="border-b border-gray-400">
-                      <div className="flex  gap-3">
-                        <img
-                          className="w-10  h-10 rounded-full "
-                          src={user?.avatar}
-                          alt="avatar"
-                          loading="lazy"
-                        />
-                        <div>
-                          <h2 className="font-medium text-lg">
-                            {user?.fullname}
-                          </h2>
-                          <p className="text-sm text-gray-600">{user?.email}</p>
-
-                          <div className="flex items-center gap-2 my-3 ">
-                            <label className="flex items-center justify-center gap-2 shadow border border-gray-300 px-2 py-1 rounded-lg text-sm cursor-pointer w-40">
-                              <Plus size={15} />
-                              <p>Update avatar</p>
-                              <input
-                                type="file"
-                                accept="image/*"
-                                className="hidden"
-                                onChange={handleUpdateAvatar}
-                              />
-                            </label>
-
-                            <div
-                              onClick={handleLogout}
-                              className="flex items-center justify-center gap-2 shadow border border-gray-300 px-2 py-1 rounded-lg text-sm cursor-pointer w-40"
-                            >
-                              <LogOut size={15} />
-                              <p>Sign out</p>
-                            </div>
-                          </div>
-                        </div>
+                    <div className="border-b border-gray-200 pb-3 mb-3 flex gap-3 items-center">
+                      <img
+                        className="w-12 h-12 rounded-full border-2 border-blue-400 shadow"
+                        src={user?.avatar}
+                        alt="avatar"
+                        loading="lazy"
+                      />
+                      <div>
+                        <h2 className="font-semibold text-lg text-gray-800">{user?.fullname}</h2>
+                        <p className="text-sm text-gray-500">{user?.email}</p>
                       </div>
                     </div>
-
-                    <Link to={`/my-cars/${user?._id}`} onClick={() => setIsOpenUserMenage(false)} className=" flex items-center gap-3 shadow my-3 p-3 border border-gray-300 rounded-lg cursor-pointer">
+                    <div className="flex flex-col gap-2">
+                      <label className="flex items-center gap-2 bg-gray-100 border border-gray-200 px-3 py-2 rounded-lg text-sm cursor-pointer hover:bg-gray-200 transition-colors">
+                        <Plus size={15} />
+                        <span>Update avatar</span>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={handleUpdateAvatar}
+                        />
+                      </label>
+                      <div
+                        onClick={handleLogout}
+                        className="flex items-center gap-2 bg-red-100 border border-red-200 px-3 py-2 rounded-lg text-sm cursor-pointer hover:bg-red-200 transition-colors"
+                      >
+                        <LogOut size={15} />
+                        <span>Sign out</span>
+                      </div>
+                    </div>
+                    <div className="w-full h-px bg-gradient-to-r from-blue-400/30 via-gray-300/30 to-transparent my-3"></div>
+                    <Link
+                      to={`/my-cars/${user?._id}`}
+                      onClick={() => setIsOpenUserMenage(false)}
+                      className="flex items-center gap-3 my-2 p-3 rounded-lg cursor-pointer hover:bg-blue-50 transition-colors font-medium text-sm"
+                    >
                       <Car size={18} />
-                      <p className="font-medium text-sm">My cars</p>
+                      <span>My cars</span>
                     </Link>
-
                     {user?.role === "user" && (
                       <div
                         onClick={() => {
@@ -204,25 +201,27 @@ const Navbar = () => {
                           setIsOpenRequestForSeller(true);
                           setIsOpenUserMenage(false);
                         }}
-                        className=" flex items-center gap-3 shadow my-3 p-3 border border-gray-300 rounded-lg cursor-pointer"
+                        className="flex items-center gap-3 my-2 p-3 rounded-lg cursor-pointer hover:bg-blue-50 transition-colors font-medium text-sm"
                       >
                         <Handshake size={18} />
-                        <p className="font-medium text-sm">
-                          Request for seller
-                        </p>
+                        <span>Request for seller</span>
                       </div>
                     )}
-
                     {user?.role === "seller" && (
-                      <div onClick={() => setIsOpenUserMenage(false)} className=" flex items-center gap-3 shadow my-3 p-3 border border-gray-300 rounded-lg cursor-pointer">
+                      <div
+                        onClick={() => setIsOpenUserMenage(false)}
+                        className="flex items-center gap-3 my-2 p-3 rounded-lg cursor-pointer hover:bg-blue-50 transition-colors font-medium text-sm"
+                      >
                         <MessageCircle size={18} />
-                        <p className="font-medium text-sm">Message </p>
+                        <span>Message</span>
                       </div>
                     )}
-
-                    <div onClick={() => setIsOpenUserMenage(false)} className=" flex items-center gap-3 shadow my-3 p-3 border border-gray-300 rounded-lg cursor-pointer">
+                    <div
+                      onClick={() => setIsOpenUserMenage(false)}
+                      className="flex items-center gap-3 my-2 p-3 rounded-lg cursor-pointer hover:bg-blue-50 transition-colors font-medium text-sm"
+                    >
                       <Info size={18} />
-                      <p className="font-medium text-sm">About Us</p>
+                      <span>About Us</span>
                     </div>
                   </div>
                 )}
@@ -241,41 +240,40 @@ const Navbar = () => {
       </motion.header>
 
       {isOpenRequestForSeller && (
-        <div className="absolute  top-0 left-0 w-full h-screen bg-black/70 z-50 flex items-center justify-center">
-          <div className="w-[500px]  bg-white rounded-lg p-3 ">
-            <div className="flex items-center justify-between">
-              <h2 className="text-center text-2xl font-bold">
-                Request for seller
-              </h2>
-
-              <div onClick={() => {
-                document.body.style.overflow = 'auto';
-                setIsOpenRequestForSeller(false)
-              }} className="flex items-center justify-center gap-1 text-sm font-medium cursor-pointer">
-                <X size={18} />
-                
-              </div>
+        <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center">
+          <div className="w-full max-w-md bg-gradient-to-br from-white via-gray-50 to-gray-100 rounded-2xl p-6 shadow-2xl border border-gray-200 relative">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-2xl font-bold text-gray-800">Request for seller</h2>
+              <button
+                onClick={() => {
+                  document.body.style.overflow = 'auto';
+                  setIsOpenRequestForSeller(false);
+                }}
+                className="flex items-center justify-center gap-1 text-lg font-medium cursor-pointer hover:text-red-500 transition-colors"
+                aria-label="Close"
+              >
+                <X size={20} />
+              </button>
             </div>
-
             <form onSubmit={handleRequestForSeller}>
-              <div className="my-3">
-                <label htmlFor="reason" className="text-sm font-medium">
+              <div className="mb-4">
+                <label htmlFor="reason" className="text-sm font-semibold text-gray-700 mb-1 block">
                   Reason
                 </label>
                 <textarea
                   name="reason"
                   id="reason"
-                  className="w-full h-20 border border-gray-300 rounded-lg p-2 resize-none outline-none"
-                  placeholder="Reason"
+                  className="w-full h-24 border border-gray-300 rounded-lg p-3 resize-none outline-none focus:ring-2 focus:ring-blue-400 transition-all"
+                  placeholder="Why do you want to become a seller?"
+                  required
                 ></textarea>
-
-                <button
-                  type="submit"
-                  className="bg-black text-white px-4 py-2 font-semibold rounded-lg text-sm cursor-pointer my-3"
-                >
-                  Submit
-                </button>
               </div>
+              <button
+                type="submit"
+                className="w-full bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 text-white px-4 py-2 font-semibold rounded-lg text-base cursor-pointer shadow transition-all duration-200"
+              >
+                Submit
+              </button>
             </form>
           </div>
         </div>

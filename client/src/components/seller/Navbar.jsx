@@ -50,11 +50,11 @@ const Navbar = () => {
       }
     }, []);
   return (
-    <div className="w-full h-16 bg-white shadow-lg border-b border-gray-200 flex items-center justify-between px-4">
+    <div className="w-full h-16 bg-gradient-to-r from-white via-gray-50 to-gray-100 shadow-xl border-b border-gray-200 flex items-center justify-between px-4">
       <div>
         <Link
           to="/"
-          className="flex items-center gap-2 bg-black  text-white p-2 rounded-lg font-medium"
+          className="flex items-center gap-2 bg-black hover:bg-gray-900 text-white p-2 rounded-xl font-semibold shadow transition-colors duration-200"
         >
           <Home size={20} /> <span className="hidden lg:block">Back to app</span>
         </Link>
@@ -63,94 +63,87 @@ const Navbar = () => {
       <div>
         {/* desktop */}
         <div className="flex items-center gap-4">
-          {user?.isPlanActive && <div className="flex items-center gap-2">
-            <span className="font-card text-xs font-semibold  bg-amber-200 p-2 rounded-lg">{user?.plan} plan</span>
-
-           
-          </div>}
+          {user?.isPlanActive && (
+            <div className="flex items-center gap-2">
+              <span className="font-card text-xs font-semibold bg-gradient-to-r from-yellow-200 via-yellow-300 to-yellow-400 px-3 py-1 rounded-full shadow border border-yellow-300 uppercase tracking-wide">
+                {user?.plan} plan
+              </span>
+            </div>
+          )}
           <div>
-            
-            <div className="relative flex items-center justify-center w-10 h-10 bg-gray-200 rounded-lg cursor-pointer">
-            
-              <MessageCircle size={20} />
-              <span className="absolute top-0 right-0 w-4 h-4 text-xs text-white flex items-center justify-center bg-red-500 rounded-full">
+            <div className="relative flex items-center justify-center w-10 h-10 bg-gray-200 rounded-xl cursor-pointer shadow hover:shadow-lg transition-shadow">
+              <MessageCircle size={20} className="text-gray-700 group-hover:text-blue-500 transition-colors" />
+              <span className="absolute -top-1 -right-1 w-5 h-5 text-xs text-white flex items-center justify-center bg-gradient-to-br from-red-500 via-pink-500 to-orange-500 rounded-full font-bold shadow border-2 border-white animate-bounce">
                 2
               </span>
             </div>
           </div>
 
-          <div className="flex items-center gap-2 bg-gray-100 rounded-lg px-4 py-1">
+          <div className="flex items-center gap-2 bg-gray-100 rounded-xl px-4 py-1 shadow border border-gray-200">
             <div
               onClick={() => setIsOpeUserMenu(!isOpeUserMenu)}
-              className="relative cursor-pointer"
+              className="relative cursor-pointer hover:scale-105 transition-transform"
             >
               {user.avatar ? (
                 <img
                   src={user.avatar}
                   alt="user"
-                  className="w-8 h-8 rounded-full"
+                  className="w-8 h-8 rounded-full border-2 border-blue-400 shadow"
                 />
               ) : (
                 <User size={20} />
               )}
-              <span className="absolute top-0 right-0 w-2 h-2 bg-green-500 rounded-full"></span>
+              <span className="absolute top-0 right-0 w-2 h-2 bg-green-500 border-2 border-white rounded-full"></span>
             </div>
 
             {isOpeUserMenu && (
-              <div className="w-full lg:w-[300px] bg-white absolute left-0 lg:left-auto lg:right-2 top-[48px]  shadow-mg border border-gray-300">
-                <div className=" shadow-primary rounded-lg bg-white right-0 p-2">
-                  <div className="border-b border-gray-400">
-                    <div className="flex  gap-3">
-                      <img
-                        className="w-10  h-10 rounded-full "
-                        src={user?.avatar}
-                        alt="avatar"
-                        loading="lazy"
-                      />
-                      <div>
-                        <h2 className="font-medium text-lg">
-                          {user?.fullname}
-                        </h2>
-                        <p className="text-sm text-gray-600">{user?.email}</p>
-
-                        <div className="flex items-center gap-2 my-3 ">
-                          <label className="flex items-center justify-center gap-2 shadow border border-gray-300 px-2 py-1 rounded-lg text-sm cursor-pointer w-40">
-                            <Plus size={15} />
-                            <p>Update avatar</p>
-                            <input
-                              type="file"
-                              accept="image/*"
-                              className="hidden"
-                              // onChange={handleUpdateAvatar}
-                            />
-                          </label>
-
-                          <div
-                            onClick={handleLogout}
-                            className="flex items-center justify-center gap-2 shadow border border-gray-300 px-2 py-1 rounded-lg text-sm cursor-pointer w-40"
-                          >
-                            <LogOut size={15} />
-                            <p>Sign out</p>
-                          </div>
-                        </div>
-                      </div>
+              <div className="w-full lg:w-[320px] bg-white absolute left-0 lg:left-auto lg:right-2 top-[56px] shadow-2xl border border-gray-200 rounded-2xl z-50 animate-fade-in-up">
+                <div className="rounded-2xl bg-white p-4">
+                  <div className="border-b border-gray-200 pb-3 mb-3 flex gap-3 items-center">
+                    <img
+                      className="w-12 h-12 rounded-full border-2 border-blue-400 shadow"
+                      src={user?.avatar}
+                      alt="avatar"
+                      loading="lazy"
+                    />
+                    <div>
+                      <h2 className="font-semibold text-lg text-gray-800">{user?.fullname}</h2>
+                      <p className="text-sm text-gray-500">{user?.email}</p>
                     </div>
                   </div>
-
-                  <div className=" flex items-center gap-3 shadow my-3 p-3 border border-gray-300 rounded-lg cursor-pointer">
+                  <div className="flex flex-col gap-2">
+                    <label className="flex items-center gap-2 bg-gray-100 border border-gray-200 px-3 py-2 rounded-lg text-sm cursor-pointer hover:bg-gray-200 transition-colors">
+                      <Plus size={15} />
+                      <span>Update avatar</span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        // onChange={handleUpdateAvatar}
+                      />
+                    </label>
+                    <div
+                      onClick={handleLogout}
+                      className="flex items-center gap-2 bg-red-100 border border-red-200 px-3 py-2 rounded-lg text-sm cursor-pointer hover:bg-red-200 transition-colors"
+                    >
+                      <LogOut size={15} />
+                      <span>Sign out</span>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3 bg-gray-50 border border-gray-200 rounded-lg p-3 mt-4 cursor-pointer hover:bg-gray-100 transition-colors">
                     <Info size={18} />
-                    <p className="font-medium text-sm">About Us</p>
+                    <span className="font-medium text-sm">About Us</span>
                   </div>
                 </div>
               </div>
             )}
 
-            <div>
-              <h2 className="text-lg font-medium">{user?.fullname}</h2>
+            <div className="ml-2">
+              <h2 className="text-lg font-semibold text-gray-800">{user?.fullname}</h2>
               <p
-                className={`${
+                className={`text-xs font-semibold ${
                   isSellerBadge === "free" ? "text-red-500" : "text-green-500"
-                } text-xs `}
+                }`}
               >
                 {isSellerBadge === "free" ? "Not verified" : "Verified"}
               </p>
@@ -163,11 +156,12 @@ const Navbar = () => {
               <Menu size={20} onClick={() => setIsOpenSidebar(!isOpenSidebar)} />
             </div>
 
-            {isOpenSidebar && <div className="absolute top-0   left-0 w-full h-full bg-white shadow-lg border-b border-gray-200">
-                <div className="flex items-center justify-end p-4">
-                    <X size={20} onClick={() => setIsOpenSidebar(false)} />
-                </div>
-                <ul className="w-full space-y-3">
+            {isOpenSidebar && <div className="fixed inset-0 z-50 bg-black/40 flex">
+                <div className="w-80 max-w-full h-full bg-gradient-to-b from-white via-gray-50 to-gray-100 shadow-2xl border-r border-gray-200 flex flex-col">
+                  <div className="flex items-center justify-end p-4">
+                    <X size={24} className="cursor-pointer hover:text-red-500 transition-colors" onClick={() => setIsOpenSidebar(false)} />
+                  </div>
+                  <ul className="w-full space-y-3 px-4">
                           {/* Dashboard Link */}
                           <motion.li whileTap={{ scale: 0.9 }} className="w-full">
                             <NavLink
@@ -259,6 +253,7 @@ const Navbar = () => {
                             </NavLink>
                           </motion.li>
                         </ul>
+                </div>
             </div>}
           </div>
         </div>

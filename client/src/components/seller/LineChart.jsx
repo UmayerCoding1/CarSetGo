@@ -26,20 +26,6 @@ const LineChart = () => {
     const [selectedMonth,setSelectedMonth] =useState(new Date().toLocaleString('default', { month: 'long' }));
    
    
-//   const getCurrentMonth = () => {
-//     const months = [
-//       'January', 'February', 'March', 'April', 'May', 'June',
-//       'July', 'August', 'September', 'October', 'November', 'December'
-//     ];
-//     const currentMonth = months[new Date().getMonth()];
-//     return currentMonth;
-//   };
-
-  
-
-//   useEffect(() => {
-//     setSelectedMonth(getCurrentMonth());
-//   }, []);
   useEffect(() => {
     initChart();
     window.addEventListener('resize', handleResize);
@@ -175,64 +161,63 @@ const LineChart = () => {
   };
 
   return (
-    <div className="w-full block   max-w-5xl bg-white p-8 rounded-xl shadow-lg relative ">
-      <div className='flex items-center  justify-between'>
-         <h1 className="text-2xl font-bold text-center text-slate-800 mb-2">Monthly Sales & Bookings</h1>
-
-        <div className="flex justify-end mb-4">
-        <select 
-          className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          onChange={(e) => setSelectedMonth(e.target.value)}
-          value={selectedMonth}
+    <div className="w-full block max-w-5xl bg-gradient-to-br from-white via-gray-50 to-gray-100 p-8 rounded-2xl shadow-2xl border border-gray-200 relative">
+      <div className='flex flex-col sm:flex-row items-center justify-between mb-2'>
+        <h1 className="text-2xl font-extrabold text-slate-800 mb-2 sm:mb-0 tracking-tight">Monthly Sales & Bookings</h1>
+        <div className="flex justify-end">
+          <select 
+            className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white shadow-sm"
+            onChange={(e) => setSelectedMonth(e.target.value)}
+            value={selectedMonth}
+          >
+            <option value={selectedMonth}>{selectedMonth}</option>
+            <option value="January">January</option>
+            <option value="February">February</option>
+            <option value="March">March</option>
+            <option value="April">April</option>
+            <option value="May">May</option>
+            <option value="June">June</option>
+            <option value="July">July</option>
+            <option value="August">August</option>
+            <option value="September">September</option>
+            <option value="October">October</option>
+            <option value="November">November</option>
+            <option value="December">December</option>
+          </select>
+        </div>
+      </div>
+      <div className="w-full h-px bg-gradient-to-r from-blue-400/30 via-gray-300/30 to-transparent mb-6"></div>
+      <div className="relative w-full mb-5 bg-white rounded-xl shadow-lg border border-gray-100 p-2">
+        <svg
+          id="lineChart"
+          width="100%"
+          height="100%"
+          style={{ backgroundColor: 'white', borderRadius: '12px' }}
         >
-          <option value={selectedMonth}>{selectedMonth}</option>
-          <option value="January">January</option>
-          <option value="February">February</option>
-          <option value="March">March</option>
-          <option value="April">April</option>
-          <option value="May">May</option>
-          <option value="June">June</option>
-          <option value="July">July</option>
-          <option value="August">August</option>
-          <option value="September">September</option>
-          <option value="October">October</option>
-          <option value="November">November</option>
-          <option value="December">December</option>
-        </select>
+          <g className="grid-lines"></g>
+          <g className="lines"></g>
+          <g className="points"></g>
+          <g className="labels"></g>
+        </svg>
       </div>
-    </div>
-      <div className="relative w-full  mb-5 bg-white rounded-xl">
-
-      <svg
-  id="lineChart"
-  width="100%"
-  height="100%"
-  style={{ backgroundColor: 'white', borderRadius: '12px' }}
->
-  <g className="grid-lines"></g>
-  <g className="lines"></g>
-  <g className="points"></g>
-  <g className="labels"></g>
-</svg>
-
-      </div>
-      <div className="flex justify-center flex-wrap gap-5 mt-6">
+      <div className="flex justify-center flex-wrap gap-6 mt-6">
         {data.datasets.map((d, i) => (
           <div
             key={i}
-            className="legend-item flex items-center gap-2 cursor-pointer transition-opacity hover:opacity-80"
+            className="legend-item flex items-center gap-2 cursor-pointer px-4 py-2 rounded-full bg-white shadow border border-gray-200 hover:bg-blue-50 transition-all duration-200"
           >
             <span
-              className="w-4 h-4 rounded"
+              className="w-4 h-4 rounded-full border border-gray-300 shadow"
               style={{ backgroundColor: d.color }}
             ></span>
-            <span className="text-sm text-slate-700">{d.name}</span>
+            <span className="text-sm font-semibold text-slate-700">{d.name}</span>
           </div>
         ))}
       </div>
       <div
         id="tooltip"
-        className="tooltip absolute bg-slate-700 text-white px-3 py-1.5 rounded text-sm pointer-events-none opacity-0 transition-opacity z-50"
+        className="tooltip absolute bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-semibold pointer-events-none opacity-0 transition-opacity z-50 shadow-lg border border-blue-400"
+        style={{ minWidth: '120px', textAlign: 'center' }}
       ></div>
     </div>
   );
