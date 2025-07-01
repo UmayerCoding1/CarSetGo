@@ -23,7 +23,10 @@ import PeiChart from "./PeiChart";
 import FavaritUserAndSeller from "./FavaritUserAndSeller";
 import TopCars from "./TopCars";
 import TopSellers from "./TopSellers";
-
+import TotalBookingSection from "./TotalBookingSection";
+import PlatformUsage from "./PlatformUsage";
+import LowPerformingSellers from "./LowPerformingSellers";
+import '../../../public/css/admin/overview.css'
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -97,6 +100,49 @@ const userPieData = {
   ],
 };
 
+
+const demoSellers = [
+  {
+    _id: "1",
+    name: "John Doe",
+    reviewCount: 2,
+    reviewScore: 2.5,
+    bookingCount: 0,
+    lastActivity: new Date(Date.now() - 86400000 * 10).toISOString(),
+  },
+  {
+    _id: "2",
+    name: "Jane Smith",
+    reviewCount: 5,
+    reviewScore: 2.2,
+    bookingCount: 1,
+    lastActivity: new Date(Date.now() - 86400000 * 30).toISOString(),
+  },
+  {
+    _id: "3",
+    name: "Alex Lee",
+    reviewCount: 0,
+    reviewScore: undefined,
+    bookingCount: 0,
+    lastActivity: null,
+  },
+  {
+    _id: "4",
+    name: "Maria Garcia",
+    reviewCount: 1,
+    reviewScore: 1.8,
+    bookingCount: 0,
+    lastActivity: new Date(Date.now() - 86400000 * 5).toISOString(),
+  },
+  {
+    _id: "5",
+    name: "Liam Wong",
+    reviewCount: 3,
+    reviewScore: 2.0,
+    bookingCount: 2,
+    lastActivity: new Date(Date.now() - 86400000 * 20).toISOString(),
+  },
+];
 const AdminOverview = () => {
   return (
     <div className="w-full min-h-[80vh] max-h-screen p-4 md:p-8 bg-gray-50 overflow-x-hidden overflow-y-auto scrollbar-hide">
@@ -109,9 +155,17 @@ const AdminOverview = () => {
           <FavaritUserAndSeller userData={''}/>
           <TopCars topCarsData={''}/>
           <TopSellers sellersData={''}/>
+          <TotalBookingSection />
+         
         </div>
 
-        <div>
+
+        <div className="flex-1">
+          <div className="mb-8 flex gap-2 w-full h-[200px]">
+             <PlatformUsage />
+             <LowPerformingSellers sellers={demoSellers} />
+
+          </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
             {stats.map(({ label, value, icon: Icon, color }) => (
               <div
@@ -141,6 +195,10 @@ const AdminOverview = () => {
             <PeiChart userPieData={userPieData} />
           </div>
         </div>
+      </div>
+
+      <div className="h-20">
+
       </div>
     </div>
   );

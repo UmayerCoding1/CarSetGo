@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Banner from '../../components/ui/Banner';
 import CarCategories from '../../components/ui/car-categories/CarCategories';
@@ -7,13 +7,21 @@ import FAQSSection from '../../components/ui/FAQSSection';
 import FeaturesSection from '../../components/ui/FeaturesSection';
 import AboutUs from '../../components/ui/AboutUs';
 import Testimonial from '../../components/ui/Testimonial';
+import { trackPlatform } from '../../utils/trackPlatform';
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 40 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.6 } }
 };
 
+
 const Home = () => {
+  
+
+
+  useEffect(() => {
+    trackPlatform();
+  },[])
   return (
     <div>
       <motion.div

@@ -55,29 +55,29 @@ const handleClick = () => {
  },[homePath]);
 
 
- if (!isChrome) {
-    return (
-       <div style={{ textAlign: "center", marginTop: "50px" }}>
-        <h1>This website only works on <span style={{ color: "#4285F4" }}>Google Chrome</span>.</h1>
-        <p>
-          Please open in{" "}
-          <a
-            href="https://www.google.com/chrome/"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Google Chrome
-          </a>
-          .
-        </p>
+//  if (!isChrome) {
+//     return (
+//        <div style={{ textAlign: "center", marginTop: "50px" }}>
+//         <h1>This website only works on <span style={{ color: "#4285F4" }}>Google Chrome</span>.</h1>
+//         <p>
+//           Please open in{" "}
+//           <a
+//             href="https://www.google.com/chrome/"
+//             target="_blank"
+//             rel="noreferrer"
+//           >
+//             Google Chrome
+//           </a>
+//           .
+//         </p>
 
 
-        <div className='flex items-center justify-center h-60'>
-          <h2 className='text-3xl text-orange-400'>A version for this browser ({browserName}) is coming very soon!</h2>
-        </div>
-      </div>
-    );
-  }
+//         <div className='flex items-center justify-center h-60'>
+//           <h2 className='text-3xl text-orange-400'>A version for this browser ({browserName}) is coming very soon!</h2>
+//         </div>
+//       </div>
+//     );
+//   }
  
     return (
         <div className='font-IBM bg-white text-black'>
