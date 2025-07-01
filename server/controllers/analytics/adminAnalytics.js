@@ -5,7 +5,19 @@ export const getAdminAnalyticsState = async (req, res) => {
   if(!isAdmin) return res.status(403).json({ message: "Access denied. Admins only." });
 
 
-  
+   try {
+
+    // find total use platform
+    const platforms = await TrackPlatform.find();
+    const web = platforms.filter(platform => platform.platform === 'Web');
+    const mobile = platforms.filter(platform => platform.platform === 'Mobile');
+    const teackPlatformData = {web: web.length, mobile: mobile.length};
+
+    
+    
+   } catch (error) {
+    res.status(500).json({ message: "Internal server error", success: false });
+   }
   
 };
 
