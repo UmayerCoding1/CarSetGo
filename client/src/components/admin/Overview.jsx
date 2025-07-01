@@ -38,44 +38,7 @@ ChartJS.register(
   Legend
 );
 
-const stats = [
-  {
-    label: "Total Users",
-    value: 1240,
-    icon: Users,
-    color: "bg-blue-100 text-blue-700",
-  },
-  {
-    label: "Total Cars",
-    value: 320,
-    icon: Car,
-    color: "bg-green-100 text-green-700",
-  },
-  {
-    label: "Payments",
-    value: "$54,200",
-    icon: CreditCard,
-    color: "bg-yellow-100 text-yellow-700",
-  },
-  {
-    label: "Messages",
-    value: 87,
-    icon: MessageCircle,
-    color: "bg-purple-100 text-purple-700",
-  },
-  {
-    label: "Reviews",
-    value: 210,
-    icon: Star,
-    color: "bg-pink-100 text-pink-700",
-  },
-  {
-    label: "Reports",
-    value: 12,
-    icon: ClipboardList,
-    color: "bg-red-100 text-red-700",
-  },
-];
+
 
 // Example data for charts
 const revenueData = {
@@ -146,13 +109,54 @@ const demoSellers = [
   },
 ];
 const AdminOverview = () => {
-  const {data: adminAnalytics} = useQuery({
+  const {data: adminAnalytics = {}} = useQuery({
     queryKey: ['adminAnalytics'],
     queryFn: async () => {
      const response = await callGetApis('/analytics/admin');
-     return response
+     return response;
     }
   });
+
+  const {platform,totalUser,totalBooking,totalCars,totalReport,totalReview} = adminAnalytics; 
+  const stats = [
+  {
+    label: "Total Users",
+    value: totalUser,
+    icon: Users,
+    color: "bg-blue-100 text-blue-700",
+  },
+  {
+    label: "Total Cars",
+    value: totalCars,
+    icon: Car,
+    color: "bg-green-100 text-green-700",
+  },
+  {
+    label: "Payments",
+    value: "$54,200",
+    icon: CreditCard,
+    color: "bg-yellow-100 text-yellow-700",
+  },
+  {
+    label: "Bookings",
+    value: totalBooking,
+    icon: ClipboardList,
+    color: "bg-purple-100 text-purple-700",
+  },
+  {
+    label: "Reviews",
+    value: totalReview,
+    icon: Star,
+    color: "bg-pink-100 text-pink-700",
+  },
+  {
+    label: "Reports",
+    value: totalReport,
+    icon: ClipboardList,
+    color: "bg-red-100 text-red-700",
+  },
+];;
+   
   return (
     <div className="w-full min-h-[80vh] max-h-screen p-4 md:p-8 bg-gray-50 overflow-x-hidden overflow-y-auto scrollbar-hide">
       <h1 className="text-2xl md:text-3xl font-bold mb-6 text-blue-900 flex items-center gap-2">
@@ -171,7 +175,7 @@ const AdminOverview = () => {
 
         <div className="flex-1">
           <div className="mb-8 flex gap-2 w-full h-[200px]">
-             <PlatformUsage />
+             <PlatformUsage  platformData={platform}/>
              <LowPerformingSellers sellers={demoSellers} />
 
           </div>
