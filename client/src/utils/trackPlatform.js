@@ -6,6 +6,8 @@ export const trackPlatform = async() => {
 
     if (!alreadyTracked) {
         const platform = getPlatform();
+      
+        
         try {
     
            const res =  await callPostApis('/track-platform', {platform});
