@@ -8,6 +8,7 @@ import {  getAdminAnalyticsState, trackPlatform } from '../controllers/analytics
 const router = express.Router();
 
 router.get('/seller', verifyUser,verifySeller,getSellerAnalyticsState);
-router.post('/track-platform',verifyUser,trackPlatform);
+router.get('/admin', verifyUser,verifyAdmin,getAdminAnalyticsState);
+router.post('/track-platform',trackPlatform);
 
 export default router;

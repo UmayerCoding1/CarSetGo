@@ -27,6 +27,8 @@ import TotalBookingSection from "./TotalBookingSection";
 import PlatformUsage from "./PlatformUsage";
 import LowPerformingSellers from "./LowPerformingSellers";
 import '../../../public/css/admin/overview.css'
+import { useQuery } from "@tanstack/react-query";
+import { callGetApis } from "../../api/api";
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -144,6 +146,13 @@ const demoSellers = [
   },
 ];
 const AdminOverview = () => {
+  const {data: adminAnalytics} = useQuery({
+    queryKey: ['adminAnalytics'],
+    queryFn: async () => {
+     const response = await callGetApis('/analytics/admin');
+     return response
+    }
+  });
   return (
     <div className="w-full min-h-[80vh] max-h-screen p-4 md:p-8 bg-gray-50 overflow-x-hidden overflow-y-auto scrollbar-hide">
       <h1 className="text-2xl md:text-3xl font-bold mb-6 text-blue-900 flex items-center gap-2">

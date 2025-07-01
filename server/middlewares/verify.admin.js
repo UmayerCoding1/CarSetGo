@@ -2,7 +2,7 @@ import { User } from "../models/user.model.js";
 
 const verifyAdmin = async (req, res, next) => {
   const userId = req.userId;
-  console.log(userId);
+  
   
     try {
      const user = await User.findById( userId);
@@ -11,7 +11,7 @@ const verifyAdmin = async (req, res, next) => {
      }
 
   
-      // If the user is an admin, proceed to the next middleware or route handler
+      req.isAdmin = true
       next();
     } catch (error) {
       console.log(error.messager);
