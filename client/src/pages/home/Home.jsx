@@ -9,6 +9,7 @@ import AboutUs from '../../components/ui/AboutUs';
 import Testimonial from '../../components/ui/Testimonial';
 import { trackPlatform } from '../../utils/trackPlatform';
 
+
 const fadeInUp = {
   hidden: { opacity: 0, y: 40 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.6 } }
@@ -20,7 +21,12 @@ const Home = () => {
 
 
   useEffect(() => {
-    trackPlatform();
+
+    async function handleTrackPlatform () {
+      trackPlatform();
+    } 
+
+    handleTrackPlatform()
   },[])
   return (
     <div>

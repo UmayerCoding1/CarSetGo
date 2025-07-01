@@ -17,63 +17,68 @@ export const getSellerAnalyticsState = async (req, res) => {
   }
 
   const sellerObjectId = new mongoose.Types.ObjectId(sellerId);
-  // find total car
-  const totalCar = await Car.find({ seller: sellerId }).countDocuments();
-
-  // find active booking
-  const bookings = await Booking.find({ sellerId: sellerId });
-  const activeBookings = bookings.filter(
-    (booking) => booking.status !== "completed"
-  );
-
-  // find total sells cars
-  const totalCarSells = await Dealership.find({ sellerId }).countDocuments();
-
-
-
-//    find total review 
-const   totalReviews = await Review.find({ sellerId: sellerId }).countDocuments();
-  // Seller total revenue
-  const carSells = await Dealership.aggregate([
-    {
-      $match: {
-        sellerId: sellerObjectId,
-        "paymentInfo.paymentStatus": "success",
+  try {
+    // find total car
+    const totalCar = await Car.find({ seller: sellerId }).countDocuments();
+  
+    // find active booking
+    const bookings = await Booking.find({ sellerId: sellerId });
+    const activeBookings = bookings.filter(
+      (booking) => booking.status !== "completed"
+    );
+  
+    // find total sells cars
+    const totalCarSells = await Dealership.find({ sellerId }).countDocuments();
+  
+  
+  
+  //    find total review 
+  const   totalReviews = await Review.find({ sellerId: sellerId }).countDocuments();
+    // Seller total revenue
+    const carSells = await Dealership.aggregate([
+      {
+        $match: {
+          sellerId: sellerObjectId,
+          "paymentInfo.paymentStatus": "success",
+        },
       },
-    },
-    {
-      $group: {
-        _id: null,
-        totalRevenue: { $sum: "$paymentInfo.paymentAmount" },
+      {
+        $group: {
+          _id: null,
+          totalRevenue: { $sum: "$paymentInfo.paymentAmount" },
+        },
       },
-    },
-  ]);
-
-  const carBookings = await Booking.aggregate([
-    { $match: { sellerId: sellerObjectId, paymentStatus: "success" } },
-    {
-      $group: {
-        _id: null,
-        totalRevenue: { $sum: "$totalPrice" },
-        totalBookings: { $sum: 1 },
+    ]);
+  
+    const carBookings = await Booking.aggregate([
+      { $match: { sellerId: sellerObjectId, paymentStatus: "success" } },
+      {
+        $group: {
+          _id: null,
+          totalRevenue: { $sum: "$totalPrice" },
+          totalBookings: { $sum: 1 },
+        },
       },
-    },
-  ]);
-
-  console.log("carBookings", carBookings);
-
-  const sellRevenue = carSells[0]?.totalRevenue || 0;
-  const bookingRevenue = carBookings[0]?.totalRevenue || 0;
-  const totalRevenue = sellRevenue + bookingRevenue;
-
-  return res.json({
-    totalRevenue,
-    sellRevenue,
-    bookingRevenue,
-    totalCar,
-    totalCarSells,
-    activeBookings: activeBookings.length,
-    totalReviews,
-    success: true
-  });
+    ]);
+  
+    console.log("carBookings", carBookings);
+  
+    const sellRevenue = carSells[0]?.totalRevenue || 0;
+    const bookingRevenue = carBookings[0]?.totalRevenue || 0;
+    const totalRevenue = sellRevenue + bookingRevenue;
+  
+    return res.json({
+      totalRevenue,
+      sellRevenue,
+      bookingRevenue,
+      totalCar,
+      totalCarSells,
+      activeBookings: activeBookings.length,
+      totalReviews,
+      success: true
+    });
+  } catch (error) {
+    res.status(500)
+      .json({ message: "Internal server error", success: false });
+  }
 };

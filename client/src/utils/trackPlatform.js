@@ -9,8 +9,7 @@ export const trackPlatform = async() => {
       
         
         try {
-    
-           const res =  await callPostApis('/track-platform', {platform});
+           const res =  await callPostApis('/analytics/track-platform', {platform});
            if(res.success){
             localStorage.setItem('platform_tracked', 'true');
            }

@@ -15,6 +15,7 @@ const verifyUser = async (req, res, next) => {
       return res.status(401).json({ message: "unauthorized access" });
     }
 
+
     req.userId = decode._id;
     next();
   });

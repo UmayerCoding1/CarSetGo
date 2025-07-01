@@ -33,7 +33,7 @@ import pricingRoute from './routes/pricing.route.js';
 import paymentRoute from './routes/payment.route.js';
 import analyticsRoute from './routes/analytics.route.js';
 import reviewRoute from './routes/review.route.js';
-import trackPlatform from './routes/trackPlatform.route.js';
+
 
 
 app.use('/api/v1/analytics', analyticsRoute);
@@ -47,7 +47,8 @@ app.use('/api/v1', bookingRoute);
 app.use('/api/v1', pricingRoute);
 app.use('/api/v1/payment', paymentRoute);
 app.use('/api/v1/reviews', reviewRoute);
-app.use('./api/v1', trackPlatform);
+
+
 
 
 
