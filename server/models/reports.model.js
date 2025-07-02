@@ -17,11 +17,6 @@ const reportSchema = new Schema(
         ref: "User",
         required: true,
     },
-    reportType: {
-        type: String,
-        enum: ["booking", "selling"],
-        required: true,
-    },
     reportReason: {
         type: String,
         required: true,

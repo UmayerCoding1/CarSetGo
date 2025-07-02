@@ -7,27 +7,22 @@ import CarBookingForm from "../../components/ui/CarBookingForm";
 import CarBuyngForm from "../../components/ui/CarBuyngForm";
 import useAuth from "../../hooks/useAuth";
 import { motion } from "motion/react";
-import {
-
-  User,
-  Shield,
-  Edit,
-} from "lucide-react";
+import { User, Shield, Edit, TriangleAlert } from "lucide-react";
 import Policy from "../../components/ui/car-details/Policy";
 import ChatInterface from "../../components/ui/ChatInterface";
 import { toast } from "sonner";
 import CarInformation from "../../components/ui/car-details/CarInformation";
 import Savecar from "../../components/ui/car-details/Savecar";
-import {callPostApis, callPutApis} from "../../api/api";
+import { callPostApis, callPutApis } from "../../api/api";
 import Review from "../../components/ui/car-details/Review";
+import Repote from "../../components/ui/Repote";
 const CarDetails = () => {
   const { id } = useParams();
   const publicApi = usePublicApi();
   const { user } = useAuth();
   const MotionLink = motion(Link);
   const [isChatOpen, setIsChatOpen] = useState(false);
-
-  
+  const [isReportOpen, setIsReportOpen] = useState(false);
 
   const {
     data: car,
@@ -44,29 +39,27 @@ const CarDetails = () => {
     enabled: !!id,
   });
 
-
   useEffect(() => {
-  const handleCarViewCount  = async () => {
-     try {
-    const res = await callPutApis(`/cars/viewcount/${car?._id}`,);
-    console.log(res);
-    
-   } catch (error) {
-    // throw new Error(error);
-    console.log(error);
-    
-   }
-    
-  }
+    const handleCarViewCount = async () => {
+      try {
+        const res = await callPutApis(`/cars/viewcount/${car?._id}`);
+        console.log(res);
+      } catch (error) {
+        // throw new Error(error);
+        console.log(error);
+      }
+    };
 
-  handleCarViewCount();
-  },[car?._id])
+    if (isReportOpen) {
+      document.body.style.overflow = "hidden";
+    }
 
+    handleCarViewCount();
+  }, [car?._id, isReportOpen]);
 
-
-  
-
- 
+  const handleCloseReportWaper = () => {
+    setIsReportOpen(false);
+  };
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error loading car details</div>;
@@ -79,7 +72,7 @@ const CarDetails = () => {
     <div className="container mx-auto py-8">
       <div className="lg:flex gap-5">
         <div className="lg:w-[60%] h-[500px] shadow-md p-2">
-          <ImageSlider images={car.images} height={'400px'}/>
+          <ImageSlider images={car.images} height={"400px"} />
         </div>
 
         <div className="lg:w-[40%]">
@@ -131,9 +124,17 @@ const CarDetails = () => {
               <div>
                 <h2 className="font-medium text-lg">{car.seller.fullname}</h2>
                 <p className="text-sm text-gray-600">{car.seller.username}</p>
-                <button className={`flex items-center gap-1 text-sm ${car.seller.isPlanActive ? 'text-emerald-600': "text-red-500"}`}>
+                <button
+                  className={`flex items-center gap-1 text-sm ${
+                    car.seller.isPlanActive
+                      ? "text-emerald-600"
+                      : "text-red-500"
+                  }`}
+                >
                   <Shield size={15} />{" "}
-                  {car.seller.isPlanActive  ? "Premium Seller" : "Seller is not verified" }
+                  {car.seller.isPlanActive
+                    ? "Premium Seller"
+                    : "Seller is not verified"}
                 </button>
               </div>
             </div>
@@ -175,11 +176,15 @@ const CarDetails = () => {
           <CarInformation car={car} />
         </div>
 
-        <Policy postType={car.postType} paymentSystem={car.paymentSystem}  paramsID={id}/>
+        <Policy
+          postType={car.postType}
+          paymentSystem={car.paymentSystem}
+          paramsID={id}
+        />
       </div>
 
       {/* Reviews Section */}
-     <Review car={car} user={user} />
+      <Review car={car} user={user} />
 
       <ChatInterface
         isOpen={isChatOpen}
@@ -190,6 +195,24 @@ const CarDetails = () => {
         userId={user?._id}
         status={car.status}
       />
+
+      <div
+        onClick={() => setIsReportOpen(true)}
+        className="bg-white shadow-md border border-gray-300   rounded-md fixed z-100 top-1/2 right-3 cursor-pointer p-2 flex gap-2 items-center justify-center "
+      >
+        <TriangleAlert />
+        Report seller
+      </div>
+
+      {isReportOpen && (
+        <Repote 
+        onClose={handleCloseReportWaper} 
+        userId={user?._id} 
+        carId={car?._id}
+        sellerId={car?.seller._id}
+        
+        />
+      )}
     </div>
   );
 };
