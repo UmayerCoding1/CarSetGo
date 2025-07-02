@@ -30,7 +30,7 @@ export const getAdminAnalyticsState = async (req, res) => {
     const reviews = await Review.find();
     const reports = await Report.find();
 
-    // last 6 months revenue
+    //Get last 6 months revenue
     const months = [
       "January",
       "February",
@@ -62,7 +62,7 @@ export const getAdminAnalyticsState = async (req, res) => {
       });
     }
 
-    // get previoes month payments
+    
     const monthlyPayments = await Payment.aggregate([
       {
         $match: {
@@ -107,6 +107,19 @@ export const getAdminAnalyticsState = async (req, res) => {
     const monthName = sixMonthRevenue.map((item) => item.month);
     const monthlyPayment = sixMonthRevenue.map((item) => item.totalAmount);
 
+
+
+
+    // Get user distribution
+     let userData = [];
+     const normalUser = users.filter(user => user.role === 'user');
+     const seller = users.filter(user => user.role === 'seller');
+     userData.push(normalUser.length);
+     userData.push(seller.length);
+
+     console.log(userData);
+     
+
     return res.status(200).json({
       platform: trackPlatformData,
       totalUser: users.length,
@@ -118,6 +131,7 @@ export const getAdminAnalyticsState = async (req, res) => {
         monthName,
         monthlyPayment,
       },
+      userDistribution: userData,
       success: true,
     });
   } catch (error) {

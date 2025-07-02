@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import usePublicApi from "../../hooks/usePublicApi";
@@ -18,7 +18,7 @@ import ChatInterface from "../../components/ui/ChatInterface";
 import { toast } from "sonner";
 import CarInformation from "../../components/ui/car-details/CarInformation";
 import Savecar from "../../components/ui/car-details/Savecar";
-import {callPostApis} from "../../api/api";
+import {callPostApis, callPutApis} from "../../api/api";
 import Review from "../../components/ui/car-details/Review";
 const CarDetails = () => {
   const { id } = useParams();
@@ -45,7 +45,24 @@ const CarDetails = () => {
   });
 
 
-console.log(car);
+  useEffect(() => {
+  const handleCarViewCount  = async () => {
+     try {
+    const res = await callPutApis(`/cars/viewcount/${car?._id}`,);
+    console.log(res);
+    
+   } catch (error) {
+    // throw new Error(error);
+    console.log(error);
+    
+   }
+    
+  }
+
+  handleCarViewCount();
+  },[car?._id])
+
+
 
   
 

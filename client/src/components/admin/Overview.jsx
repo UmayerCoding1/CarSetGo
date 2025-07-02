@@ -43,17 +43,7 @@ ChartJS.register(
 // Example data for charts
 
 
-const userPieData = {
-  labels: ["Normal User", "Seller"],
-  datasets: [
-    {
-      label: "User Type",
-      data: [900, 340],
-      backgroundColor: ["rgba(59, 130, 246, 0.7)", "rgba(16, 185, 129, 0.7)"],
-      borderWidth: 1,
-    },
-  ],
-};
+
 
 
 const demoSellers = [
@@ -107,7 +97,7 @@ const AdminOverview = () => {
     }
   });
 
-  const {platform,totalUser,totalBooking,totalCars,totalReport,totalReview,prevSixMonthRevenue} = adminAnalytics; 
+  const {platform,totalUser,totalBooking,totalCars,totalReport,totalReview,prevSixMonthRevenue,userDistribution} = adminAnalytics; 
   console.log(adminAnalytics);
   
   const stats = [
@@ -158,6 +148,18 @@ const revenueData = {
       data: prevSixMonthRevenue?.monthlyPayment,
       backgroundColor: "rgba(59, 130, 246, 0.7)",
       borderRadius: 8,
+    },
+  ],
+};
+
+const userPieData = {
+  labels: ["Normal User", "Seller"],
+  datasets: [
+    {
+      label: "User Type",
+      data: userDistribution,
+      backgroundColor: ["rgba(59, 130, 246, 0.7)", "rgba(16, 185, 129, 0.7)"],
+      borderWidth: 1,
     },
   ],
 };

@@ -1,8 +1,7 @@
-import mongoose from "mongoose";
+import mongoose, { isObjectIdOrHexString } from "mongoose";
 import { Car } from "../models/car.model.js";
 import { User } from "../models/user.model.js";
 import { AlAnalyzeCarImage } from "../utils/car.js";
-import { log } from "console";
 import { uploadCloudinary } from "../utils/cloudinary.service.js";
 
 
@@ -438,6 +437,35 @@ export const analyzeCarImage = async (req, res) => {
       message: 'Internal server error',
       error: error.message
     });
+  }
+ }
+
+
+ export const carViewCount = async (req, res) => {
+  try {
+    const { carId } = req.params;
+   if (!carId) {
+     return res.status(400).json({ message: 'Car ID is required' });
+   }
+    
+
+     if (!isObjectIdOrHexString(carId)) {
+       return res.status(400).send({ error: "Invalid seller ID" });
+     }
+   
+     const sellerObjectId = new mongoose.Types.ObjectId(carId);
+    const car = await Car.findById(sellerObjectId);
+    if(!car){
+      return res.status(404).json({message: 'Car not found'});
+    }
+    car.views += 1;
+    await car.save();
+
+    
+    return res.status(200).json({message: 'Car view count updated successfully'});
+  } catch (error) {
+    console.log(error.message);
+    return res.status(500).json({message: 'Internal server error'});
   }
  }
 
