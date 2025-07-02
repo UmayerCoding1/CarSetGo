@@ -62,7 +62,6 @@ export const getAdminAnalyticsState = async (req, res) => {
       });
     }
 
-    
     const monthlyPayments = await Payment.aggregate([
       {
         $match: {
@@ -107,18 +106,57 @@ export const getAdminAnalyticsState = async (req, res) => {
     const monthName = sixMonthRevenue.map((item) => item.month);
     const monthlyPayment = sixMonthRevenue.map((item) => item.totalAmount);
 
-
-
-
     // Get user distribution
-     let userData = [];
-     const normalUser = users.filter(user => user.role === 'user');
-     const seller = users.filter(user => user.role === 'seller');
-     userData.push(normalUser.length);
-     userData.push(seller.length);
+    let userData = [];
+    const normalUser = users.filter((user) => user.role === "user");
+    const seller = users.filter((user) => user.role === "seller");
+    userData.push(normalUser.length);
+    userData.push(seller.length);
 
-     console.log(userData);
-     
+    //  Get top car in thsi month
+    let maxCount = 5;
+    const currentMonthBooking = await Booking.find({
+      createdAt: {
+        $gte: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
+        $lt: new Date(new Date().getFullYear(), new Date().getMonth() + 1, 1),
+      },
+    });
+
+    const carId = currentMonthBooking.map((item) => item.carId);
+
+    const countMap = new Map();
+
+    for (const id of carId) {
+      const idStr = id.toString();
+      if (countMap.has(idStr)) {
+        countMap.set(idStr, countMap.get(idStr) + 1);
+      } else {
+        countMap.set(idStr, 1);
+      }
+    }
+
+    const countedCarIds = Array.from(countMap.entries()).map(
+      ([carId, count]) => ({
+        carId,
+        count,
+      })
+    );
+
+    const topCars = await Promise.all(
+  countedCarIds.map(async (c) => {
+    const car = await Car.findById(c.carId).select(
+      "-year -price -mileage -color -fuelType -transmission -bodyType -seats -description -status -featured -bookingBy -dealership -seller -category -postType -paymentsystem -addCredits -availableCar -views -createdAt -updatedAt"
+    );
+    return {
+      car,
+      count: c.count,
+    };
+  })
+);
+
+
+    
+    
 
     return res.status(200).json({
       platform: trackPlatformData,
@@ -132,6 +170,7 @@ export const getAdminAnalyticsState = async (req, res) => {
         monthlyPayment,
       },
       userDistribution: userData,
+      topCars,
       success: true,
     });
   } catch (error) {

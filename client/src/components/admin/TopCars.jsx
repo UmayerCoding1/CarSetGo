@@ -10,27 +10,21 @@ const TopCars = ({topCarsData}) => {
               <span className="font-semibold text-yellow-900 animate-fadeInRight">Top Car This Month</span>
             </div>
             <div className="flex flex-col gap-2 text-xs text-yellow-900">
-              <div className="flex items-center gap-2 animate-fadeInUp" style={{animationDelay: '0.1s', animationFillMode: 'both'}}>
-                <img src="https://images.pexels.com/photos/358070/pexels-photo-358070.jpeg?auto=compress&w=40&h=40&fit=crop" alt="Tesla Model S" className="w-8 h-8 rounded-full object-cover border-2 border-yellow-300 animate-bounce-slow" />
+              {topCarsData?.map((car, index) => {
+                console.log(car);
+                
+                return (
+                  <div className="flex items-center gap-2 animate-fadeInUp" style={{animationDelay: '0.1s', animationFillMode: 'both'}}>
+                <img src={car?.car.images[0]} alt="Tesla Model S" className="w-8 h-8 rounded-full object-cover border-2 border-yellow-300 animate-bounce-slow" />
                 <div>
-                  <div className="font-bold animate-fadeInLeft">Tesla Model S</div>
-                  <div className="text-yellow-700 animate-fadeInRight">Bookings: <span className="font-semibold">32</span></div>
+                  <div className="font-bold animate-fadeInLeft">{car?.car.make} {car?.car.model}</div>
+                  <div className="text-yellow-700 animate-fadeInRight">Bookings: <span className="font-semibold">{car?.count}</span></div>
                 </div>
               </div>
-              <div className="flex items-center gap-2 animate-fadeInUp" style={{animationDelay: '0.2s', animationFillMode: 'both'}}>
-                <img src="https://images.pexels.com/photos/1707828/pexels-photo-1707828.jpeg?auto=compress&w=40&h=40&fit=crop" alt="Toyota Corolla" className="w-8 h-8 rounded-full object-cover border-2 border-yellow-300 animate-bounce-slow" />
-                <div>
-                  <div className="font-bold animate-fadeInLeft">Toyota Corolla</div>
-                  <div className="text-yellow-700 animate-fadeInRight">Bookings: <span className="font-semibold">27</span></div>
-                </div>
-              </div>
-              <div className="flex items-center gap-2 animate-fadeInUp" style={{animationDelay: '0.3s', animationFillMode: 'both'}}>
-                <img src="https://images.pexels.com/photos/358070/pexels-photo-358070.jpeg?auto=compress&w=40&h=40&fit=crop" alt="BMW X5" className="w-8 h-8 rounded-full object-cover border-2 border-yellow-300 animate-bounce-slow" />
-                <div>
-                  <div className="font-bold animate-fadeInLeft">BMW X5</div>
-                  <div className="text-yellow-700 animate-fadeInRight">Bookings: <span className="font-semibold">21</span></div>
-                </div>
-              </div>
+                )
+              })}
+              
+              
             </div>
           </div>
     );

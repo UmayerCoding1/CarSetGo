@@ -97,7 +97,7 @@ const AdminOverview = () => {
     }
   });
 
-  const {platform,totalUser,totalBooking,totalCars,totalReport,totalReview,prevSixMonthRevenue,userDistribution} = adminAnalytics; 
+  const {platform,totalUser,totalBooking,totalCars,totalReport,totalReview,prevSixMonthRevenue,userDistribution,topCars} = adminAnalytics; 
   console.log(adminAnalytics);
   
   const stats = [
@@ -173,7 +173,7 @@ const userPieData = {
       <div className="flex gap-2">
         <div className="lg:w-[250px] flex flex-col gap-6">
           <FavaritUserAndSeller userData={''}/>
-          <TopCars topCarsData={''}/>
+          <TopCars topCarsData={topCars}/>
           <TopSellers sellersData={''}/>
           <TotalBookingSection />
          
