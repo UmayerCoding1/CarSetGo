@@ -41,17 +41,7 @@ ChartJS.register(
 
 
 // Example data for charts
-const revenueData = {
-  labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
-  datasets: [
-    {
-      label: "Total Revenue",
-      data: [8000, 12000, 9000, 15000, 11000, 14000],
-      backgroundColor: "rgba(59, 130, 246, 0.7)",
-      borderRadius: 8,
-    },
-  ],
-};
+
 
 const userPieData = {
   labels: ["Normal User", "Seller"],
@@ -117,7 +107,9 @@ const AdminOverview = () => {
     }
   });
 
-  const {platform,totalUser,totalBooking,totalCars,totalReport,totalReview} = adminAnalytics; 
+  const {platform,totalUser,totalBooking,totalCars,totalReport,totalReview,prevSixMonthRevenue} = adminAnalytics; 
+  console.log(adminAnalytics);
+  
   const stats = [
   {
     label: "Total Users",
@@ -156,6 +148,19 @@ const AdminOverview = () => {
     color: "bg-red-100 text-red-700",
   },
 ];;
+
+
+const revenueData = {
+  labels: prevSixMonthRevenue?.monthName,
+  datasets: [
+    {
+      label: "Total Revenue",
+      data: prevSixMonthRevenue?.monthlyPayment,
+      backgroundColor: "rgba(59, 130, 246, 0.7)",
+      borderRadius: 8,
+    },
+  ],
+};
    
   return (
     <div className="w-full min-h-[80vh] max-h-screen p-4 md:p-8 bg-gray-50 overflow-x-hidden overflow-y-auto scrollbar-hide">
