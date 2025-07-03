@@ -93,9 +93,9 @@ const CarCard = ({car,idx}) => {
                             
                           </div>
                           <div className="text-[10px] text-cyan-400 mt-0.5">
-                            Seller since:{" "}
+                            Seller ID:{" "}
                             <span className="text-cyan-200 font-semibold">
-                              {car.seller?.isPlanActive ? 'ok' : 'No'}
+                              {car.seller?._id}
                             </span>
                           </div>
                         </div>
