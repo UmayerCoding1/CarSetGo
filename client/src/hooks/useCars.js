@@ -1,8 +1,8 @@
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import usePublicApi from "./usePublicApi";
+import { callGetApis } from "../api/api";
 const useCars = (page,limit,price,make,bodyType,fuelType,search) => {
-  const publicApi = usePublicApi();
   const {
     data: cars,
     isLoading: isLoadingCars,
@@ -19,13 +19,15 @@ const useCars = (page,limit,price,make,bodyType,fuelType,search) => {
       search
     ],
     queryFn: async () => {
-      const response = await publicApi.get(`/cars?page=${page}&limit=${limit}&price=${price}&make=${make}&bodyType=${bodyType}&fuelType=${fuelType}&search=${search}`);
-      return response.data;
+      const response = await callGetApis(`/cars?page=${page}&limit=${limit}&price=${price}&make=${make}&bodyType=${bodyType}&fuelType=${fuelType}&search=${search}`);
+     
+      
+      return response;
     },
     staleTime: Infinity,
     cacheTime: 1000 * 60 * 10,
   });
-  console.log(page,limit);
+  
   return {
     cars: cars?.data,
     totalPages: cars?.pagination?.totalPages,

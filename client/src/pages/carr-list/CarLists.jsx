@@ -22,6 +22,7 @@ const CarLists = () => {
 
   const { cars,totalPages,currentPage,totalCars, isLoadingCars, isRefetchingCars } = useCars(page,limit,price,make,bodyType,fuelType,search);
  
+ console.log(cars);
  
   const handlePageChange = (newPage) => {
     setPage(newPage);

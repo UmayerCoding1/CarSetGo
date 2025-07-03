@@ -71,8 +71,8 @@ const Users = () => {
   };
 
   return (
-    <div className="p-4 max-h-screen overflow-auto scrollb">
-      <h2 className="text-2xl font-bold mb-4 text-blue-900">All Users</h2>
+    <div className="min-h-screen w-full flex flex-col bg-gradient-to-br from-[#19223a] via-[#1e2a3a] to-[#2ec4f1] px-0 sm:px-4 max-h-screen overflow-auto scrollbar-hide">
+      <h2 className="text-2xl font-bold mb-4 text-cyan-200 drop-shadow">All Users</h2>
       {/* Filter Section */}
       <div className="flex flex-col md:flex-row gap-3 mb-4 items-center">
         <input
@@ -83,7 +83,7 @@ const Users = () => {
             setSearchId(e.target.value);
             setPage(1);
           }}
-          className="px-3 py-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-200 text-sm w-full md:w-64"
+          className="px-3 py-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-200 text-sm text-white w-full md:w-64"
         />
         <select
           value={roleFilter}
@@ -91,18 +91,19 @@ const Users = () => {
             setRoleFilter(e.target.value);
             setPage(1);
           }}
-          className="px-3 py-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-200 text-sm w-full md:w-48"
+          className="px-3 py-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-200 text-white text-sm w-full md:w-48"
         >
-          <option value="">All Roles</option>
-          <option value="user">User</option>
-          <option value="seller">Seller</option>
-          <option value="admin">Admin</option>
+          <option className="text-black" value="">All Roles</option>
+          <option className="text-black" value="user">User</option>
+          <option className="text-black" value="seller">Seller</option>
+          <option className="text-black" value="admin">Admin</option>
+          <option className="text-black" value="blacklisted">Blacklisted</option>
         </select>
       </div>
-      <div className="bg-white rounded-xl shadow border border-gray-100 overflow-x-auto">
-        <table className="min-w-full text-sm">
+      <div className="bg-[#1e293b]/80 rounded-xl shadow-2xl border border-cyan-900 overflow-x-auto backdrop-blur-md scrollbar-hide">
+        <table className="min-w-full text-sm text-cyan-100">
           <thead>
-            <tr className="bg-blue-50 text-blue-900">
+            <tr className="bg-gradient-to-r from-[#233554] to-[#2ec4f1] text-cyan-100">
               <th className="py-3 px-4 text-left font-semibold">#</th>
               <th className="py-3 px-4 text-left font-semibold">Name</th>
               <th className="py-3 px-4 text-left font-semibold">Email</th>
@@ -118,36 +119,38 @@ const Users = () => {
                 key={user._id}
                 className={`border-b last:border-b-0 ${
                   user?.role === "blacklisted"
-                    ? "bg-red-200"
-                    : "hover:bg-blue-50"
-                } transition`}
+                    ? "bg-rose-900/40"
+                    : "hover:bg-cyan-900/30"
+                } transition `}
               >
                 <td className="py-2 px-4">
                   {(page - 1) * usersPerPage + idx + 1}
                 </td>
-                <td className="py-2 px-4 font-medium text-gray-900">
+                <td className="py-2 px-4 font-medium text-cyan-100">
                   {user.fullname}
                 </td>
                 <td className="py-2 px-4">{user.email}</td>
                 <td className="py-2 px-4">
                   <span
-                    className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                    className={`px-2 py-1 rounded-full text-xs font-semibold shadow-sm ${
                       user.role === "admin"
-                        ? "bg-blue-200 text-blue-800"
+                        ? "bg-cyan-700/80 text-cyan-100"
                         : user.role === "seller"
-                        ? "bg-green-100 text-green-700"
-                        : "bg-gray-100 text-gray-700"
+                        ? "bg-emerald-700/80 text-emerald-100"
+                        : user.role === "blacklisted"
+                        ? "bg-rose-900/80 text-rose-100"
+                        : "bg-slate-700/80 text-slate-100"
                     }`}
                   >
                     {user.role}
                   </span>
                 </td>
-                <td className="py-2 px-4 text-gray-500">{user.createdAt}</td>
+                <td className="py-2 px-4 text-cyan-300">{user.createdAt}</td>
 
                 <td className="py-2 px-4">
                   {user?.role !== "blacklisted" && (
                     <select
-                      className="ml-2 px-2 py-1 rounded border border-gray-200 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-blue-200 bg-white"
+                      className="ml-2 px-2 py-1 rounded border border-cyan-700 bg-cyan-900/80 text-xs font-semibold text-cyan-100 focus:outline-none focus:ring-2 focus:ring-cyan-400 shadow"
                       value={user?.role}
                       onChange={(e) =>
                         roleChangeHandler(user._id, e.target.value)
@@ -175,7 +178,7 @@ const Users = () => {
                         onClick={() =>
                           roleChangeHandler(user._id, "blacklisted", user?.role)
                         }
-                        className="flex items-center gap-2 bg-yellow-400 hover:bg-red-500 text-yellow-900 hover:text-white px-2 py-1 rounded text-xs font-semibold shadow-sm transition-colors duration-150"
+                        className="flex items-center gap-2 bg-gradient-to-r from-yellow-400 to-rose-500 text-white px-2 py-1 rounded text-xs font-semibold shadow-md hover:from-rose-500 hover:to-yellow-400 transition-colors duration-150"
                       >
                         <Ban size={13} /> Block
                       </button>
@@ -191,21 +194,14 @@ const Users = () => {
                             if (previesRole) {
                               prevRole = previesRole.previesRole;
                             }
-
-                           
-                            
-                            
                           }
                           roleChangeHandler(user._id, prevRole, "blacklisted");
                         }}
-                        className="flex items-center gap-2 bg-green-400 hover:bg-green-600 text-green-900 hover:text-white px-2 py-1 rounded text-xs font-semibold shadow-sm transition-colors duration-150"
+                        className="flex items-center gap-2 bg-gradient-to-r from-green-400 to-cyan-600 text-white px-2 py-1 rounded text-xs font-semibold shadow-md hover:from-cyan-600 hover:to-green-400 transition-colors duration-150"
                       >
                         <Ban size={13} /> Unblock
                       </button>
                     )}
-                    <button className="flex items-center gap-2 bg-gradient-to-r from-red-500 via-red-500 to-red-500 hover:from-red-600 hover:to-red-400 text-white px-2 py-1 rounded text-xs font-semibold shadow-sm transition-colors duration-150">
-                      <Trash size={13} /> Delete
-                    </button>
                   </div>
                   )}
                 </td>
@@ -219,7 +215,7 @@ const Users = () => {
         <button
           onClick={() => setPage((p) => Math.max(1, p - 1))}
           disabled={page === 1}
-          className="px-3 py-1 rounded bg-white border border-gray-200 text-blue-700 font-semibold hover:bg-blue-50 disabled:opacity-40 disabled:cursor-not-allowed"
+          className="px-3 py-1 rounded bg-cyan-900 border border-cyan-700 text-cyan-100 font-semibold hover:bg-cyan-700 disabled:opacity-40 disabled:cursor-not-allowed shadow"
         >
           Prev
         </button>
@@ -227,10 +223,10 @@ const Users = () => {
           <button
             key={i}
             onClick={() => setPage(i + 1)}
-            className={`px-3 py-1 rounded font-semibold border ${
+            className={`px-3 py-1 rounded font-semibold border transition-all duration-150 ${
               page === i + 1
-                ? "bg-blue-500 text-white border-blue-500"
-                : "bg-white text-blue-700 border-gray-200 hover:bg-blue-50"
+                ? "bg-cyan-500 text-white border-cyan-500 shadow"
+                : "bg-cyan-900 text-cyan-100 border-cyan-700 hover:bg-cyan-700"
             }`}
           >
             {i + 1}
@@ -239,7 +235,7 @@ const Users = () => {
         <button
           onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
           disabled={page === totalPages}
-          className="px-3 py-1 rounded bg-white border border-gray-200 text-blue-700 font-semibold hover:bg-blue-50 disabled:opacity-40 disabled:cursor-not-allowed"
+          className="px-3 py-1 rounded bg-cyan-900 border border-cyan-700 text-cyan-100 font-semibold hover:bg-cyan-700 disabled:opacity-40 disabled:cursor-not-allowed shadow"
         >
           Next
         </button>

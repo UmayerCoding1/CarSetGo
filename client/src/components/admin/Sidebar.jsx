@@ -24,7 +24,7 @@ import useAuth from "../../hooks/useAuth";
 const navLinks = [
   { label: 'Dashboard', icon: LayoutDashboard, to: '/admin/dashboard' },
   { label: 'Users', icon: Users, to: 'users' },
-  // { label: 'Cars', icon: Car, to: '/admin/cars' },
+  { label: 'Cars', icon: Car, to: 'cars' },
   // { label: 'Payments', icon: CreditCard, to: '/admin/payments' },
   // { label: 'Messages', icon: MessageCircle, to: '/admin/messages' },
   // { label: 'Analytics', icon: BarChart2, to: '/admin/analytics' },
@@ -78,9 +78,9 @@ const Sidebar = () => {
      
 
       <div
-        className={`${
+        className={`$
           isOpen ? "w-full lg:w-72" : "w-20"
-        } transition-all duration-300 bg-[#1B3993] text-white shadow-lg border-r border-gray-200 p-4 hidden lg:flex flex-col ${
+        } transition-all duration-300 bg-gradient-to-br from-[#0f172a] via-[#164e63] to-[#06b6d4] text-cyan-100 shadow-2xl border-r border-cyan-900 p-4 hidden lg:flex flex-col ${
           isOpen ? "items-start" : "items-center"
         } gap-4 h-screen overflow-y-auto z-50 relative`}
       >
@@ -93,12 +93,12 @@ const Sidebar = () => {
           <img
             src={asset.logo}
             alt="logo"
-            className={`${isOpen ? "w-40" : "hidden"}`}
+            className={`${isOpen ? "w-40 drop-shadow-xl" : "hidden"}`}
           />
           <Menu
             size={24}
             onClick={() => setIsOpen(!isOpen)}
-            className="cursor-pointer hover:text-blue-600 transition-colors hidden lg:block"
+            className="cursor-pointer hover:text-cyan-400 transition-colors hidden lg:block"
           />
         </div>
 
@@ -112,8 +112,8 @@ const Sidebar = () => {
               <li key={label}>
                 <Link
                   to={to}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-all duration-200 hover:bg-blue-600/80  ${
-                    location.pathname === to ? 'bg-blue-600/90 hover:pl-6 pl-6 shadow-lg' : ''
+                  className={`flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-all duration-200 hover:bg-cyan-800/70  ${
+                    location.pathname === to ? 'bg-cyan-700/90 hover:pl-6 pl-6 shadow-lg' : ''
                   }`}
                 >
                  {isOpen ? <>
@@ -131,7 +131,7 @@ const Sidebar = () => {
           <div className="w-full">
             <motion.button
               whileTap={{ scale: 0.9 }}
-              className="w-full bg-red-500 font-medium cursor-pointer text-sm flex items-center gap-2 justify-center text-white p-2 rounded-lg"
+              className="w-full bg-gradient-to-r from-rose-500 to-cyan-500 font-medium cursor-pointer text-sm flex items-center gap-2 justify-center text-white p-2 rounded-lg shadow-lg hover:from-cyan-500 hover:to-rose-500 transition-colors"
               onClick={()=>handleLogout()}
             >
               {isOpen ? (

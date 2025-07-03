@@ -165,60 +165,59 @@ const userPieData = {
 };
    
   return (
-    <div className="w-full min-h-[80vh] max-h-screen p-4 md:p-8 bg-gray-50 overflow-x-hidden overflow-y-auto scrollbar-hide">
-      <h1 className="text-2xl md:text-3xl font-bold mb-6 text-blue-900 flex items-center gap-2">
-        <BarChart2 className="w-7 h-7 text-blue-700" /> Admin Dashboard Overview
-      </h1>
+    <div className="relative min-h-screen w-full overflow-x-hidden">
+      {/* Full-page gradient background */}
+      <div className="fixed inset-0 z-0 bg-gradient-to-br from-[#0f172a] via-[#164e63] to-[#06b6d4]" style={{ minHeight: '100vh' }} />
+      <div className="relative z-10 w-full min-h-[80vh] max-h-screen p-4 md:p-8 flex flex-col overflow-x-hidden overflow-y-auto scrollbar-hide">
+        <h1 className="text-2xl md:text-3xl font-bold mb-6 text-white drop-shadow flex items-center gap-2">
+          <BarChart2 className="w-7 h-7 text-cyan-300" /> Admin Dashboard Overview
+        </h1>
 
-      <div className="flex gap-2">
-        <div className="lg:w-[250px] flex flex-col gap-6">
-          <FavaritUserAndSeller userData={''}/>
-          <TopCars topCarsData={topCars}/>
-          <TopSellers sellersData={''}/>
-          <TotalBookingSection />
-         
-        </div>
-
-
-        <div className="flex-1">
-          <div className="mb-8 flex gap-2 w-full h-[200px]">
-             <PlatformUsage  platformData={platform}/>
-             <LowPerformingSellers sellers={demoSellers} />
-
+        <div className="flex gap-2">
+          <div className="lg:w-[250px] flex flex-col gap-6">
+            <FavaritUserAndSeller userData={''}/>
+            <TopCars topCarsData={topCars}/>
+            <TopSellers sellersData={''}/>
+            <TotalBookingSection />
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-            {stats.map(({ label, value, icon: Icon, color }) => (
-              <div
-                key={label}
-                className={`rounded-xl shadow-md p-6 flex items-center gap-4 bg-white hover:shadow-xl transition-shadow duration-200 border border-gray-100`}
-              >
+
+          <div className="flex-1">
+            <div className="mb-8 flex gap-2 w-full h-[200px]">
+              <PlatformUsage  platformData={platform}/>
+              <LowPerformingSellers sellers={demoSellers} />
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+              {stats.map(({ label, value, icon: Icon, color }) => (
                 <div
-                  className={`rounded-full p-3 ${color} flex items-center justify-center`}
+                  key={label}
+                  className={`rounded-xl shadow-xl p-6 flex items-center gap-4 bg-white/90 backdrop-blur border border-cyan-100 hover:shadow-2xl transition-shadow duration-200`}
                 >
-                  <Icon className="w-7 h-7" />
-                </div>
-                <div>
-                  <div className="text-2xl font-bold text-gray-900">
-                    {value}
+                  <div
+                    className={`rounded-full p-3 ${color} flex items-center justify-center`}
+                  >
+                    <Icon className="w-7 h-7" />
                   </div>
-                  <div className="text-sm text-gray-500 font-medium">
-                    {label}
+                  <div>
+                    <div className="text-2xl font-bold text-gray-900">
+                      {value}
+                    </div>
+                    <div className="text-sm text-gray-500 font-medium">
+                      {label}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Revenue Bar Chart */}
-            <BarChart revenueData={revenueData} />
-            {/* User Type Pie Chart */}
-            <PeiChart userPieData={userPieData} />
+              ))}
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {/* Revenue Bar Chart */}
+              <BarChart revenueData={revenueData} />
+              {/* User Type Pie Chart */}
+              <PeiChart userPieData={userPieData} />
+            </div>
           </div>
         </div>
-      </div>
 
-      <div className="h-20">
-
+        <div className="h-20"></div>
       </div>
     </div>
   );

@@ -34,3 +34,21 @@ button {
 }
 
 
+@keyframes slide-next {
+  0% { opacity: 1; transform: translateX(0) scale(1) rotateY(0deg);}
+  40% { opacity: 0; transform: translateX(-40px) scale(0.95) rotateY(-30deg);}
+  60% { opacity: 0; transform: translateX(40px) scale(0.95) rotateY(30deg);}
+  100% { opacity: 1; transform: translateX(0) scale(1) rotateY(0deg);}
+}
+@keyframes slide-prev {
+  0% { opacity: 1; transform: translateX(0) scale(1) rotateY(0deg);}
+  40% { opacity: 0; transform: translateX(40px) scale(0.95) rotateY(30deg);}
+  60% { opacity: 0; transform: translateX(-40px) scale(0.95) rotateY(-30deg);}
+  100% { opacity: 1; transform: translateX(0) scale(1) rotateY(0deg);}
+}
+.animate-slide-next {
+  animation: slide-next 0.35s cubic-bezier(.4,0,.2,1);
+}
+.animate-slide-prev {
+  animation: slide-prev 0.35s cubic-bezier(.4,0,.2,1);
+}
