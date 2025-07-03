@@ -4,6 +4,7 @@ import UserNav from "./UserNav";
 import { motion } from "motion/react";
 import SellerNav from "./SellerNav";
 import {
+  Ban,
   Car,
   Handshake,
   Info,
@@ -114,8 +115,31 @@ const Navbar = () => {
             <img loading="lazy" className="w-48 " src={asset.logo} alt="logo" />
           </Link>
 
-          {user ? (
-            <div className="flex items-center gap-3">
+ 
+         {user?.role === 'blacklisted' ? (
+           <div className="flex flex-col items-center gap-3 bg-gradient-to-r from-blue-50 via-white to-blue-100 border border-blue-200 rounded-lg px-3 py-3 w-full max-w-[400px] shadow relative  sm:px-6 sm:py-4">
+             <Ban className="animate-pulse absolute top-2 left-4 sm:top-3 sm:left-7 text-red-600"/>
+             <p className="text-base sm:text-lg font-bold text-red-700 flex items-center gap-2 mt-2">
+               <span className="inline-block w-2 h-2 bg-red-500 rounded-full animate-ping"></span>
+               You are blacklisted
+             </p>
+             <p className="text-xs sm:text-sm text-gray-600 mb-2 text-center px-1">Your account has been restricted. Please contact support or try logging in again.</p>
+             <div className="flex flex-wrap gap-2 justify-center w-full">
+               <Link
+                 to="/sign-in"
+                 className="inline-block w-full sm:w-auto text-center bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 text-white font-semibold px-4 py-2 rounded-lg shadow transition-all duration-200 text-xs sm:text-sm border border-blue-600"
+               >
+                 Go to Login
+               </Link>
+               <Link
+                 to="/support"
+                 className="inline-block w-full sm:w-auto text-center bg-gradient-to-r from-green-400 to-green-600 hover:from-green-500 hover:to-green-700 text-white font-semibold px-4 py-2 rounded-lg shadow transition-all duration-200 text-xs sm:text-sm border border-green-500"
+               >
+                 Support
+               </Link>
+             </div>
+           </div>
+         ) : user ?  <div className="flex items-center gap-3">
               {user.role === "user" && <UserNav asset={asset} user={user} />}
               {user.role === "seller" && (
                 <SellerNav asset={asset} user={user} />
@@ -226,16 +250,16 @@ const Navbar = () => {
                   </div>
                 )}
               </div>
-            </div>
-          ) : (
-            <MotionLink
+            </div> : <MotionLink
               to="/sign-up"
               whileTap={{ scale: 0.9 }}
               className="bg-blue-600 text-white px-4 py-2 font-semibold rounded-lg text-sm cursor-pointer"
             >
               Create an account
-            </MotionLink>
-          )}
+            </MotionLink>}
+
+            
+          
         </nav>
       </motion.header>
 

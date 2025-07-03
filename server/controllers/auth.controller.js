@@ -71,21 +71,22 @@ export const userLogin = async (req, res) => {
         .json({ message: "Invalid credentials", success: false });
     }
     user.password = undefined;
+
+    if(user.role === 'blacklisted') return res.status(400).json({ message: "You are blacklisted", success: false });
+
+
     const token = jwt.sign({ _id: user._id }, process.env.JWT_SECTET, {
       expiresIn: process.env.JWT_EXPIRES,
     });
+
+
 
     if (!token)
       return res.status(500).json({
         message: "Token generation failed. Please try again later.",
         success: false,
       });
-    // const option = {
-    //   httpOnly: false,
-    //   secure: process.env.NODE_ENV === "production",
-    //   sameSite: "lax",
-    //   maxAge: 24 * 60 * 60 * 1000,
-    // };
+    
     return res
       .cookie("token", token, {
         httpOnly: true,
@@ -211,11 +212,24 @@ export const logdinUser = async (req, res) => {
 
 
 export const getAllUsers = async (req, res) => {
-  const {page,limit} = req.query;
+  const {page,limit,search,filterRole} = req.query;
+
+  
+  
   try {
+    const filter = {};
+    if (search) {
+      filter._id = search;
+    }
+    if (filterRole) {
+      filter.role = filterRole;
+    }
+
+    console.log(filter);
+    
     const totalUsers = await User.find().countDocuments();
     const totalPage = Math.ceil(totalUsers / limit);
-    const users = await User.find().skip((page - 1) * limit).limit(limit).select("-password  -updatedAt");
+    const users = await User.find(filter).skip((page - 1) * limit).limit(limit).select("-password  -updatedAt");
     if (!users) {
       return res
         .status(400)
@@ -235,6 +249,7 @@ export const updateUserRole = async (req, res) => {
   const { userId } = req.params;
   const { role } = req.body;
   try {
+
     const user = await User.findOneAndUpdate(
       { _id: userId },
       { role },

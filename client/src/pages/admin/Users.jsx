@@ -16,12 +16,14 @@ const Users = () => {
   
   const adminId = user?._id;
 
+
+  console.log(roleFilter);
+  
   const { data: users = [], refetch } = useQuery({
     queryKey: ["users", page, usersPerPage, searchId, roleFilter],
     queryFn: async () => {
-      let url = `/auth/users?page=${page}&limit=${usersPerPage}`;
-      if (searchId) url += `&userId=${searchId}`;
-      if (roleFilter) url += `&role=${roleFilter}`;
+      let url = `/auth/users?page=${page}&limit=${usersPerPage}&search=${searchId}&filterRole=${roleFilter}`;
+      
       const res = await callGetApis(url);
       if (res.success) {
         setTotalPages(res.totalPage);
@@ -36,7 +38,7 @@ const Users = () => {
 
     
 
-    const previewRole = sessionStorage.getItem("previesRole");
+    const previewRole = localStorage.getItem("previesRole");
 
     if (previewRole) {
       const previesRoles = JSON.parse(previewRole);
@@ -46,9 +48,9 @@ const Users = () => {
       } else {
         previesRoles.push({ userId: id, previesRole: prevRole });
       }
-      sessionStorage.setItem("previesRole", JSON.stringify(previesRoles));
+      localStorage.setItem("previesRole", JSON.stringify(previesRoles));
     } else {
-      sessionStorage.setItem(
+      localStorage.setItem(
         "previesRole",
         JSON.stringify([{ userId: id, previesRole: prevRole }])
       );
@@ -181,7 +183,7 @@ const Users = () => {
                       <button
                         onClick={() => {
                           // Restore previous role from sessionStorage
-                          const previewRole = sessionStorage.getItem("previesRole");
+                          const previewRole = localStorage.getItem("previesRole");
                           let prevRole = "user";
                           if (previewRole) {
                             const previesRoles = JSON.parse(previewRole);
@@ -190,7 +192,7 @@ const Users = () => {
                               prevRole = previesRole.previesRole;
                             }
 
-                            console.log(prevRole);
+                           
                             
                             
                           }

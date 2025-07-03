@@ -3,7 +3,6 @@ import React, { useEffect } from 'react';
 import Sidebar from '../../../components/seller/Sidebar';
 import { Outlet, useNavigate } from 'react-router-dom';
 import Navbar from '../../../components/seller/Navbar';
-import "./seller.css";
 import { toast, Toaster } from 'sonner';
 import useSecureApi from '../../../hooks/useSecureApi';
 import useAuth from '../../../hooks/useAuth';
