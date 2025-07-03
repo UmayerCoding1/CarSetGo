@@ -43,39 +43,48 @@ const router = createBrowserRouter([
         element: <Home />,
       },
       {
-        path: '/future-cars',
-        element: <CarLists/>
+        path: "/future-cars",
+        element: <CarLists />,
       },
       {
-        path: '/future-cars/:id',
-        element: <CarDetails/>,
+        path: "/future-cars/:id",
+        element: <CarDetails />,
       },
 
-     
       {
-        path: '/saved-cars',
-        element: <PrivetRoute><SaveCars/></PrivetRoute>
+        path: "/saved-cars",
+        element: (
+          <PrivetRoute>
+            <SaveCars />
+          </PrivetRoute>
+        ),
       },
       {
-        path: '/my-booking',
-        element: <PrivetRoute><MyBooking/></PrivetRoute>
+        path: "/my-booking",
+        element: (
+          <PrivetRoute>
+            <MyBooking />
+          </PrivetRoute>
+        ),
       },
       {
-        path: '/my-cars/:id',
-        element: <PrivetRoute><MyCars/></PrivetRoute>
+        path: "/my-cars/:id",
+        element: (
+          <PrivetRoute>
+            <MyCars />
+          </PrivetRoute>
+        ),
       },
-
 
       // seller routes
       {
-        path: '/pricing',
-        element: <PrivetRoute><Pricing/></PrivetRoute>
+        path: "/pricing",
+        element: (
+          <PrivetRoute>
+            <Pricing />
+          </PrivetRoute>
+        ),
       },
-
-
-     
-        
-      
     ],
   },
 
@@ -83,63 +92,70 @@ const router = createBrowserRouter([
 
   {
     path: "/seller-dashboard",
-    element: <SellerRoute><SellerDeshboard/></SellerRoute>,
+    element: (
+      <SellerRoute>
+        <SellerDeshboard />
+      </SellerRoute>
+    ),
     children: [
       {
         path: "/seller-dashboard",
-        element: <Overview/>
+        element: <Overview />,
       },
       {
         path: "/seller-dashboard/car-lists",
-        element: <AllCarLists />
+        element: <AllCarLists />,
       },
       {
         path: "/seller-dashboard/add-cars",
-        element: <AddCars />
+        element: <AddCars />,
       },
       {
         path: "/seller-dashboard/all-bookings",
-        element: <AllBookings />
+        element: <AllBookings />,
       },
       {
-        path: '/seller-dashboard/dealership-requests',
-        element: <DealershipRequest />
+        path: "/seller-dashboard/dealership-requests",
+        element: <DealershipRequest />,
       },
       {
-        path:'/seller-dashboard/dealership-requests/record',
-        element: <RequestRecord/>
+        path: "/seller-dashboard/dealership-requests/record",
+        element: <RequestRecord />,
       },
       {
-        path: '/seller-dashboard/schedile-mecting',
-        element: <SehedulMeeting />
+        path: "/seller-dashboard/schedile-mecting",
+        element: <SehedulMeeting />,
       },
       {
-        path: '/seller-dashboard/received-payments',
-        element: <ReceivedPayment />
-      }
-
-    ]
+        path: "/seller-dashboard/received-payments",
+        element: <ReceivedPayment />,
+      },
+    ],
   },
-
 
   // admin desboard route
   {
-    path: '/admin/dashboard',
-    element: <AdminRoute><AdminDeshboard /></AdminRoute>,
+    path: "/admin/dashboard",
+    element: (
+      <AdminRoute>
+        <AdminDeshboard />
+      </AdminRoute>
+    ),
     children: [
       {
-        path: '/admin/dashboard',
-        element: <AdminOverview />
+        path: "/admin/dashboard",
+        element: <AdminOverview />,
       },
       {
-        path: 'users',
-        element: <Users/>
+        path: "users",
+        element: <Users />,
       },
       {
-        path: 'cars',
-        element: <Cars/>
-      }
-    ]
+        path: "cars",
+        element: <Cars />,
+      },
+      
+    ],
   },
   {
     path: "/sign-in",
@@ -151,9 +167,11 @@ const router = createBrowserRouter([
   },
   {
     path: "/sign-up",
-    element: <GoogleAuthWrapper>
-              <SignUp />
-           </GoogleAuthWrapper>,
+    element: (
+      <GoogleAuthWrapper>
+        <SignUp />
+      </GoogleAuthWrapper>
+    ),
   },
 ]);
 

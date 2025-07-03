@@ -100,7 +100,7 @@ const Users = () => {
           <option className="text-black" value="blacklisted">Blacklisted</option>
         </select>
       </div>
-      <div className="bg-[#1e293b]/80 rounded-xl shadow-2xl border border-cyan-900 overflow-x-auto backdrop-blur-md scrollbar-hide">
+      <div className="bg-[#1e293b]/80  h-[800px] rounded-xl shadow-2xl border border-cyan-900 overflow-x-auto backdrop-blur-md scrollbar-hide">
         <table className="min-w-full text-sm text-cyan-100">
           <thead>
             <tr className="bg-gradient-to-r from-[#233554] to-[#2ec4f1] text-cyan-100">

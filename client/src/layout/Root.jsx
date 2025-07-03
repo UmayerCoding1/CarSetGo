@@ -10,7 +10,7 @@ const Root = () => {
   const [browserName, setBrowserName] = useState("");
  const isFooterAvailable = useLocation().pathname.includes('seller-dashboard');
  const homePath = useLocation().pathname === '/';
-
+// const {}
 const handleClick = () => {
  window.open("https://www.google.com/chrome/", "_blank");
 }

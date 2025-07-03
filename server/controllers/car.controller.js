@@ -47,7 +47,7 @@ export const getCars = async (req, res) => {
     const cars = await Car.find(filter)
       .skip(skip)
       .limit(limit)
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 }).populate({ path: 'seller', select: '-password' });;
 
     return res.status(200).json({
       success: true,
