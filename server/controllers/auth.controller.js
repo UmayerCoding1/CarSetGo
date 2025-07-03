@@ -210,3 +210,22 @@ export const logdinUser = async (req, res) => {
 };
 
 
+export const getAllUsers = async (req, res) => {
+  const {page,limit} = req.query;
+  try {
+    const totalUsers = await User.find().countDocuments();
+    const totalPage = Math.ceil(totalUsers / limit);
+    const users = await User.find().skip((page - 1) * limit).limit(limit).select("-password  -updatedAt");
+    if (!users) {
+      return res
+        .status(400)
+        .json({ message: "Users not found", success: false });
+    }
+
+    return res.status(200).json({ users,totalPage,success: true });   
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "Internal server error", success: false });
+  }
+};

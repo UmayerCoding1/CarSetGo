@@ -24,6 +24,7 @@ import RequestRecord from "../pages/seller/dealership/request-record/RequestReco
 import AdminDeshboard from "../pages/admin/AdminDeshboard";
 import AdminOverview from "../components/admin/Overview";
 import AdminRoute from "./AdminRoute";
+import Users from "../pages/admin/Users";
 const GoogleAuthWrapper = ({ children }) => {
   return (
     <GoogleOAuthProvider clientId={`${import.meta.env.VITE_GOOGLE_CLIENT_ID}`}>
@@ -128,6 +129,10 @@ const router = createBrowserRouter([
       {
         path: '/admin/dashboard',
         element: <AdminOverview />
+      },
+      {
+        path: 'users',
+        element: <Users/>
       }
     ]
   },
