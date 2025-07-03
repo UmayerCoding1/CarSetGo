@@ -229,3 +229,26 @@ export const getAllUsers = async (req, res) => {
       .json({ message: "Internal server error", success: false });
   }
 };
+
+
+export const updateUserRole = async (req, res) => {
+  const { userId } = req.params;
+  const { role } = req.body;
+  try {
+    const user = await User.findOneAndUpdate(
+      { _id: userId },
+      { role },
+      { new: true }
+    );
+    if (!user) {
+      return res
+        .status(400)
+        .json({ message: "User not found", success: false });
+    }
+    return res.status(200).json({ message: "Update user role successfully", success: true });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "Internal server error", success: false });
+  }
+};

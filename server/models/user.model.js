@@ -9,7 +9,7 @@ const userSchema = new Schema(
     avatar: { type: String, default: "" },
     role: {
       type: String,
-      enum: ["user", "seller", "admin"],
+      enum: ["user", "seller", "admin","blacklisted"],
       default: "user",
     },
     paymentstatus: {

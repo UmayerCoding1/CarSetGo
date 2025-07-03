@@ -23,7 +23,7 @@ import useAuth from "../../hooks/useAuth";
 
 const navLinks = [
   { label: 'Dashboard', icon: LayoutDashboard, to: '/admin/dashboard' },
-  { label: 'Users', icon: Users, to: '/admin/users' },
+  { label: 'Users', icon: Users, to: 'users' },
   // { label: 'Cars', icon: Car, to: '/admin/cars' },
   // { label: 'Payments', icon: CreditCard, to: '/admin/payments' },
   // { label: 'Messages', icon: MessageCircle, to: '/admin/messages' },
