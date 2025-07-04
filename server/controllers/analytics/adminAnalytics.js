@@ -143,20 +143,16 @@ export const getAdminAnalyticsState = async (req, res) => {
     );
 
     const topCars = await Promise.all(
-  countedCarIds.map(async (c) => {
-    const car = await Car.findById(c.carId).select(
-      "-year -price -mileage -color -fuelType -transmission -bodyType -seats -description -status -featured -bookingBy -dealership -seller -category -postType -paymentsystem -addCredits -availableCar -views -createdAt -updatedAt"
+      countedCarIds.map(async (c) => {
+        const car = await Car.findById(c.carId).select(
+          "-year -price -mileage -color -fuelType -transmission -bodyType -seats -description -status -featured -bookingBy -dealership -seller -category -postType -paymentsystem -addCredits -availableCar -views -createdAt -updatedAt"
+        );
+        return {
+          car,
+          count: c.count,
+        };
+      })
     );
-    return {
-      car,
-      count: c.count,
-    };
-  })
-);
-
-
-    
-    
 
     return res.status(200).json({
       platform: trackPlatformData,
@@ -173,6 +169,63 @@ export const getAdminAnalyticsState = async (req, res) => {
       topCars,
       success: true,
     });
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error", success: false });
+  }
+};
+
+export const getUserProfileAnalytics = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { role } = req.query;
+
+    if (role === "user") {
+      const user = await User.findById(id).select("-password  -updatedAt");
+      if (!user) {
+        return res
+          .status(404)
+          .json({ message: "User not found", success: false });
+      }
+
+
+      const bookings = await Booking.find({userId: id});
+      const reviews = await Review.find({userId: id});
+      const reports = await Report.find({userId: id}) 
+    }
+
+    if (role === "seller") {
+      const seller = await User.findById(id).select("-password  -updatedAt");
+      if (!seller) {
+        return res
+          .status(404)
+          .json({ message: "Seller not found", success: false });
+      }
+
+      const cars = await Car.find({ seller: id }).populate("seller");
+      const bookings = await Booking.find({ sellerId: id });
+      const reviews = await Review.find({ sellerId: id });
+      const payments = await Payment.find({ sellerId: id });
+      const reports = await Report.find({ sellerId: id });
+
+      const totalPaymentAmount = payments.reduce(
+        (total, payment) => total + payment.amount,
+        0
+      );
+
+      return res.status(200).json({
+        seller,
+        analytics: {
+          totalCars: cars.length,
+          totalBookings: bookings.length,
+          totalReviews: reviews.length,
+          totalPayments: totalPaymentAmount,
+          totalReports: reports.length,
+        },
+        reviews,
+        reports,
+        success: true,
+      });
+    }
   } catch (error) {
     res.status(500).json({ message: "Internal server error", success: false });
   }

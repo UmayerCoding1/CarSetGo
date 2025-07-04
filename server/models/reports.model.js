@@ -2,7 +2,7 @@ import { Schema, Types, model } from "mongoose";
 
 const reportSchema = new Schema(
   {
-    userId: {
+    reporterId: {
         type: Schema.Types.ObjectId,
         ref: "User",
         required: true,
@@ -10,15 +10,20 @@ const reportSchema = new Schema(
     carId: {
         type: Schema.Types.ObjectId,
         ref: "Car",
-        required: true,
+        
     },
-    sellerId: {
+    reportedUserId: {
         type: Schema.Types.ObjectId,
         ref: "User",
         required: true,
     },
     reportReason: {
         type: String,
+        required: true,
+    },
+    reportType: {
+        type: String,
+        enum: ["selling", "booking", "other"],
         required: true,
     },
     reportStatus: {

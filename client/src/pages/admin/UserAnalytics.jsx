@@ -118,21 +118,7 @@ const UserAnalytics = () => {
           </div>
         </div>
 
-        {/* More Analytics Section */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-20">
-          {/* Customers */}
-          <div className="bg-gradient-to-r from-blue-900 to-cyan-700 rounded-2xl p-6 shadow-xl border border-cyan-800 flex flex-col gap-2">
-            <h3 className="text-xl font-bold text-cyan-100 mb-2 flex items-center gap-2"><Users className="w-5 h-5 text-cyan-300" /> Customers</h3>
-            <div className="text-3xl font-extrabold text-cyan-100 mb-1">{sellerStats.totalCustomers}</div>
-            <div className="text-cyan-200 text-sm">Total unique customers who booked with this seller.</div>
-          </div>
-          {/* Messages */}
-          <div className="bg-gradient-to-r from-cyan-900 to-blue-700 rounded-2xl p-6 shadow-xl border border-blue-800 flex flex-col gap-2">
-            <h3 className="text-xl font-bold text-cyan-100 mb-2 flex items-center gap-2"><MessageCircle className="w-5 h-5 text-cyan-300" /> Messages</h3>
-            <div className="text-3xl font-extrabold text-cyan-100 mb-1">{sellerStats.totalMessages}</div>
-            <div className="text-cyan-200 text-sm">Total messages exchanged with customers.</div>
-          </div>
-        </div>
+       <div className='mb-20'> </div>
       </div>
     </div>
   );
