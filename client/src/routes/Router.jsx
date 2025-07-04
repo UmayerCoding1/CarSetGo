@@ -26,6 +26,7 @@ import AdminOverview from "../components/admin/Overview";
 import AdminRoute from "./AdminRoute";
 import Users from "../pages/admin/Users";
 import Cars from "../pages/admin/Cars";
+import UserAnalytics from "../pages/admin/UserAnalytics";
 const GoogleAuthWrapper = ({ children }) => {
   return (
     <GoogleOAuthProvider clientId={`${import.meta.env.VITE_GOOGLE_CLIENT_ID}`}>
@@ -149,6 +150,10 @@ const router = createBrowserRouter([
       {
         path: "users",
         element: <Users />,
+      },
+      {
+        path: "users/:id",
+        element: <UserAnalytics />,
       },
       {
         path: "cars",

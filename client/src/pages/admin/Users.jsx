@@ -4,6 +4,7 @@ import useAuth from "../../hooks/useAuth";
 import { useQuery } from "@tanstack/react-query";
 import { Ban, Trash } from "lucide-react";
 import { toast } from "sonner";
+import { Link } from "react-router";
 const Users = () => {
   const [allUsers, setAllUsers] = useState([]);
   const [searchId, setSearchId] = useState("");
@@ -170,7 +171,7 @@ const Users = () => {
                   )}
                 </td>
 
-                <td className="py-2 px-4 flex items-center justify-center">
+                <td className="py-2 px-4 flex items-center justify-center gap-2">
                   {user?._id === adminId  ? "You" : (
                        <div className="flex items-center gap-2">
                     {user.role !== "blacklisted" ? (
@@ -204,6 +205,11 @@ const Users = () => {
                     )}
                   </div>
                   )}
+
+                  <Link
+                    to={`/admin/dashboard/users/${user._id}?username=${user.fullname}&role=${user.role}`}
+                   className="flex items-center gap-2 bg-gradient-to-r from-[#2B5476] to-[#3290B9] text-white px-2 py-1 rounded text-xs font-semibold shadow-md hover:from-[#3290B9] hover:to-[#2B5476] transition-colors duration-150"
+                  >Analytics</Link>
                 </td>
               </tr>
             ))}
