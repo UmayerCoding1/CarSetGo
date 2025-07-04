@@ -1,41 +1,44 @@
-import React from "react";
-import Table from "../../components/ui/table/Table";
-import { motion, AnimatePresence } from "motion/react";
-import CarListTavleRow from "../../components/seller/CarListTavleRow";
+import React, { useState } from "react";
 import useCars from "../../hooks/useCars";
-import ImageSlider from "../../components/admin/ImageSlider";
-import { Link } from "react-router";
 import CarCard from "../../components/admin/CarCard";
+import {X} from "lucide-react";
 const Cars = () => {
-  const [page, setPage] = React.useState(1);
-  const carsPerPage = 10;
-  const { cars, totalPages } = useCars(page, carsPerPage, "", "", "", "", "");
-  console.log(cars);
+  const [page, setPage] = useState(1);
+ const [filtersQuery, setFiltersQuery] = useState({
+  search: "",
+  bodyType: "",
+  minPrice: "",
+  maxPrice: "",
+ });
+ const [openClearFilters, setOpenClearFilters] = useState(false);
+ const carsPerPage = 10;
+  const { cars, totalPages } = useCars(page, carsPerPage,"", filtersQuery.search, filtersQuery.bodyType,"","");
 
-  // Filtering state
-  const [search, setSearch] = React.useState("");
-  const [bodyType, setBodyType] = React.useState("");
-  const [minPrice, setMinPrice] = React.useState("");
-  const [maxPrice, setMaxPrice] = React.useState("");
 
-  // Filtering UI
-  const handleFilter = (e) => {
-    e.preventDefault();
-    // You may want to update useCars to accept these filters
-    // For now, just log or pass to your hook if supported
-    // setPage(1); // Optionally reset page
+  const changerHandler = (e) => {
+    const { name, value } = e.target;
+    
+    
+    setFiltersQuery((prevFilters) => ({
+      ...prevFilters,
+      [name]: value,
+    }));
+
+    setOpenClearFilters(true);
   };
+  
 
   return (
     <div className="max-h-screen overflow-auto scrollbar-hide p-10 bg-gradient-to-br from-[#19223a] via-[#1e2a3a] to-[#2ec4f1] ">
       {/* Filtering Section */}
-      <form onSubmit={handleFilter} className="mb-8 flex flex-wrap gap-4 items-end bg-white/10 backdrop-blur rounded-2xl p-4 shadow-lg border border-cyan-900">
+      <form  className="mb-8 flex flex-wrap gap-4 items-end bg-white/10 backdrop-blur rounded-2xl p-4 shadow-lg border border-cyan-900">
         <div className="flex flex-col">
           <label className="text-xs font-semibold text-cyan-100 mb-1">Search</label>
           <input
             type="text"
-            value={search}
-            onChange={e => setSearch(e.target.value)}
+            value={filtersQuery.search}
+            name="search"
+            onChange={changerHandler}
             placeholder="Car name, model, seller..."
             className="px-3 py-2 rounded bg-white/80 text-cyan-900 border border-cyan-200 focus:outline-none focus:ring-2 focus:ring-cyan-400 text-sm min-w-[180px]"
           />
@@ -43,8 +46,9 @@ const Cars = () => {
         <div className="flex flex-col">
           <label className="text-xs font-semibold text-cyan-100 mb-1">Body Type</label>
           <select
-            value={bodyType}
-            onChange={e => setBodyType(e.target.value)}
+            value={filtersQuery.bodyType}
+            name="bodyType"
+            onChange={changerHandler}
             className="px-3 py-2 rounded bg-white/80 text-cyan-900 border border-cyan-200 focus:outline-none focus:ring-2 focus:ring-cyan-400 text-sm min-w-[120px]"
           >
             <option value="">All</option>
@@ -57,32 +61,22 @@ const Cars = () => {
             <option value="MPV">MPV</option>
           </select>
         </div>
-        <div className="flex flex-col">
-          <label className="text-xs font-semibold text-cyan-100 mb-1">Min Price</label>
-          <input
-            type="number"
-            value={minPrice}
-            onChange={e => setMinPrice(e.target.value)}
-            placeholder="$ Min"
-            className="px-3 py-2 rounded bg-white/80 text-cyan-900 border border-cyan-200 focus:outline-none focus:ring-2 focus:ring-cyan-400 text-sm min-w-[100px]"
-          />
-        </div>
-        <div className="flex flex-col">
-          <label className="text-xs font-semibold text-cyan-100 mb-1">Max Price</label>
-          <input
-            type="number"
-            value={maxPrice}
-            onChange={e => setMaxPrice(e.target.value)}
-            placeholder="$ Max"
-            className="px-3 py-2 rounded bg-white/80 text-cyan-900 border border-cyan-200 focus:outline-none focus:ring-2 focus:ring-cyan-400 text-sm min-w-[100px]"
-          />
-        </div>
-        <button
-          type="submit"
-          className="px-5 py-2 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-700 text-white font-bold shadow hover:from-cyan-700 hover:to-blue-800 transition border border-cyan-700 mt-2"
+        
+       {openClearFilters &&  <button
+       onClick={() => {
+         setFiltersQuery({
+      search: '',
+      bodyType: '',
+      minPrice: '',
+      maxPrice: '',
+    });
+    setOpenClearFilters(false);
+       }}
+          type="button"
+          className="px-5 py-1 rounded-xl bg-gradient-to-r from-red-600 to-red-400 text-white font-bold shadow hover:from-red-400 hover:to-red-600 transition border border-cyan-700 mt-2 flex items-center gap-2"
         >
-          Filter
-        </button>
+          <X size={20}/> Clear
+        </button>}
       </form>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
         {cars?.map((car, idx) => (

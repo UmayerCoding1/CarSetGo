@@ -3,7 +3,7 @@ import ImageSlider from './ImageSlider';
 import {motion} from 'motion/react';
 import {Link} from 'react-router';
 const CarCard = ({car,idx}) => {
-    console.log(car.seller.fullname);
+    
     
     return (
          <motion.div
@@ -43,32 +43,7 @@ const CarCard = ({car,idx}) => {
                     </div>
                     
                     <div className="flex gap-2">
-                      <div className="grid grid-cols-2 gap-2 mb-2 flex-1">
-                        <div className="bg-gradient-to-r from-cyan-900 to-cyan-700 rounded-xl px-2 py-1 flex flex-col items-center text-[10px] text-cyan-100 font-semibold shadow-sm">
-                          <span className="mb-0.5">Bookings</span>
-                          <span className="text-base font-bold text-cyan-300">
-                            {car.totalBookings ?? 0}
-                          </span>
-                        </div>
-                        <div className="bg-gradient-to-r from-emerald-900 to-emerald-700 rounded-xl px-2 py-1 flex flex-col items-center text-[10px] text-emerald-100 font-semibold shadow-sm">
-                          <span className="mb-0.5">Total Sell</span>
-                          <span className="text-base font-bold text-emerald-300">
-                            ${car.totalSell?.toLocaleString() ?? "0"}
-                          </span>
-                        </div>
-                        <div className="bg-gradient-to-r from-yellow-900 to-yellow-700 rounded-xl px-2 py-1 flex flex-col items-center text-[10px] text-yellow-100 font-semibold shadow-sm">
-                          <span className="mb-0.5">Reviews</span>
-                          <span className="text-base font-bold text-yellow-300">
-                            {car.totalReviews ?? 0}
-                          </span>
-                        </div>
-                        <div className="bg-gradient-to-r from-pink-900 to-rose-700 rounded-xl px-2 py-1 flex flex-col items-center text-[10px] text-pink-100 font-semibold shadow-sm">
-                          <span className="mb-0.5">Reports</span>
-                          <span className="text-base font-bold text-pink-300">
-                            {car.totalReports ?? 0}
-                          </span>
-                        </div>
-                      </div>
+                     
                       
                       <div className="bg-gradient-to-r from-[#1e293b] to-[#0ea5e9] border border-blue-900 rounded-2xl p-2 mb-2 flex flex-col sm:flex-row items-center gap-2 shadow-sm flex-1">
                         <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-cyan-600 to-blue-900 flex items-center justify-center text-lg font-bold text-white shadow">
