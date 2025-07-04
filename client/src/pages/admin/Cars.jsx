@@ -19,7 +19,7 @@ const Cars = () => {
   const [openClearFilters, setOpenClearFilters] = useState(false);
   const carsPerPage = 10;
   const DEBOUNCE_DELAY = 500;
-  // const { cars, totalPages } = useCars(page, carsPerPage,"", filtersQuery.search, filtersQuery.bodyType,"","");
+ 
 
   const changerHandler = async (e) => {
     const { name, value } = e.target;
