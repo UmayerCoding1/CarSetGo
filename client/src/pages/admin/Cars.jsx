@@ -1,24 +1,29 @@
 import React, { useState } from "react";
 import useCars from "../../hooks/useCars";
 import CarCard from "../../components/admin/CarCard";
-import {X} from "lucide-react";
+import { X } from "lucide-react";
+import { callGetApis } from "../../api/api";
+import { useEffect } from "react";
+import Loading from "../../components/ui/Loading";
 const Cars = () => {
+  const [cars, setCars] = useState([]);
+  const [totalPages, setTotalPages] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
   const [page, setPage] = useState(1);
- const [filtersQuery, setFiltersQuery] = useState({
-  search: "",
-  bodyType: "",
-  minPrice: "",
-  maxPrice: "",
- });
- const [openClearFilters, setOpenClearFilters] = useState(false);
- const carsPerPage = 10;
-  const { cars, totalPages } = useCars(page, carsPerPage,"", filtersQuery.search, filtersQuery.bodyType,"","");
+  const [filtersQuery, setFiltersQuery] = useState({
+    search: "",
+    bodyType: "",
+    minPrice: "",
+    maxPrice: "",
+  });
+  const [openClearFilters, setOpenClearFilters] = useState(false);
+  const carsPerPage = 10;
+  const DEBOUNCE_DELAY = 500;
+  // const { cars, totalPages } = useCars(page, carsPerPage,"", filtersQuery.search, filtersQuery.bodyType,"","");
 
-
-  const changerHandler = (e) => {
+  const changerHandler = async (e) => {
     const { name, value } = e.target;
-    
-    
+
     setFiltersQuery((prevFilters) => ({
       ...prevFilters,
       [name]: value,
@@ -26,14 +31,50 @@ const Cars = () => {
 
     setOpenClearFilters(true);
   };
-  
+
+  // todo : ---
+  useEffect(() => {
+  const controller = new AbortController(); // Optional: to cancel previous requests if needed
+  const signal = controller.signal;
+
+  const debounceTimer = setTimeout(() => {
+    const handleCars = async () => {
+      setIsLoading(true);
+      try {
+        const res = await callGetApis(
+          `/cars?page=${page}&limit=${carsPerPage}&make=${filtersQuery.search}&bodyType=${filtersQuery.bodyType}`,
+          { signal } // Optional
+        );
+        if (res) {
+          setCars(res.data);
+          setTotalPages(res.pagination.totalPages);
+        }
+      } catch (error) {
+        if (error.name !== "AbortError") {
+          console.error("API error:", error);
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    handleCars();
+  }, DEBOUNCE_DELAY);
+
+  return () => {
+    clearTimeout(debounceTimer);
+    controller.abort(); // Cancel previous requests
+  };
+}, [page, carsPerPage, filtersQuery.search, filtersQuery.bodyType]);
 
   return (
     <div className="max-h-screen overflow-auto scrollbar-hide p-10 bg-gradient-to-br from-[#19223a] via-[#1e2a3a] to-[#2ec4f1] ">
       {/* Filtering Section */}
-      <form  className="mb-8 flex flex-wrap gap-4 items-end bg-white/10 backdrop-blur rounded-2xl p-4 shadow-lg border border-cyan-900">
+      <form className="mb-8 flex flex-wrap gap-4 items-end bg-white/10 backdrop-blur rounded-2xl p-4 shadow-lg border border-cyan-900">
         <div className="flex flex-col">
-          <label className="text-xs font-semibold text-cyan-100 mb-1">Search</label>
+          <label className="text-xs font-semibold text-cyan-100 mb-1">
+            Search
+          </label>
           <input
             type="text"
             value={filtersQuery.search}
@@ -44,7 +85,9 @@ const Cars = () => {
           />
         </div>
         <div className="flex flex-col">
-          <label className="text-xs font-semibold text-cyan-100 mb-1">Body Type</label>
+          <label className="text-xs font-semibold text-cyan-100 mb-1">
+            Body Type
+          </label>
           <select
             value={filtersQuery.bodyType}
             name="bodyType"
@@ -61,25 +104,27 @@ const Cars = () => {
             <option value="MPV">MPV</option>
           </select>
         </div>
-        
-       {openClearFilters &&  <button
-       onClick={() => {
-         setFiltersQuery({
-      search: '',
-      bodyType: '',
-      minPrice: '',
-      maxPrice: '',
-    });
-    setOpenClearFilters(false);
-       }}
-          type="button"
-          className="px-5 py-1 rounded-xl bg-gradient-to-r from-red-600 to-red-400 text-white font-bold shadow hover:from-red-400 hover:to-red-600 transition border border-cyan-700 mt-2 flex items-center gap-2"
-        >
-          <X size={20}/> Clear
-        </button>}
+
+        {openClearFilters && (
+          <button
+            onClick={() => {
+              setFiltersQuery({
+                search: "",
+                bodyType: "",
+                minPrice: "",
+                maxPrice: "",
+              });
+              setOpenClearFilters(false);
+            }}
+            type="button"
+            className="px-5 py-1 rounded-xl bg-gradient-to-r from-red-600 to-red-400 text-white font-bold shadow hover:from-red-400 hover:to-red-600 transition border border-cyan-700 mt-2 flex items-center gap-2"
+          >
+            <X size={20} /> Clear
+          </button>
+        )}
       </form>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-        {cars?.map((car, idx) => (
+        {isLoading ? <Loading /> : cars?.map((car, idx) => (
           <CarCard key={idx} car={car} idx={idx} />
         ))}
       </div>
