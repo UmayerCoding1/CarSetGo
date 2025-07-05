@@ -1,10 +1,11 @@
 import { Report } from "../models/reports.model.js";
 
 export const createReport = async (req, res) => {
-  const { userId, carId, sellerId, reason, reportDescription } = req.body;
+  const { reporterId, carId, reportedUserId, reason, reportDescription } = req.body;
 console.log(req.body);
 
-  if (!userId || !carId || !sellerId || !reason || !reportDescription) {
+
+  if (!reporterId  || !reportedUserId || !reason || !reportDescription) {
     return res
       .status(400)
       .json({ message: "All fields are required", success: false });
@@ -12,9 +13,9 @@ console.log(req.body);
 
   try {
     const report = await Report.create({
-      userId,
+      reporterId,
       carId,
-      sellerId,
+      reportedUserId,
       reportReason:reason,
      reportDescription
     });
@@ -23,6 +24,8 @@ console.log(req.body);
       .status(200)
       .json({ message: "Report submit successfully", success: true });
   } catch (error) {
+    console.log(error);
+    
     return res
       .status(500)
       .json({ message: "Internal server error", success: false });

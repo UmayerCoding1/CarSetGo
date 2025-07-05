@@ -27,6 +27,7 @@ import AdminRoute from "./AdminRoute";
 import Users from "../pages/admin/Users";
 import Cars from "../pages/admin/Cars";
 import UserAnalytics from "../pages/admin/UserAnalytics";
+import Payment from "../pages/admin/Payment";
 const GoogleAuthWrapper = ({ children }) => {
   return (
     <GoogleOAuthProvider clientId={`${import.meta.env.VITE_GOOGLE_CLIENT_ID}`}>
@@ -159,6 +160,10 @@ const router = createBrowserRouter([
         path: "cars",
         element: <Cars />,
       },
+      {
+        path: 'payments',
+        element: <Payment/>
+      }
       
     ],
   },

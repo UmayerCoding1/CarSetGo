@@ -187,10 +187,11 @@ export const getUserProfileAnalytics = async (req, res) => {
           .json({ message: "User not found", success: false });
       }
 
-
-      const bookings = await Booking.find({userId: id});
-      const reviews = await Review.find({userId: id});
-      const reports = await Report.find({userId: id});
+      const bookings = await Booking.find({ userId: id });
+      const reviews = await Review.find({ userId: id });
+      const reports = await Report.find({
+        $or: [{ reporterId: id }, { reportedUserId: id }],
+      });
 
       return res.status(200).json({
         user,
@@ -217,7 +218,9 @@ export const getUserProfileAnalytics = async (req, res) => {
       const bookings = await Booking.find({ sellerId: id });
       const reviews = await Review.find({ sellerId: id });
       const payments = await Payment.find({ sellerId: id });
-      const reports = await Report.find({ sellerId: id });
+      const reports = await Report.find({
+        $or: [{ reportReason: id }, { reportedUserId: id }],
+      });
 
       const totalPaymentAmount = payments.reduce(
         (total, payment) => total + payment.amount,
@@ -225,7 +228,7 @@ export const getUserProfileAnalytics = async (req, res) => {
       );
 
       return res.status(200).json({
-        user:seller,
+        user: seller,
         analytics: {
           totalCars: cars.length,
           totalBookings: bookings.length,

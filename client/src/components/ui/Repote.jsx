@@ -2,6 +2,7 @@ import { Triangle, TriangleAlert } from "lucide-react";
 import React, { useState } from "react";
 import { callPostApis } from "../../api/api";
 import { toast } from "sonner";
+import useAuth from "../../hooks/useAuth";
 
 
 const reportReasons = [
@@ -16,15 +17,15 @@ const reportReasons = [
 const Repote = ({ onClose,userId,carId,sellerId }) => {
   const [reason, setReason] = useState(reportReasons[0]);
   const [description, setDescription] = useState("");
-
+ const {user} = useAuth();
 
   const submitHandler =async (e) => {
     e.preventDefault();
 
     const reportData = {
-        userId,
+        reporterId : user?._id,
         carId,
-        sellerId,
+        reportedUserId:sellerId,
          reason,
         reportDescription: description,
     };

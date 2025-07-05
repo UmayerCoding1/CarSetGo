@@ -21,11 +21,6 @@ const reportSchema = new Schema(
         type: String,
         required: true,
     },
-    reportType: {
-        type: String,
-        enum: ["selling", "booking", "other"],
-        required: true,
-    },
     reportStatus: {
         type: String,
         enum: ["pending", "resolved"],

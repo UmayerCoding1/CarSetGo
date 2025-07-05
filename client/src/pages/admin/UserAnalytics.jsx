@@ -19,37 +19,10 @@ const UserAnalytics = () => {
   const [selectedUser,setSelectedUser] = useState(null);
 
  
-  // Demo data (replace with real API data as needed)
-  const sellerStats = {
-    totalCars: 12,
-    totalBookings: 87,
-    totalRevenue: 42000,
-    totalReviews: 14,
-    totalReports: 2,
-    totalCustomers: 38,
-    totalMessages: 7,
-    avgRating: 4.7,
-    joinDate: "2023-02-15",
-  };
-  const reviews = [
-    {
-      id: 1,
-      user: "Alice Johnson",
-      comment: "Great seller!",
-      rating: 5,
-      date: "2025-06-01",
-    },
-    {
-      id: 2,
-      user: "Michael Smith",
-      comment: "Smooth transaction.",
-      rating: 4,
-      date: "2025-06-03",
-    },
-  ];
-  const reports = [
-    { id: 1, user: "David Kim", reason: "Late delivery", date: "2025-06-10" },
-  ];
+console.log(selectedUser);
+
+  
+ 
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -122,7 +95,7 @@ const UserAnalytics = () => {
                 <span className="text-xs text-cyan-300">
                   Avg. Rating:{" "}
                   <span className="font-semibold text-yellow-300">
-                    {sellerStats.avgRating}
+                    {3.5}
                   </span>
                 </span>
                 

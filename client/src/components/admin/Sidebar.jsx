@@ -25,13 +25,13 @@ const navLinks = [
   { label: 'Dashboard', icon: LayoutDashboard, to: '/admin/dashboard' },
   { label: 'Users', icon: Users, to: 'users' },
   { label: 'Cars', icon: Car, to: 'cars' },
-  // { label: 'Payments', icon: CreditCard, to: '/admin/payments' },
-  // { label: 'Messages', icon: MessageCircle, to: '/admin/messages' },
+  { label: 'Payments', icon: CreditCard, to: 'payments' },
+  { label: 'Messages', icon: MessageCircle, to: '/admin/messages' },
   // { label: 'Analytics', icon: BarChart2, to: '/admin/analytics' },
-  // { label: 'Report', icon: ClipboardList, to: '/admin/report' },
-  // { label: 'Plan', icon: CalendarClock, to: '/admin/plan' },
-  // { label: 'Review', icon: Star, to: '/admin/review' },
-  // { label: 'Settings', icon: Settings, to: '/admin/settings' },
+  { label: 'Report', icon: ClipboardList, to: '/admin/report' },
+  { label: 'Plan', icon: CalendarClock, to: '/admin/plan' },
+  { label: 'Review', icon: Star, to: '/admin/review' },
+  { label: 'Settings', icon: Settings, to: '/admin/settings' },
 ];
 const Sidebar = () => {
   // Default open on desktop, closed on mobile
@@ -40,12 +40,7 @@ const Sidebar = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const {logout} = useAuth();
   const navigate = useNavigate();
-  // const handleDropdownClick = (dropdownName) => {
-  //   setActiveSellerPath(dropdownName);
-  //   sessionStorage.setItem("currentSellerPath", dropdownName);
-  //   if (windowWidth < 1024) setIsOpen(false); // auto close on mobile
-  // };
-
+  
 
 
   const handleLogout = async () => {
