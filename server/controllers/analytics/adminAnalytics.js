@@ -225,7 +225,7 @@ export const getUserProfileAnalytics = async (req, res) => {
       );
 
       return res.status(200).json({
-        seller,
+        user:seller,
         analytics: {
           totalCars: cars.length,
           totalBookings: bookings.length,

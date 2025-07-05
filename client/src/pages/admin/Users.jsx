@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Ban, Trash } from "lucide-react";
 import { toast } from "sonner";
 import { Link } from "react-router";
+import Loading from "../../components/ui/Loading";
 const Users = () => {
   const [allUsers, setAllUsers] = useState([]);
   const [searchId, setSearchId] = useState("");
@@ -101,7 +102,8 @@ const Users = () => {
           <option className="text-black" value="blacklisted">Blacklisted</option>
         </select>
       </div>
-      <div className="bg-[#1e293b]/80  h-[800px] rounded-xl shadow-2xl border border-cyan-900 overflow-x-auto backdrop-blur-md scrollbar-hide">
+      {users && users.length > 0 ? (
+        <div className="bg-[#1e293b]/80  h-[800px] rounded-xl shadow-2xl border border-cyan-900 overflow-x-auto backdrop-blur-md scrollbar-hide">
         <table className="min-w-full text-sm text-cyan-100">
           <thead>
             <tr className="bg-gradient-to-r from-[#233554] to-[#2ec4f1] text-cyan-100">
@@ -216,6 +218,9 @@ const Users = () => {
           </tbody>
         </table>
       </div>
+      ) : (
+        <Loading />
+      )}
       {/* Pagination */}
       <div className="flex justify-center items-center gap-2 mt-6 mb-[100px]">
         <button
