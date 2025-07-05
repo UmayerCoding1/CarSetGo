@@ -34,7 +34,7 @@ const Cars = () => {
 
   // todo : ---
   useEffect(() => {
-  const controller = new AbortController(); // Optional: to cancel previous requests if needed
+  const controller = new AbortController(); 
   const signal = controller.signal;
 
   const debounceTimer = setTimeout(() => {

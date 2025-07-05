@@ -211,6 +211,8 @@ export const logdinUser = async (req, res) => {
 };
 
 
+
+
 export const getAllUsers = async (req, res) => {
   const {page,limit,search,filterRole} = req.query;
 
@@ -237,6 +239,25 @@ export const getAllUsers = async (req, res) => {
     }
 
     return res.status(200).json({ users,totalPage,success: true });   
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "Internal server error", success: false });
+  }
+};
+
+export const getSingleUser = async (req, res) => {
+  const { id } = req.params;
+  console.log(id);
+  
+  try {
+    const user = await User.findById( id ).select("-password -updatedAt");
+    if (!user) {
+      return res
+        .status(400)
+        .json({ message: "User not found", success: false });
+    }
+    return res.status(200).json({ user, success: true });
   } catch (error) {
     return res
       .status(500)

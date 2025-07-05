@@ -190,7 +190,19 @@ export const getUserProfileAnalytics = async (req, res) => {
 
       const bookings = await Booking.find({userId: id});
       const reviews = await Review.find({userId: id});
-      const reports = await Report.find({userId: id}) 
+      const reports = await Report.find({userId: id});
+
+      return res.status(200).json({
+        user,
+        analytics: {
+          totalBookings: bookings.length,
+          totalReviews: reviews.length,
+          totalReports: reports.length,
+        },
+        reviews,
+        reports,
+        success: true,
+      });
     }
 
     if (role === "seller") {
