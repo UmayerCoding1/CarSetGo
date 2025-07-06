@@ -43,10 +43,8 @@ const CarDetails = () => {
     const handleCarViewCount = async () => {
       try {
         const res = await callPutApis(`/cars/viewcount/${car?._id}`);
-        console.log(res);
       } catch (error) {
-        // throw new Error(error);
-        console.log(error);
+        throw new Error(error);
       }
     };
 
@@ -64,7 +62,6 @@ const CarDetails = () => {
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error loading car details</div>;
   if (!car) {
-    console.log("no car found");
     return <div>No car found</div>;
   }
 
@@ -205,12 +202,11 @@ const CarDetails = () => {
       </div>
 
       {isReportOpen && (
-        <Repote 
-        onClose={handleCloseReportWaper} 
-        userId={user?._id} 
-        carId={car?._id}
-        sellerId={car?.seller._id}
-        
+        <Repote
+          onClose={handleCloseReportWaper}
+          userId={user?._id}
+          carId={car?._id}
+          sellerId={car?.seller._id}
         />
       )}
     </div>

@@ -20,20 +20,20 @@ export const getSellerAnalyticsState = async (req, res) => {
   try {
     // find total car
     const totalCar = await Car.find({ seller: sellerId }).countDocuments();
-  
+
     // find active booking
     const bookings = await Booking.find({ sellerId: sellerId });
     const activeBookings = bookings.filter(
       (booking) => booking.status !== "completed"
     );
-  
+
     // find total sells cars
     const totalCarSells = await Dealership.find({ sellerId }).countDocuments();
-  
-  
-  
-  //    find total review 
-  const   totalReviews = await Review.find({ sellerId: sellerId }).countDocuments();
+
+    //    find total review
+    const totalReviews = await Review.find({
+      sellerId: sellerId,
+    }).countDocuments();
     // Seller total revenue
     const carSells = await Dealership.aggregate([
       {
@@ -49,7 +49,7 @@ export const getSellerAnalyticsState = async (req, res) => {
         },
       },
     ]);
-  
+
     const carBookings = await Booking.aggregate([
       { $match: { sellerId: sellerObjectId, paymentStatus: "success" } },
       {
@@ -60,13 +60,11 @@ export const getSellerAnalyticsState = async (req, res) => {
         },
       },
     ]);
-  
-    console.log("carBookings", carBookings);
-  
+
     const sellRevenue = carSells[0]?.totalRevenue || 0;
     const bookingRevenue = carBookings[0]?.totalRevenue || 0;
     const totalRevenue = sellRevenue + bookingRevenue;
-  
+
     return res.json({
       totalRevenue,
       sellRevenue,
@@ -75,10 +73,9 @@ export const getSellerAnalyticsState = async (req, res) => {
       totalCarSells,
       activeBookings: activeBookings.length,
       totalReviews,
-      success: true
+      success: true,
     });
   } catch (error) {
-    res.status(500)
-      .json({ message: "Internal server error", success: false });
+    res.status(500).json({ message: "Internal server error", success: false });
   }
 };

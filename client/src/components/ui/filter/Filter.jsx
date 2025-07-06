@@ -3,28 +3,36 @@ import { X } from "lucide-react";
 import { motion } from "motion/react";
 import { useNavigate } from "react-router";
 const Filter = () => {
-  const [price, setPrice] = useState('');
+  const [price, setPrice] = useState("");
   const [selectedMake, setSelectedMake] = useState("");
   const [selectedCarType, setSelectedCarType] = useState("");
   const [selectedFuelType, setSelectedFuelType] = useState("");
-   const navigate = useNavigate();
+  const navigate = useNavigate();
   const carMakes = ["BMW", "Ford", "Honda", "Tata", "Rivian", "Mercedes-Beng"];
   const carTypes = ["Coupe", "Hatchback", "Sedan", "SUV"];
-  const fuelTypes = ["Petrol","Diesel","CNG","LPG","Electric","Hybrid","Hydrogen","Plug-in Hybrid","Flex Fuel","Biodiesel"];
+  const fuelTypes = [
+    "Petrol",
+    "Diesel",
+    "CNG",
+    "LPG",
+    "Electric",
+    "Hybrid",
+    "Hydrogen",
+    "Plug-in Hybrid",
+    "Flex Fuel",
+    "Biodiesel",
+  ];
 
   const handleFilter = () => {
     const filter = {
       price: price || "",
       make: selectedMake || "",
       bodyType: selectedCarType || "",
-      fuelType: selectedFuelType || ""
-    }
+      fuelType: selectedFuelType || "",
+    };
 
     navigate(`/future-cars?${new URLSearchParams(filter).toString()}`);
-    // console.log(`/future-cars?${new URLSearchParams(filter).toString()}`);
-    
-    
-  }
+  };
   return (
     <div className="  lg:w-[25%]">
       <div className="md:block lg:hidden w-full">m</div>
@@ -39,10 +47,10 @@ const Filter = () => {
               color: "#fff",
             }}
             onClick={() => {
-              setPrice('')
-              setSelectedMake('');
-              setSelectedCarType('');
-              setSelectedFuelType('');
+              setPrice("");
+              setSelectedMake("");
+              setSelectedCarType("");
+              setSelectedFuelType("");
               navigate(`/future-cars`);
             }}
             className="flex items-center gap-2 font-medium border border-gray-300 p-2 rounded-lg cursor-pointer"
@@ -81,7 +89,7 @@ const Filter = () => {
                   background: "red",
                   color: "#fff",
                 }}
-                onClick={() =>{
+                onClick={() => {
                   setSelectedMake("");
                   navigate(`/future-cars`);
                 }}
@@ -145,7 +153,6 @@ const Filter = () => {
           </div>
         </div>
 
-
         <div className="mt-7">
           <div className="flex items-center justify-between  pb-2">
             <h2 className="text-2xl font-medium">Fuel Types</h2>
@@ -180,7 +187,13 @@ const Filter = () => {
             ))}
           </div>
 
-          <motion.button whileTap={{scale: 0.9}} onClick={handleFilter} className="w-full bg-black p-2 text-white text-sm font-medium rounded-lg mt-5">Apply filter</motion.button>
+          <motion.button
+            whileTap={{ scale: 0.9 }}
+            onClick={handleFilter}
+            className="w-full bg-black p-2 text-white text-sm font-medium rounded-lg mt-5"
+          >
+            Apply filter
+          </motion.button>
         </div>
       </div>
     </div>

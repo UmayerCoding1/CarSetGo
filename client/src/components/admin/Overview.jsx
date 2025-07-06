@@ -98,7 +98,7 @@ const AdminOverview = () => {
   });
 
   const {platform,totalUser,totalBooking,totalCars,totalReport,totalReview,prevSixMonthRevenue,userDistribution,topCars} = adminAnalytics; 
-  console.log(adminAnalytics);
+  
   
   const stats = [
   {

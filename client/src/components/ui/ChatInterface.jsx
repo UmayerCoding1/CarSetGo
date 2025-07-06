@@ -53,7 +53,7 @@ const ChatInterface = ({
         getMessageRefetch();
       }
     } catch (error) {
-      console.log(error);
+      throw new Error(error);
     }
 
     setMessage("");

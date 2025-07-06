@@ -11,7 +11,7 @@ const SignIn = () => {
     emailOrUserName: "",
     password: "",
   });
- const [isShowPassword,setIsShowPassword]= useState(false);
+  const [isShowPassword, setIsShowPassword] = useState(false);
   const navigate = useNavigate();
 
   const { userLogin, setUser } = useAuth();
@@ -28,11 +28,12 @@ const SignIn = () => {
     userLogin(signInData)
       .then((res) => {
         if (res.data.success) {
-          console.log(res.data.message);
-          
           toast.success(res.data.message);
           setUser(res.data.user);
-          localStorage.setItem('xytz5T', `${res.data.user._id}+${res.data.token}+${res.data.user._id}`)
+          localStorage.setItem(
+            "xytz5T",
+            `${res.data.user._id}+${res.data.token}+${res.data.user._id}`
+          );
 
           setTimeout(() => navigate("/"), 1000);
           // ;
@@ -43,8 +44,6 @@ const SignIn = () => {
         }
       })
       .catch((err) => {
-        console.log(err);
-        
         toast.error(err.response.data.message);
       });
   };
@@ -116,7 +115,7 @@ const SignIn = () => {
               <div className="flex items-center justify-between p-2 border border-gray-300 rounded-sm w-72">
                 <input
                   className="text-sm outline-none pl-1 w-full "
-                  type={isShowPassword ? 'text': 'password'}
+                  type={isShowPassword ? "text" : "password"}
                   name="password"
                   value={signInData.password}
                   onChange={handleInputChane}
@@ -124,11 +123,15 @@ const SignIn = () => {
                   required
                 />
 
-                <div onClick={() => setIsShowPassword(!isShowPassword)} className="cursor-pointer">
-                   {isShowPassword ? 
-                  <Eye  size={12} className="text-gray-500 " />
-                  : <EyeClosed  size={12} className="text-gray-500 " />
-                   }
+                <div
+                  onClick={() => setIsShowPassword(!isShowPassword)}
+                  className="cursor-pointer"
+                >
+                  {isShowPassword ? (
+                    <Eye size={12} className="text-gray-500 " />
+                  ) : (
+                    <EyeClosed size={12} className="text-gray-500 " />
+                  )}
                 </div>
               </div>
             </div>
@@ -160,7 +163,7 @@ const SignIn = () => {
           </div>
         </div>
       </div>
-      <Toaster richColors position="top-right"/>
+      <Toaster richColors position="top-right" />
     </div>
   );
 };

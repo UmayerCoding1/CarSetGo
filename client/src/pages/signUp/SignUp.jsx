@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import { asset } from "../../assets/asser";
 import { Eye, EyeClosed, Mail, User } from "lucide-react";
 import GoogleLogin from "../../components/ui/GoogleLogin";
-import {Link, useNavigate} from 'react-router-dom';
-import {motion} from 'motion/react'
+import { Link, useNavigate } from "react-router-dom";
+import { motion } from "motion/react";
 import useAuth from "../../hooks/useAuth";
-import {toast, Toaster} from 'sonner';
+import { toast, Toaster } from "sonner";
 const SignUp = () => {
   const [signUpData, setSignUpData] = useState({
     fullname: "",
@@ -14,8 +14,8 @@ const SignUp = () => {
     password: "",
     role: "",
   });
-  const [isShowPassword,setIsShowPassword]= useState(false);
-  const {userRegister} = useAuth();
+  const [isShowPassword, setIsShowPassword] = useState(false);
+  const { userRegister } = useAuth();
   const navigate = useNavigate();
 
   const handleInputChane = (e) => {
@@ -34,18 +34,15 @@ const SignUp = () => {
       return;
     }
     userRegister(signUpData)
-    .then(res => {
-      if(res.data.success){
-        console.log(res.data);
-        
-        toast.success(res.data.message);
-        navigate('/sign-in');
-      }
-    })
-    .catch(err => {
-      toast.error(err.response.data.message)
-    })
-    
+      .then((res) => {
+        if (res.data.success) {
+          toast.success(res.data.message);
+          navigate("/sign-in");
+        }
+      })
+      .catch((err) => {
+        toast.error(err.response.data.message);
+      });
   };
   return (
     <div className="w-full lg:h-screen bg-gray-200 lg:flex items-center justify-center p-2 font-IBM">
@@ -55,19 +52,17 @@ const SignUp = () => {
           style={{ backgroundImage: `url(${asset.authBg})` }}
         >
           <motion.img
-          initial={{
-            x:-270
-          }}
-
-          animate={{
-            x:50
-          }}
-
-          transition={{
-            duration:2,
-            ease: "anticipate"
-          }}
-          loading="lazy"
+            initial={{
+              x: -270,
+            }}
+            animate={{
+              x: 50,
+            }}
+            transition={{
+              duration: 2,
+              ease: "anticipate",
+            }}
+            loading="lazy"
             className=" absolute -bottom-32 md:-bottom-16 lg:-bottom-20"
             src={asset.authCar}
             alt="auth-car"
@@ -161,18 +156,22 @@ const SignUp = () => {
               <div className="flex items-center justify-between p-2 border border-gray-300 rounded-sm w-72">
                 <input
                   className="text-sm outline-none pl-1 w-full "
-                  type={isShowPassword ? 'text': 'password'}
+                  type={isShowPassword ? "text" : "password"}
                   name="password"
                   value={signUpData.password}
                   onChange={handleInputChane}
                   placeholder="Enter your name"
                   required
                 />
-                <div onClick={() => setIsShowPassword(!isShowPassword)} className="cursor-pointer">
-                   {isShowPassword ? 
-                  <Eye  size={12} className="text-gray-500 " />
-                  : <EyeClosed  size={12} className="text-gray-500 " />
-                   }
+                <div
+                  onClick={() => setIsShowPassword(!isShowPassword)}
+                  className="cursor-pointer"
+                >
+                  {isShowPassword ? (
+                    <Eye size={12} className="text-gray-500 " />
+                  ) : (
+                    <EyeClosed size={12} className="text-gray-500 " />
+                  )}
                 </div>
               </div>
             </div>
@@ -208,9 +207,9 @@ const SignUp = () => {
             </div>
 
             <motion.button
-             whileTap={{
-              scale: 0.8
-             }}
+              whileTap={{
+                scale: 0.8,
+              }}
               type="submit"
               className="bg-gradient-to-r from-[#164eb6] to-[#189cda] p-2 mt-5 text-white font-semibold text-sm font-card rounded-sm w-full cursor-pointer"
             >
@@ -235,7 +234,7 @@ const SignUp = () => {
           </div>
         </div>
       </div>
-      <Toaster richColors position="top-right"/>
+      <Toaster richColors position="top-right" />
     </div>
   );
 };

@@ -1,41 +1,35 @@
-    import {v2 as cloudinary} from 'cloudinary';
-    import fs from 'fs';
-    import dotenv from 'dotenv';
-    dotenv.config('../.env')
+import { v2 as cloudinary } from "cloudinary";
+import fs from "fs";
+import dotenv from "dotenv";
+dotenv.config("../.env");
 
-    const configInfo = {
-        cloud_name: process.env.CLOUDINARY_NAME,
-        api_key: process.env.CLOUDINARY_API_KEY,
-        api_secret: process.env.CLOUDINARY_API_SECRET
-    }
+const configInfo = {
+  cloud_name: process.env.CLOUDINARY_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+};
 
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
+const uploadCloudinary = async (localPath) => {
+  try {
+    if (!localPath) return null;
 
-    cloudinary.config({
-        cloud_name: process.env.CLOUDINARY_NAME,
-        api_key: process.env.CLOUDINARY_API_KEY,
-        api_secret: process.env.CLOUDINARY_API_SECRET
+    const respone = await cloudinary.uploader.upload(localPath, {
+      resource_type: "auto",
     });
 
-    const uploadCloudinary = async (localPath) => {
-        
-        
-        try {
-            if (!localPath) return null;
+    fs.unlinkSync(localPath);
 
-            const respone = await cloudinary.uploader.upload(localPath,{
-                resource_type: 'auto'
-            });
+    return respone;
+  } catch (error) {
+    fs.unlinkSync(localPath);
+    return null;
+  }
+};
 
-        fs.unlinkSync(localPath);
-        
-        
-        return respone;
-        } catch (error) {
-            console.log(error);
-            fs.unlinkSync(localPath);
-            return null;
-        }
-    };
-
-    export {uploadCloudinary};
+export { uploadCloudinary };

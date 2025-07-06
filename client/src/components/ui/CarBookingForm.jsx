@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { motion } from "motion/react";
 import { X } from "lucide-react";
-import useSecureApi from "../../hooks/useSecureApi";
 import { toast } from "sonner";
 import useAuth from "../../hooks/useAuth";
+import { callGetApis } from "../../api/api";
 const CarBookingForm = ({ carId, userId, sellerId, price }) => {
   const {user} = useAuth();
   const [formData, setFormData] = useState({
@@ -22,17 +22,15 @@ const CarBookingForm = ({ carId, userId, sellerId, price }) => {
 
   const [showModal, setShowModal] = useState(false);
   const [totalPrice, setTotalPrice] = useState(0);
-  const secureApi = useSecureApi();
   
 
   const checkExistingBookings = async (startDate, endDate) => {
     if (!startDate || !endDate)
       return toast.error("Please select a valid date");
-    console.log("startDate", startDate);
-    console.log("endDate", endDate);
+    
 
     try {
-      const response = await secureApi.get(
+      const response = await callGetApis(
         `${
           import.meta.env.VITE_API_ENDPOINT
         }/check-bookings?carId=${carId}&startDate=${startDate}&endDate=${endDate}`
@@ -40,7 +38,7 @@ const CarBookingForm = ({ carId, userId, sellerId, price }) => {
       if (response.data.success) {
         setShowModal(false);
         document.body.style.overflow = "auto";
-        console.log("response.data.success", response.data.success);
+        
       }
       return response.data.success;
     } catch (error) {

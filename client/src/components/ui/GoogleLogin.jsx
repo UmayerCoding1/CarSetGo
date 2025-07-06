@@ -20,7 +20,7 @@ const GoogleLogin = () => {
         }
         
       }
-      console.log(authRes['code'])
+     
     } catch (error) {
       console.log('Google auth response error : ', error)
     }

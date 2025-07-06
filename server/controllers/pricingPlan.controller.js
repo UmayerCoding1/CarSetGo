@@ -4,7 +4,6 @@ import { User } from "../models/user.model.js";
 export const createPricingPlan = async (req, res) => {
   try {
     const { name, price, features } = req.body;
-    console.log(req.body);
 
     if (!name || !price || !features) {
       return res.status(400).json({ message: "All fields are required" });
@@ -15,7 +14,6 @@ export const createPricingPlan = async (req, res) => {
       return res.status(400).json({ message: "Pricing plan already exists" });
     }
     const pricingPlan = await PricingPlan.create({ name, price, features });
-    console.log(pricingPlan);
 
     res.status(201).json({ message: "Pricing plan created successfully" });
   } catch (error) {
@@ -26,10 +24,10 @@ export const createPricingPlan = async (req, res) => {
 export const getFreePlan = async (req, res) => {
   const { name, features } = req.body;
   const userId = req.userId;
-  console.log(userId);
+
   try {
     const freePlan = await PricingPlan.findOne({ name: "free" });
-    console.log(freePlan);
+
     const user = await User.findById(userId);
 
     if (user.plan && user.plan === "free") {
@@ -46,7 +44,6 @@ export const getFreePlan = async (req, res) => {
       .status(200)
       .json({ message: "Free plan activated successfully", success: true });
   } catch (error) {
-    console.log(error);
     res.status(500).json({ message: error.message });
   }
 };

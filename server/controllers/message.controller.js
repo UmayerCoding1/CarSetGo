@@ -7,8 +7,6 @@ export const sendMessage = async (req, res) => {
     const receiverId = req.params.id;
     const { message } = req.body;
 
-    console.log("senderId: ", senderId, "receiverId: ", receiverId);
-
     let gotConversation = await Conversation.findOne({
       participants: { $all: [senderId, receiverId] },
     });
@@ -37,7 +35,7 @@ export const sendMessage = async (req, res) => {
       conversation: gotConversation,
     });
   } catch (error) {
-    console.log(error);
+    throw new Error(error.message);
   }
 };
 
@@ -62,6 +60,6 @@ export const getMessage = async (req, res) => {
       messages: conversation.messages,
     });
   } catch (error) {
-    console.log(error);
+    throw new Error(error.message);
   }
 };

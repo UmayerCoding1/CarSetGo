@@ -9,8 +9,8 @@ import Stripe from "stripe";
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 export const createCarBookingPayment = async (req, res) => {
-  const { bookingId, amount, currency,sellerId } = req.body;
-// log
+  const { bookingId, amount, currency, sellerId } = req.body;
+  // log
   // Input validation
   if (!bookingId || !amount || !currency) {
     return res.status(400).json({
@@ -26,8 +26,6 @@ export const createCarBookingPayment = async (req, res) => {
     });
   }
 
-
-  
   try {
     const booking = await Booking.findById(bookingId).populate("carId");
     if (!booking) {
@@ -53,7 +51,7 @@ export const createCarBookingPayment = async (req, res) => {
     // STEP 2: Create stripe session
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
-      
+
       line_items: [
         {
           price_data: {
@@ -69,12 +67,9 @@ export const createCarBookingPayment = async (req, res) => {
         },
       ],
       mode: "payment",
-      success_url: `http://localhost:5173/my-booking?success=true&session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `http://localhost:5173/my-booking?canceled=true&session_id={CHECKOUT_SESSION_ID}`,
+      success_url: `https://carsetgo.vercel.app/my-booking?success=true&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `https://carsetgo.vercel.app/my-booking?canceled=true&session_id={CHECKOUT_SESSION_ID}`,
     });
-
-
-
 
     // STEP 3: Save payment record in DB
     const payment = await Payment.create({
@@ -106,7 +101,7 @@ export const createCarBookingPayment = async (req, res) => {
 };
 
 export const createCarBuyPayment = async (req, res) => {
-  const { carId, amount, currency,dealershipId } = req.body;
+  const { carId, amount, currency, dealershipId } = req.body;
 
   try {
     const car = await Car.findById(carId);
@@ -134,8 +129,8 @@ export const createCarBuyPayment = async (req, res) => {
         },
       ],
       mode: "payment",
-      success_url: `http://localhost:5173/my-cars/${req.userId}?success=true&session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `http://localhost:5173/my-cars/${req.userId}?canceled=true&session_id={CHECKOUT_SESSION_ID}`,
+      success_url: `https://carsetgo.vercel.app/my-cars/${req.userId}?success=true&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `https://carsetgo.vercel.app/my-cars/${req.userId}?canceled=true&session_id={CHECKOUT_SESSION_ID}`,
     });
 
     if (!session) {
@@ -156,7 +151,71 @@ export const createCarBuyPayment = async (req, res) => {
       });
     }
 
+    res.status(201).json({
+      success: true,
+      message: "Stripe session created",
+      sessionId: session.id,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
 
+export const createPlanPayment = async (req, res) => {
+  const { planName, price, currency } = req.body;
+  const userId = req.userId;
+  const amount = price * 100;
+
+  if (!planName || !price || !currency) {
+    return res
+      .status(404)
+      .json({ message: "All field is requrid", success: false });
+  }
+  try {
+    const plan = await PricingPlan.findOne({ name: planName });
+    if (!plan) {
+      return res
+        .status(404)
+        .json({ message: "This plan is not found", success: false });
+    }
+
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      line_items: [
+        {
+          price_data: {
+            currency,
+            unit_amount: amount,
+            product_data: {
+              name: plan.name,
+            },
+          },
+          quantity: 1,
+        },
+      ],
+      mode: "payment",
+      success_url: `https://carsetgo.vercel.app/seller-dashboard?success=true&planName=${planName}&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `https://carsetgo.vercel.app/seller-dashboard?canceled=true&&planName=${planName}$session_id={CHECKOUT_SESSION_ID}`,
+    });
+
+    if (!session) {
+      return res.status(400).json({
+        success: false,
+        message: "Failed to create stripe session",
+      });
+    }
+
+    if (session.id) {
+      const payment = await Payment.create({
+        userId: userId,
+        amount,
+        transactionId: session.id,
+        paymentType: "plan",
+      });
+    }
 
     res.status(201).json({
       success: true,
@@ -171,85 +230,16 @@ export const createCarBuyPayment = async (req, res) => {
   }
 };
 
-
-export const createPlanPayment = async (req, res) => {
-  const { planName, price, currency } = req.body;
-  const userId = req.userId;
-  const amount = price * 100;
-
-  if(!planName || !price || !currency ){
-    return res.status(404).json({message: 'All field is requrid', success: false})
-  }
-  try {
-    const plan =await PricingPlan.findOne({name: planName});
-    if(!plan){
-      return res.status(404).json({message: "This plan is not found", success: false})
-    }
-
-
-   const session = await stripe.checkout.sessions.create({
-     payment_method_types: ["card"],
-     line_items: [
-      {
-          price_data: {
-            currency,
-            unit_amount: amount,
-            product_data: {
-              name: plan.name,
-            },
-          },
-          quantity: 1,
-      }
-     ],
-     mode: "payment",
-     success_url: `http://localhost:5173/seller-dashboard?success=true&planName=${planName}&session_id={CHECKOUT_SESSION_ID}`,
-     cancel_url: `http://localhost:5173/seller-dashboard?canceled=true&&planName=${planName}$session_id={CHECKOUT_SESSION_ID}`,
-   });
-
-   if(!session){
-    return res.status(400).json({
-      success: false,
-      message: "Failed to create stripe session",
-    });
-   }
-
-   if(session.id){
-    const payment = await Payment.create({
-      userId: userId,
-      amount,
-      transactionId: session.id,
-      paymentType: 'plan'
-    })
-   }
-
-   res.status(201).json({
-    success: true,
-    message: "Stripe session created",
-    sessionId: session.id,
-  });
-    
-  } catch (error) {
-    console.log(error);
-    
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
-};
-
 export const handlePaymentSuccess = async (req, res) => {
   const { sessionId } = req.body;
   const planName = req.query.planName;
 
-
-  if (!sessionId ) {
+  if (!sessionId) {
     return res.status(400).json({
       success: false,
       message: "Missing required fields: sessionId",
     });
   }
-
 
   try {
     const existingPayment = await Payment.findOne({ transactionId: sessionId });
@@ -259,9 +249,6 @@ export const handlePaymentSuccess = async (req, res) => {
         message: "Payment not found",
       });
     }
-
-    
-    
 
     if (existingPayment.paymentType === "booking") {
       const booking = await Booking.findByIdAndUpdate(
@@ -281,9 +268,7 @@ export const handlePaymentSuccess = async (req, res) => {
           message: "Payment success",
         });
       }
-    }
-
-   else if (existingPayment.paymentType === "buying") {
+    } else if (existingPayment.paymentType === "buying") {
       const dealership = await Dealership.findOneAndUpdate(
         { carId: existingPayment.carId },
         {
@@ -296,59 +281,52 @@ export const handlePaymentSuccess = async (req, res) => {
         }
       );
 
-    
       if (dealership) {
         return res.status(200).json({
           success: true,
           message: "Payment success",
         });
       }
-    }
-
-
-   else if(existingPayment.paymentType === 'plan'){
-      if(!planName){
+    } else if (existingPayment.paymentType === "plan") {
+      if (!planName) {
         return res.status(400).json({
           success: false,
           message: "Missing required fields: planName",
         });
       }
-      const plan = await PricingPlan.findOne({name: planName});
-      
-      
-      if(!plan){
-        return res.status(404).json({message: "This plan is not found", success: false})
+      const plan = await PricingPlan.findOne({ name: planName });
+
+      if (!plan) {
+        return res
+          .status(404)
+          .json({ message: "This plan is not found", success: false });
       }
       const user = await User.findByIdAndUpdate(
         existingPayment.userId,
         {
           $set: {
-            'isPlanActive': true,
-            "plan": plan.name,
-            "paymentStatus": "success",
-            "planDetails":{
-              "name": plan.name,
-              "price": plan.price,
-              "features": plan.features
-            }  ,
-          }
-
+            isPlanActive: true,
+            plan: plan.name,
+            paymentStatus: "success",
+            planDetails: {
+              name: plan.name,
+              price: plan.price,
+              features: plan.features,
+            },
+          },
         },
-        {new: true}
-      )
-      if(user){
+        { new: true }
+      );
+      if (user) {
         return res.status(200).json({
           success: true,
           message: "Payment success",
         });
       }
-    } 
-
-    else{
+    } else {
       console.log("Invalid payment type");
     }
   } catch (error) {
-    console.log(error);
     res.status(500).json({
       success: false,
       message: error.message,
@@ -387,33 +365,37 @@ export const handlePaymentCancel = async (req, res) => {
   }
 };
 
-
-
-export const getPaymentBySeller = async(req,res) => {
+export const getPaymentBySeller = async (req, res) => {
   try {
     const sellerId = req.sellerId;
     if (!sellerId) {
-      return res.status(400).json({message: "This user is not a selller!", success:false})
+      return res
+        .status(400)
+        .json({ message: "This user is not a selller!", success: false });
     }
 
-  const payments = await Payment.find({sellerId}).populate({
-    path: 'userId',
-    select: '-password -createdAt -isGoogleAccount -isPlanActive -paymentstatus -role -updatedAt -username'
-  });
-  if(!payments) {
-    return res.status(400).json({message: 'Payment not found', success:false})
-  }
+    const payments = await Payment.find({ sellerId }).populate({
+      path: "userId",
+      select:
+        "-password -createdAt -isGoogleAccount -isPlanActive -paymentstatus -role -updatedAt -username",
+    });
+    if (!payments) {
+      return res
+        .status(400)
+        .json({ message: "Payment not found", success: false });
+    }
 
-
-  return res.status(200).json({message: 'Payment data  successfully fecth', payments, success:true})
-  
-
+    return res
+      .status(200)
+      .json({
+        message: "Payment data  successfully fecth",
+        payments,
+        success: true,
+      });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({message: "Invalid server error", success: false});
+    return res
+      .status(500)
+      .json({ message: "Invalid server error", success: false });
   }
-}
-
-
-
-
+};

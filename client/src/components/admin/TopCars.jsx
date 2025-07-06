@@ -11,7 +11,7 @@ const TopCars = ({topCarsData}) => {
             </div>
             <div className="flex flex-col gap-2 text-xs text-yellow-900">
               {topCarsData?.map((car, index) => {
-                console.log(car);
+                
                 
                 return (
                   <div className="flex items-center gap-2 animate-fadeInUp" style={{animationDelay: '0.1s', animationFillMode: 'both'}}>

@@ -10,20 +10,23 @@ const CarLists = () => {
   const [page, setPage] = useState(1);
   const limit = 9;
   const [searchParams] = useSearchParams();
-  console.log(searchParams);
-  const price = searchParams.get('price') || '';
-  const make = searchParams.get('make') || "";
-  const bodyType = searchParams.get('bodyType') || "";
-  const fuelType = searchParams.get('fuelType') || "";
 
-  const search = searchParams.get('search') || "";
+  const price = searchParams.get("price") || "";
+  const make = searchParams.get("make") || "";
+  const bodyType = searchParams.get("bodyType") || "";
+  const fuelType = searchParams.get("fuelType") || "";
 
+  const search = searchParams.get("search") || "";
 
+  const {
+    cars,
+    totalPages,
+    currentPage,
+    totalCars,
+    isLoadingCars,
+    isRefetchingCars,
+  } = useCars(page, limit, price, make, bodyType, fuelType, search);
 
-  const { cars,totalPages,currentPage,totalCars, isLoadingCars, isRefetchingCars } = useCars(page,limit,price,make,bodyType,fuelType,search);
- 
- console.log(cars);
- 
   const handlePageChange = (newPage) => {
     setPage(newPage);
   };
@@ -42,10 +45,10 @@ const CarLists = () => {
       </div>
 
       <div className="flex flex-col md:flex-col lg:flex-row mt-10">
-        <Filter/>
+        <Filter />
 
         <div>
-          {(isLoadingCars || isRefetchingCars) ? (
+          {isLoadingCars || isRefetchingCars ? (
             <Loading />
           ) : (
             <>
@@ -77,8 +80,6 @@ const CarLists = () => {
                     {idx + 1}
                   </button>
                 ))}
-
-                
 
                 <button
                   disabled={currentPage === (totalPages || 0)}

@@ -1,6 +1,5 @@
-import React from "react";
+
 import { useQuery } from "@tanstack/react-query";
-import usePublicApi from "./usePublicApi";
 import { callGetApis } from "../api/api";
 const useCars = (page,limit,price,make,bodyType,fuelType,search) => {
   const {

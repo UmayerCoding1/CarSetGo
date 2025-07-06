@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import {toast} from 'sonner';
+import { toast } from "sonner";
 import useAuth from "../../../../hooks/useAuth";
 import { Car, Delete, Edit, Plus, Trash, TriangleAlert } from "lucide-react";
 import Table from "../../../../components/ui/table/Table";
@@ -31,14 +31,16 @@ const AllCarLists = () => {
   const [selectedCar, setSelectedCar] = useState(null);
   const [selectType, setselectType] = useState("");
   const [searchValue, setSearchValue] = useState("");
-  const [openDeleteDailog,setOpenDeleteDailog] = useState(false);
-  const [deleteDailogValue,setDeleteDailogValue]= useState(null);
+  const [openDeleteDailog, setOpenDeleteDailog] = useState(false);
+  const [deleteDailogValue, setDeleteDailogValue] = useState(null);
   const { user } = useAuth();
   const navigate = useNavigate();
 
-
-
-  const { data: cars = [], isLoading,refetch } = useQuery({
+  const {
+    data: cars = [],
+    isLoading,
+    refetch,
+  } = useQuery({
     queryKey: ["cars", user?._id, selectType, searchValue, page, limit],
     refetchOnWindowFocus: false,
     queryFn: async () => {
@@ -63,44 +65,33 @@ const AllCarLists = () => {
       </div>
     );
   }
-  // console.log(displayCars);
 
   const handleEiditCar = async (id) => {
-    console.log(user.planDetails.features);
-    
     if (user.planDetails.features.editpost) {
-      navigate(`/seller-dashboard/add-cars?updated-carId=${id}`)
-    }else{
-      navigate('/pricing')
+      navigate(`/seller-dashboard/add-cars?updated-carId=${id}`);
+    } else {
+      navigate("/pricing");
     }
   };
 
   const handleDeleteCar = async (id) => {
-    
-    
-      try {
+    try {
       const response = await callDeleteApis(`/cars/delete/${id}/${user?._id}`);
-      console.log(response);
-      
+
       if (response.success) {
         setSelectedCar(null);
         setOpenDeleteDailog(false);
-        toast.success(response.message, {duration: 1000});
+        toast.success(response.message, { duration: 1000 });
         refetch();
       }
 
-      if(!response.success){
-        toast.error(response.message, {duration: 1000});
+      if (!response.success) {
+        toast.error(response.message, { duration: 1000 });
       }
-      
     } catch (error) {
-      console.log(error);
-      throw error
+      throw error;
     }
- 
   };
-
-  
 
   useEffect(() => {
     if (selectedCar) {
@@ -110,9 +101,6 @@ const AllCarLists = () => {
     }
   }, [selectedCar]);
 
-
-  console.log(typeof page);
-  
   return (
     <div className="flex gap-8 p-8">
       {/* Section 1: All Cars */}

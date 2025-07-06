@@ -1,24 +1,23 @@
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
-import useSecureApi from "../../hooks/useSecureApi";
 import { loadStripe } from "@stripe/stripe-js";
 import { toast } from "sonner";
+import { callDeleteApis, callPostApis } from "../../api/api";
 const BookingList = ({ carinfo, sellerinfo, bookinginfo, refetch}) => {
-  const secureApi = useSecureApi();
   const paymentCanceled = Boolean(new URLSearchParams(window.location.search).get("canceled"));
   const paymentSuccess = new URLSearchParams(window.location.search).get("success");
   const tranId = new URLSearchParams(window.location.search).get("session_id");
-  console.log(carinfo, );
+  
   
   const handleCancelBooking = async () => {
     try {
-      const response = await secureApi.delete(`/delete-booking/${bookinginfo._id}`);
+      const response = await callDeleteApis(`/delete-booking/${bookinginfo._id}`);
       if(response.data.success){
         toast.success(response.data.message);
         refetch();
       }
     } catch (error) {
-      console.log(error);
+      throw new Error(error);
     }
   };
 
@@ -26,39 +25,41 @@ const BookingList = ({ carinfo, sellerinfo, bookinginfo, refetch}) => {
   const handleCarBookingPayment = async () => {
     try {
       const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
-      const response = await secureApi.post("/payment/create-car-booking-payment", {
+      const response = await callPostApis("/payment/create-car-booking-payment", {
         bookingId: bookinginfo._id,
         sellerId:carinfo.seller,
         amount: bookinginfo.totalPrice,
         currency: "usd",
       });
-      console.log(response.data);
-      if(!response.data.success){
-        toast.error(response.data.message);
+      
+      if(!response.success){
+        toast.error(response.message);
         return;
       }
 
       const stripe = await stripePromise;
-     const result = await stripe.redirectToCheckout({sessionId: response.data.sessionId});
+     const result = await stripe.redirectToCheckout({sessionId: response.sessionId});
      
      if(result.error){
       toast.error(result.error.message);
      }
     } catch (error) {
       console.log(error);
+      
+      throw new Error(error);
     }
   }
 
   const handlePaymentSuccess = async () => {
     
     try {
-      const response = await secureApi.post(`/payment/payment-success`,{sessionId: tranId})
-      if (response.data.success) {
-        toast.success(response.data.message);
+      const response = await callPostApis(`/payment/payment-success`,{sessionId: tranId})
+      if (response.success) {
+        toast.success(response.message);
         window.location.href = `/my-booking`;
       }
     } catch (error) {
-      console.log(error)
+      throw new Error(error);
     }
  }
 

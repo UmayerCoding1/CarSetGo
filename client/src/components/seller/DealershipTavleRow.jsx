@@ -5,7 +5,7 @@ import {toast} from 'sonner';
 const DealershipTavleRow = ({requestsData,handleDealershipStatusChange}) => {
    const [isOpenBuyerDetails, setIsOpenBuyerDetails] = useState(false); 
    const [updateRequestStatus,setUpdateRequestStatus] = useState('');
-    console.log( requestsData);
+    
     
 
     const handlePaymentIdCopy = (id) => {

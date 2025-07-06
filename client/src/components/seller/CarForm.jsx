@@ -4,9 +4,8 @@ import { toast } from 'sonner';
 import { Car, Calendar, DollarSign, Users, Fuel, Gauge, Settings, Palette, Upload, X, Sparkles, Loader2, Image } from 'lucide-react';
 import useAuth from '../../hooks/useAuth';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import useSecureApi from '../../hooks/useSecureApi';
 import { callGetApis, callPostApis, callPutApis } from '../../api/api';
-import Loading from '../ui/Loading';
+
 const CarForm = ({ initialData, onSubmit, isEditing = false }) => {
   const { register, handleSubmit, formState: { errors }, setValue, reset,getValues } = useForm({
     defaultValues: initialData || {
@@ -45,7 +44,6 @@ const CarForm = ({ initialData, onSubmit, isEditing = false }) => {
   const {features} = user?.planDetails;
   const {aiDescriptionGenerator,selingpostpermunth} = features;
   const navigate = useNavigate();
-  const secureApi = useSecureApi();
   const [searchParams] = useSearchParams();
   const updatedCarId = searchParams.get('updated-carId');
   
@@ -67,7 +65,7 @@ const CarForm = ({ initialData, onSubmit, isEditing = false }) => {
   const analyzeCarImage = async (imageFile) => {
     if (!imageFile) return;
     setIsLoading(true);
-    console.log(imageFile, 'imageFile');
+  
     const formData = new FormData();
     formData.append('carImage', imageFile);
     
@@ -83,7 +81,7 @@ const CarForm = ({ initialData, onSubmit, isEditing = false }) => {
     try {
 
    
-       const response = await secureApi.post(`/cars/generate-description`,formData);
+       const response = await callPostApis(`/cars/generate-description`,formData);
        if (!response.data) {
          throw new Error('Failed to get response from server');
        }
@@ -153,7 +151,7 @@ const CarForm = ({ initialData, onSubmit, isEditing = false }) => {
         navigate('/seller-dashboard/car-lists');
       }
     } catch (error) {
-      console.log(error);
+      throw new Error(error);
     }
 
     // onSubmit(formData);
@@ -170,7 +168,7 @@ const CarForm = ({ initialData, onSubmit, isEditing = false }) => {
       }
       
     } catch (error) {
-      console.log(error);
+      throw new Error(error);
       throw error;
     }
   }
@@ -184,7 +182,7 @@ const CarForm = ({ initialData, onSubmit, isEditing = false }) => {
         navigate("/seller-dashboard/car-lists");
       }
     } catch (error) {
-      console.log(error);
+      
       throw error;
     }
   };
@@ -217,7 +215,7 @@ const CarForm = ({ initialData, onSubmit, isEditing = false }) => {
         description : updatedCar?.description
       });
 
-      console.log(updatedCar);
+      
       
     }
   },[reset,updatedCar])

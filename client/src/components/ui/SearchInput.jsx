@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Camera, Upload } from "lucide-react";
 import { useDropzone } from "react-dropzone";
 import { toast } from "sonner";
-import {motion} from 'motion/react';
+import { motion } from "motion/react";
 import { useNavigate } from "react-router-dom";
 import { callPostApis } from "../../api/api";
 const SearchInput = () => {
@@ -10,13 +10,13 @@ const SearchInput = () => {
   const [imagePreview, setImagePreview] = useState("");
   const [searchImage, setSearchImage] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
-  const [searchTextValue,setSearchTextValue] = useState('');
+  const [searchTextValue, setSearchTextValue] = useState("");
   const [searchImageUploadActive, setSearchImageUploadActive] = useState(false);
-  
+
   const navigate = useNavigate();
   const onDrop = (acceptedFiles) => {
     const file = acceptedFiles[0];
-    console.log(file);
+
     if (file) {
       if (file.size > 5 * 1024 * 1024) {
         toast.error("Image size must be less then 5MB");
@@ -29,7 +29,6 @@ const SearchInput = () => {
       const render = new FileReader();
 
       render.onloadend = () => {
-        console.log(render);
         setImagePreview(render.result);
         setIsUploading(false);
         toast.success("Image upload successfully");
@@ -52,40 +51,37 @@ const SearchInput = () => {
 
   const handleTextSubmit = (e) => {
     e.preventDefault();
-    if(searchTextValue.trim() === ''){
-      toast.error('Please enter a search query');
+    if (searchTextValue.trim() === "") {
+      toast.error("Please enter a search query");
       return;
     }
 
-    
     navigate(`/future-cars?search=${searchTextValue}`);
   };
   const handleImageSubmit = (e) => {
     e.preventDefault();
   };
 
-  const handleImageSearch =async () => {
+  const handleImageSearch = async () => {
     setSearchImageUploadActive(true);
     const formData = new FormData();
     formData.append("carImage", searchImage);
 
     try {
       const res = await callPostApis(`/cars/image-search`, formData);
-      console.log(res.data);
- 
+
       if (res.data) {
         setSearchImageUploadActive(false);
-        navigate(`/future-cars?make=${res.data.make}&model=${res.data.model}&year=${res.data.fuelType}&price=${res.data.price}`);
-      }else{
+        navigate(
+          `/future-cars?make=${res.data.make}&model=${res.data.model}&year=${res.data.fuelType}&price=${res.data.price}`
+        );
+      } else {
         toast.error(res.data.message);
       }
-      
     } catch (error) {
-      console.log(error);
+      throw new Error(error);
     }
-    
   };
-console.log(isImageSearchActive);
 
   return (
     <div className="w-full md:w-[470px] lg:w-[670px]">
@@ -105,10 +101,17 @@ console.log(isImageSearchActive);
             <Camera
               size={32}
               onClick={() => setIsImageSearchActive(!isImageSearchActive)}
-              className={`transition-colors duration-200 p-2 rounded-full cursor-pointer border-2 ${isImageSearchActive ? "bg-black text-white border-black shadow" : "bg-white text-black border-gray-300 hover:bg-gray-100"}`}
+              className={`transition-colors duration-200 p-2 rounded-full cursor-pointer border-2 ${
+                isImageSearchActive
+                  ? "bg-black text-white border-black shadow"
+                  : "bg-white text-black border-gray-300 hover:bg-gray-100"
+              }`}
               title="AI Image Search"
             />
-            <motion.button whileTap={{scale: 0.92}} className="bg-black hover:bg-gray-900 text-white text-base w-24 h-full rounded-full cursor-pointer font-semibold shadow transition-colors duration-200">
+            <motion.button
+              whileTap={{ scale: 0.92 }}
+              className="bg-black hover:bg-gray-900 text-white text-base w-24 h-full rounded-full cursor-pointer font-semibold shadow transition-colors duration-200"
+            >
               Search
             </motion.button>
           </div>
@@ -117,7 +120,9 @@ console.log(isImageSearchActive);
         {isImageSearchActive && (
           <div className="w-full absolute left-0 z-20">
             <div
-              className={`bg-white shadow-2xl ${imagePreview ? "h-60" : "h-52"} rounded-3xl border-2 border-dashed border-gray-300 p-4 flex flex-col items-center justify-center w-full transition-all duration-300`}
+              className={`bg-white shadow-2xl ${
+                imagePreview ? "h-60" : "h-52"
+              } rounded-3xl border-2 border-dashed border-gray-300 p-4 flex flex-col items-center justify-center w-full transition-all duration-300`}
             >
               <form onSubmit={handleImageSubmit} className="w-full h-full">
                 {imagePreview ? (
@@ -130,11 +135,11 @@ console.log(isImageSearchActive);
                     />
                     <div className="flex items-center gap-3 mt-2">
                       <motion.button
-                        whileTap={{scale: 0.92}}
+                        whileTap={{ scale: 0.92 }}
                         onClick={() => {
                           setIsUploading(false);
                           setImagePreview(null);
-                          toast.info('Image Removed')
+                          toast.info("Image Removed");
                         }}
                         type="button"
                         className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg cursor-pointer font-semibold shadow transition-colors duration-200"
@@ -143,12 +148,14 @@ console.log(isImageSearchActive);
                       </motion.button>
                       <motion.button
                         onClick={() => handleImageSearch()}
-                        whileTap={{scale: 0.92}}
+                        whileTap={{ scale: 0.92 }}
                         type="submit"
                         disabled={isUploading}
                         className="px-4 py-2 bg-black hover:bg-gray-900 text-white rounded-lg cursor-pointer font-semibold shadow transition-colors duration-200"
                       >
-                        {searchImageUploadActive ? 'Uploading...' : "Search with this Image"}
+                        {searchImageUploadActive
+                          ? "Uploading..."
+                          : "Search with this Image"}
                       </motion.button>
                     </div>
                   </div>

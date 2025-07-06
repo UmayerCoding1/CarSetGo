@@ -71,7 +71,7 @@ const CarBuyngForm = ({ carId, userId, sellerId, price, status }) => {
       (principal * monthlyRate * Math.pow(1 + monthlyRate, numberOfPayments)) /
       (Math.pow(1 + monthlyRate, numberOfPayments) - 1);
 
-    console.log(numberOfPayments);
+    
 
     const totalAmount = emi * numberOfPayments;
     const totalInterest = totalAmount - principal;
@@ -101,7 +101,7 @@ const CarBuyngForm = ({ carId, userId, sellerId, price, status }) => {
         // navigate("/payment/buy-car");
       }
     } catch (error) {
-      console.log("error", error);
+      throw new Error(error);
     }
     
   };

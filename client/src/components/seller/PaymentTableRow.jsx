@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import {toast} from 'sonner';
 const PaymentTableRow = ({ paymenstData }) => {
   const [isOpenBuyerAndProductDetails, setIsOpenBuyerAndProductDetails] = useState(false);
-  console.log(paymenstData);
+  
 
   const handlePaymentIdCopy = (id) => {
     

@@ -5,92 +5,88 @@ import useSecureApi from "../../hooks/useSecureApi";
 import { toast } from "sonner";
 const MyCarList = ({ dealershipInfo, index }) => {
   const secureApi = useSecureApi();
-  const paymentSuccess = new URLSearchParams(window.location.search).get('success');
-  const paymentCanceled = new URLSearchParams(window.location.search).get('canceled');
-  const tranId = new URLSearchParams(window.location.search).get('session_id');
-  console.log(dealershipInfo._id);
-  
-  const handleCarBuyPayment = async() => {
-   try {
-     const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
-     const response = await secureApi.post('/payment/create-car-buy-payment', {
+  const paymentSuccess = new URLSearchParams(window.location.search).get(
+    "success"
+  );
+  const paymentCanceled = new URLSearchParams(window.location.search).get(
+    "canceled"
+  );
+  const tranId = new URLSearchParams(window.location.search).get("session_id");
+
+  const handleCarBuyPayment = async () => {
+    try {
+      const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
+      const response = await secureApi.post("/payment/create-car-buy-payment", {
         carId: dealershipInfo?.carId._id,
         amount: dealershipInfo?.carId?.price,
         currency: "usd",
-        dealershipId: dealershipInfo._id
-     })
-     
-     if(!response.data.success){
-       toast.error(response.data.message);
-       return;
-     }
- 
-     const stripe = await stripePromise;
-     const result = await stripe.redirectToCheckout({sessionId: response.data.sessionId});
- 
-     if(result.error){
-       toast.error(result.error.message);
-     }
- 
-   } catch (error) {
-    console.log(error);
-   }
-    
+        dealershipId: dealershipInfo._id,
+      });
+
+      if (!response.data.success) {
+        toast.error(response.data.message);
+        return;
+      }
+
+      const stripe = await stripePromise;
+      const result = await stripe.redirectToCheckout({
+        sessionId: response.data.sessionId,
+      });
+
+      if (result.error) {
+        toast.error(result.error.message);
+      }
+    } catch (error) {
+      throw new Error(error);
+    }
   };
 
-  const handlePaymentSuccess = async() => {
+  const handlePaymentSuccess = async () => {
     try {
-      const response = await secureApi.post('/payment/payment-success', {
+      const response = await secureApi.post("/payment/payment-success", {
         sessionId: tranId,
-      })
+      });
 
-      if(!response.data.success){
+      if (!response.data.success) {
         toast.error(response.data.message);
       }
     } catch (error) {
-      console.log(error);
+      throw new Error(error);
     }
-  }
+  };
 
-  const handlePaymentCancel = async() => {
+  const handlePaymentCancel = async () => {
     try {
-      const response = await secureApi.post('/payment/payment-cancel', {
+      const response = await secureApi.post("/payment/payment-cancel", {
         sessionId: tranId,
-      })
-      
+      });
     } catch (error) {
-      console.log(error);
+      throw new Error(error);
     }
-  }
+  };
 
-
-  const handleClearDealership = async() => {
+  const handleClearDealership = async () => {
     try {
-      const response = await secureApi.post('/clear-dealership', {
+      const response = await secureApi.post("/clear-dealership", {
         dealershipId: dealershipInfo._id,
-      })
+      });
 
-      console.log(response);
-      
-      if(!response.data.success){
+      if (!response.data.success) {
         toast.error(response.data.message);
       }
-    } catch (error) {
-      console.log(error);
-    }
-  }
+    } catch (error) {}
+  };
   useEffect(() => {
-    if(paymentSuccess){
+    if (paymentSuccess) {
       handlePaymentSuccess();
     }
-    if(paymentCanceled){
+    if (paymentCanceled) {
       handlePaymentCancel();
     }
-  },[paymentSuccess, paymentCanceled])
-console.log(dealershipInfo);
+  }, [paymentSuccess, paymentCanceled]);
 
-  if(!dealershipInfo){
-    return <div>Loading...</div>
+  if (!dealershipInfo) {
+    return <div>Loading...</div>;
   }
   return (
     <div className="flex items-center gap-4 p-3">
@@ -200,7 +196,7 @@ console.log(dealershipInfo);
             </h3>
             <div className="space-y-2">
               <img
-                src={dealershipInfo?.sellerId?.avatar || ''}
+                src={dealershipInfo?.sellerId?.avatar || ""}
                 alt="seller-avatar"
                 loading="lazy"
                 className="w-10 h-10 rounded-full"
@@ -226,22 +222,33 @@ console.log(dealershipInfo);
               Actions
             </h3>
             <div className="space-y-3 flex flex-col items-center">
-              <Link to={`/future-cars/${dealershipInfo?.carId._id}`} className="w-full bg-blue-600 flex justify-center items-center text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors">
+              <Link
+                to={`/future-cars/${dealershipInfo?.carId._id}`}
+                className="w-full bg-blue-600 flex justify-center items-center text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors"
+              >
                 View Details
               </Link>
 
               {/* Payment Buttons */}
-              {dealershipInfo?.status === "approved" && dealershipInfo?.paymentInfo.paymentStatus === "pending" && (
-                <button onClick={handleCarBuyPayment} className="w-full bg-green-600 text-white px-4 py-2 flex justify-center items-center rounded hover:bg-green-700 transition-colors">
-                  Payment
-                </button>
-              )}
+              {dealershipInfo?.status === "approved" &&
+                dealershipInfo?.paymentInfo.paymentStatus === "pending" && (
+                  <button
+                    onClick={handleCarBuyPayment}
+                    className="w-full bg-green-600 text-white px-4 py-2 flex justify-center items-center rounded hover:bg-green-700 transition-colors"
+                  >
+                    Payment
+                  </button>
+                )}
 
-              { dealershipInfo?.paymentInfo.paymentStatus !== "success" && dealershipInfo?.status === "approved" && (
-                <button onClick={handleClearDealership} className="w-full bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition-colors cursor-pointer">
-                  Cancel Dealership
-                </button>
-              )}
+              {dealershipInfo?.paymentInfo.paymentStatus !== "success" &&
+                dealershipInfo?.status === "approved" && (
+                  <button
+                    onClick={handleClearDealership}
+                    className="w-full bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition-colors cursor-pointer"
+                  >
+                    Cancel Dealership
+                  </button>
+                )}
             </div>
           </div>
         </div>

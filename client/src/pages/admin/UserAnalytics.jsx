@@ -16,13 +16,7 @@ import Loading from "../../components/ui/Loading";
 
 const UserAnalytics = () => {
   const { id } = useParams();
-  const [selectedUser,setSelectedUser] = useState(null);
-
- 
-console.log(selectedUser);
-
-  
- 
+  const [selectedUser, setSelectedUser] = useState(null);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -30,17 +24,15 @@ console.log(selectedUser);
     const handleUserAnalytics = async () => {
       if (id) {
         const response = await callGetApis(`/auth/user/${id}`);
-        
 
-        if(response.user){
-          const res  = await callGetApis(`/analytics/user/${id}?role=${response?.user.role}`);
-          console.log(response.user);
-          
-      
-          if(res.success){
+        if (response.user) {
+          const res = await callGetApis(
+            `/analytics/user/${id}?role=${response?.user.role}`
+          );
+
+          if (res.success) {
             setSelectedUser(res);
           }
-
         }
       }
     };
@@ -49,11 +41,9 @@ console.log(selectedUser);
   }, [id]);
 
   if (!selectedUser) {
-    return (
-      <Loading />
-    )
+    return <Loading />;
   }
-  
+
   return (
     <div className="relative min-h-screen w-full flex flex-col bg-gradient-to-br from-[#0f172a] via-[#164e63] to-[#06b6d4] px-0 sm:px-4 max-h-screen overflow-auto scrollbar-hide text-white">
       {/* Full-page gradient overlay for extra depth */}
@@ -89,17 +79,15 @@ console.log(selectedUser);
                 <span className="text-xs text-cyan-300">
                   Joined:{" "}
                   <span className="font-semibold text-cyan-100">
-                    {new Date(selectedUser?.user?.createdAt).toLocaleDateString()}
+                    {new Date(
+                      selectedUser?.user?.createdAt
+                    ).toLocaleDateString()}
                   </span>
                 </span>
                 <span className="text-xs text-cyan-300">
                   Avg. Rating:{" "}
-                  <span className="font-semibold text-yellow-300">
-                    {3.5}
-                  </span>
+                  <span className="font-semibold text-yellow-300">{3.5}</span>
                 </span>
-                
-               
               </div>
             </div>
           </div>
@@ -108,38 +96,38 @@ console.log(selectedUser);
         {/* Stats Section */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
           {selectedUser?.user?.role === "seller" && (
-              <div className="rounded-2xl bg-gradient-to-r from-cyan-900 to-cyan-700 p-6 flex flex-col items-center shadow-xl border border-cyan-800">
-            <Car className="w-7 h-7 mb-2 text-cyan-300" />
-            <span className="text-lg font-semibold text-cyan-200 mb-1">
-              Total Cars
-            </span>
-            <span className="text-3xl font-extrabold text-cyan-100">
-              {selectedUser?.analytics?.totalCars}
-            </span>
-          </div>
+            <div className="rounded-2xl bg-gradient-to-r from-cyan-900 to-cyan-700 p-6 flex flex-col items-center shadow-xl border border-cyan-800">
+              <Car className="w-7 h-7 mb-2 text-cyan-300" />
+              <span className="text-lg font-semibold text-cyan-200 mb-1">
+                Total Cars
+              </span>
+              <span className="text-3xl font-extrabold text-cyan-100">
+                {selectedUser?.analytics?.totalCars}
+              </span>
+            </div>
           )}
-        
+
           <div className="rounded-2xl bg-gradient-to-r from-blue-900 to-blue-700 p-6 flex flex-col items-center shadow-xl border border-blue-800">
             <ClipboardList className="w-7 h-7 mb-2 text-cyan-300" />
             <span className="text-lg font-semibold text-cyan-200 mb-1">
               Total Bookings
             </span>
             <span className="text-3xl font-extrabold text-cyan-100">
-             {selectedUser?.analytics?.totalBookings}
+              {selectedUser?.analytics?.totalBookings}
             </span>
           </div>
           {selectedUser?.user?.role === "seller" && (
-             <div className="rounded-2xl bg-gradient-to-r from-emerald-900 to-emerald-700 p-6 flex flex-col items-center shadow-xl border border-emerald-800">
-            <CreditCard className="w-7 h-7 mb-2 text-emerald-300" />
-            <span className="text-lg font-semibold text-emerald-200 mb-1">
-              Total Revenue
-            </span>
-            <span className="text-3xl font-extrabold text-emerald-100">
-              ${selectedUser?.analytics?.totalPayments.toLocaleString()}
-            </span>
-          </div>
+            <div className="rounded-2xl bg-gradient-to-r from-emerald-900 to-emerald-700 p-6 flex flex-col items-center shadow-xl border border-emerald-800">
+              <CreditCard className="w-7 h-7 mb-2 text-emerald-300" />
+              <span className="text-lg font-semibold text-emerald-200 mb-1">
+                Total Revenue
+              </span>
+              <span className="text-3xl font-extrabold text-emerald-100">
+                ${selectedUser?.analytics?.totalPayments.toLocaleString()}
+              </span>
+            </div>
           )}
-         
+
           <div className="rounded-2xl bg-gradient-to-r from-yellow-900 to-yellow-700 p-6 flex flex-col items-center shadow-xl border border-yellow-800">
             <Star className="w-7 h-7 mb-2 text-yellow-300" />
             <span className="text-lg font-semibold text-yellow-200 mb-1">
@@ -158,7 +146,7 @@ console.log(selectedUser);
             <h3 className="text-xl font-bold text-cyan-100 mb-4 flex items-center gap-2">
               <Star className="w-5 h-5 text-yellow-300" /> Reviews
             </h3>
-            { selectedUser?.reviews.length === 0 ? (
+            {selectedUser?.reviews.length === 0 ? (
               <div className="text-cyan-200">No reviews yet.</div>
             ) : (
               <ul className="space-y-4">

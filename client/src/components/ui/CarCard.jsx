@@ -3,7 +3,7 @@ import { asset } from "./../../assets/asser";
 import { ArrowUp } from "lucide-react";
 import { Link } from "react-router-dom";
 const CarCard = ({ car }) => {
-  console.log(car._id);
+  
   
   return (
     <div className="bg-[hsl(48,12%,92%)] w-full lg:w-[320px] flex flex-col justify-between gap-3 p-4 rounded-2xl font-DM-MONO shadow-md border border-gray-200 transition-all duration-500 ease-in-out hover:shadow-2xl hover:-translate-y-2 hover:scale-[1.02]">

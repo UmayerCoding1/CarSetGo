@@ -4,7 +4,6 @@ import { User } from "../models/user.model.js";
 import { AlAnalyzeCarImage } from "../utils/car.js";
 import { uploadCloudinary } from "../utils/cloudinary.service.js";
 
-
 export const getCars = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
@@ -12,8 +11,8 @@ export const getCars = async (req, res) => {
     const skip = (page - 1) * limit;
 
     // Get filter parameters from query
-    const { price, make, bodyType, fuelType,search} = req.query;
-  
+    const { price, make, bodyType, fuelType, search } = req.query;
+
     // Build filter object
     const filter = {};
 
@@ -22,32 +21,29 @@ export const getCars = async (req, res) => {
       filter.price = { $lte: parseInt(price) };
     }
     if (make) {
-      filter.make = {$regex : make, $options : 'i'};
+      filter.make = { $regex: make, $options: "i" };
     }
     if (bodyType) {
-      filter.bodyType = {$regex : bodyType, $options : 'i'};
+      filter.bodyType = { $regex: bodyType, $options: "i" };
     }
     if (fuelType) {
-      filter.fuelType = {$regex : fuelType, $options : 'i'};
+      filter.fuelType = { $regex: fuelType, $options: "i" };
     }
 
     if (search) {
-      filter.make = { $regex: search, $options: 'i' };
+      filter.make = { $regex: search, $options: "i" };
     }
-
-    
-    
 
     // Get total count of cars with filters
     const totalcar = await Car.countDocuments(filter);
     const totalPage = Math.ceil(totalcar / limit);
-  
-   
+
     // Get paginated cars with filters
     const cars = await Car.find(filter)
       .skip(skip)
       .limit(limit)
-      .sort({ createdAt: -1 }).populate({ path: 'seller', select: '-password' });;
+      .sort({ createdAt: -1 })
+      .populate({ path: "seller", select: "-password" });
 
     return res.status(200).json({
       success: true,
@@ -72,11 +68,9 @@ export const getCars = async (req, res) => {
 export const getCarById = async (req, res) => {
   try {
     const { id } = req.params;
-   
-    
-    const car = await Car.findById(id).populate('seller').select('-password');
-    
-    
+
+    const car = await Car.findById(id).populate("seller").select("-password");
+
     if (!car) {
       return res.status(404).json({
         success: false,
@@ -85,9 +79,6 @@ export const getCarById = async (req, res) => {
     }
 
     //  car.seller.password = undefined;
-
-    
-    
 
     return res.status(200).json({
       success: true,
@@ -103,90 +94,108 @@ export const getCarById = async (req, res) => {
   }
 };
 
-
 export const getCarByCategory = async (req, res) => {
-    try {
-      const { category } = req.params;
-      console.log(category);
-      
-      const cars = await Car.find({ make: category });
-  
-      if (!cars) {
-        return res.status(404).json({
-          success: false,
-          message: "Cars not found",
-        });
-      }
-  
-      return res.status(200).json({
-        success: true,
-        data: cars,
-        message: "Cars fetched successfully",
-      });
-    } catch (error) {
-      return res.status(500).json({});
-    }
-  };
+  try {
+    const { category } = req.params;
 
+    const cars = await Car.find({ make: category });
+
+    if (!cars) {
+      return res.status(404).json({
+        success: false,
+        message: "Cars not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      data: cars,
+      message: "Cars fetched successfully",
+    });
+  } catch (error) {
+    return res.status(500).json({});
+  }
+};
 
 // post car
 
 export const postCar = async (req, res) => {
   try {
-    const {make,model,year,price,mileage, color, fuelType, transmission, bodyType, seats, description,   seller, category, postType} = req.body;
-   
+    const {
+      make,
+      model,
+      year,
+      price,
+      mileage,
+      color,
+      fuelType,
+      transmission,
+      bodyType,
+      seats,
+      description,
+      seller,
+      category,
+      postType,
+    } = req.body;
 
-  
-  
-    const requiredFields = ['make', 'model', 'year', 'price', 'mileage', 'color', 'fuelType', 'transmission', 'bodyType', 'seats', 'description',    'seller', 'category', 'postType', ];
+    const requiredFields = [
+      "make",
+      "model",
+      "year",
+      "price",
+      "mileage",
+      "color",
+      "fuelType",
+      "transmission",
+      "bodyType",
+      "seats",
+      "description",
+      "seller",
+      "category",
+      "postType",
+    ];
 
-    for(const field of requiredFields){
-      if ( !req.body[field]) {
-        return res.status(400).json({message: `${field} is required`});
+    for (const field of requiredFields) {
+      if (!req.body[field]) {
+        return res.status(400).json({ message: `${field} is required` });
       }
     }
 
-    if (postType !== "selling" && postType !== 'booking') {
-      return res.status(400).json({message: 'Invalid post type'});
-    } 
-
-    const user = await User.findById( seller).populate('planDetails');
-
-    if(!user && user.role !== 'seller'){
-      return res.status(403).json({message: 'Only sellers can post cars'});
+    if (postType !== "selling" && postType !== "booking") {
+      return res.status(400).json({ message: "Invalid post type" });
     }
 
+    const user = await User.findById(seller).populate("planDetails");
+
+    if (!user && user.role !== "seller") {
+      return res.status(403).json({ message: "Only sellers can post cars" });
+    }
 
     const plan = user.planDetails;
 
-    if(!plan || plan.features.selingpostpermunth  <= 0) {
-      return res.status(403).json({ message: 'Post limit reached. Upgrade your plan.'});
+    if (!plan || plan.features.selingpostpermunth <= 0) {
+      return res
+        .status(403)
+        .json({ message: "Post limit reached. Upgrade your plan." });
     }
 
-
-    
-    
-
-     const carImages = req.files;
+    const carImages = req.files;
     const imageUrl = [];
 
     for (const image of carImages) {
-      const isValidUrl =await uploadCloudinary(image.path);
+      const isValidUrl = await uploadCloudinary(image.path);
 
-      if(isValidUrl){
+      if (isValidUrl) {
         imageUrl.push(isValidUrl.url);
       }
     }
 
-   
-    
-
-    
-    
     if (imageUrl.length === 0) {
-      return res.status(400).json({message: 'At least one image is required'});
+      return res
+        .status(400)
+        .json({ message: "At least one image is required" });
     }
-    
+
     const car = await Car.create({
       make,
       model,
@@ -202,25 +211,21 @@ export const postCar = async (req, res) => {
       images: imageUrl,
       seller,
       category,
-      postType
+      postType,
     });
 
-    
-    
- 
     plan.features.selingpostpermunth -= 1;
     await user.save();
-   
-   
 
-    return res.status(201).json({message: 'Car posted successfully', car, success: true});
+    return res
+      .status(201)
+      .json({ message: "Car posted successfully", car, success: true });
   } catch (error) {
-    console.log(error);
-    
-    return res.status(500).json({message: 'Internal server error', error: error.message});
+    return res
+      .status(500)
+      .json({ message: "Internal server error", error: error.message });
   }
 };
-
 
 export const updateCarById = async (req, res) => {
   try {
@@ -240,22 +245,22 @@ export const updateCarById = async (req, res) => {
       .status(200)
       .json({ message: "Car updated successfully.", success: true });
   } catch (error) {
-    console.log(error);
     return res
       .status(500)
       .json({ message: "Internal server error", success: false });
   }
 };
 
-
 export const deleteSellerCarById = async (req, res) => {
   try {
     const { carId, sellerId } = req.params;
-    console.log(carId, sellerId);
-    
+
     const user = await User.findById(sellerId);
 
-    if(!user) return res.status(404).json({message: "User not found", success: false})
+    if (!user)
+      return res
+        .status(404)
+        .json({ message: "User not found", success: false });
     const deletedCar = await Car.findOneAndDelete({
       _id: carId,
       seller: sellerId,
@@ -265,24 +270,19 @@ export const deleteSellerCarById = async (req, res) => {
       return res.status(404).json({ message: "Car not found", success: false });
     }
 
-
-
-
-    return res.status(200).json({ message: "Delete car in successfully", success: true });
+    return res
+      .status(200)
+      .json({ message: "Delete car in successfully", success: true });
   } catch (error) {
-    console.log(error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
-
-
 
 export const getCarsBySeller = async (req, res) => {
   try {
     const { sellerId } = req.params;
     const { postType, searchValue, page, limit } = req.query;
 
-   
     // Validate sellerId
     if (!mongoose.Types.ObjectId.isValid(sellerId)) {
       return res.status(400).json({ message: "Invalid seller ID" });
@@ -326,149 +326,131 @@ export const getCarsBySeller = async (req, res) => {
         cars,
         totalPages,
         totalCars,
-        currentPage: Number(page)
+        currentPage: Number(page),
       },
       message: "Cars fetched successfully",
     });
   } catch (error) {
-    console.error('Error fetching cars by seller:', error);
+    console.error("Error fetching cars by seller:", error);
     return res.status(500).json({
       success: false,
-      message: 'Internal server error',
+      message: "Internal server error",
       error: error.message,
     });
   }
 };
 
-
-
-
 // AI car image analysis
 export const analyzeCarImage = async (req, res) => {
   try {
-      const file = req.file;
+    const file = req.file;
     const userId = req.userId;
 
-    if(!file){
-      return res.status(400).json({message: 'No image file provided'});
+    if (!file) {
+      return res.status(400).json({ message: "No image file provided" });
     }
 
     const carDetails = await AlAnalyzeCarImage(file);
-    
-    
-    if(!carDetails.success){
-      return res.status(400).json({message: carDetails.error});
+
+    if (!carDetails.success) {
+      return res.status(400).json({ message: carDetails.error });
     } else {
-      return res.status(200).json({message: carDetails.message, data: carDetails.data});
+      return res
+        .status(200)
+        .json({ message: carDetails.message, data: carDetails.data });
     }
   } catch (error) {
-    console.log(error);
     throw error;
   }
-  
-    
-    
-}
-
+};
 
 // AI car description generation
- export const generateCarDescription = async (req, res) => {
+export const generateCarDescription = async (req, res) => {
   try {
     const file = req.file;
     const userId = req.userId;
-    
-    if(!file){
-      return res.status(400).json({message: 'No image file provided'});
+
+    if (!file) {
+      return res.status(400).json({ message: "No image file provided" });
     }
 
-    const user = await User.findById(userId).populate('planDetails');
-    if(!user){
-      return res.status(404).json({message: 'User not found'});
+    const user = await User.findById(userId).populate("planDetails");
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
     }
 
-    if(user.role !== 'seller'){
-      return res.status(403).json({message: 'Only sellers can post cars'});
+    if (user.role !== "seller") {
+      return res.status(403).json({ message: "Only sellers can post cars" });
     }
 
-    if(!user.isPlanActive){
-      return res.status(403).json({message: 'Please activate your plan to post cars'});
+    if (!user.isPlanActive) {
+      return res
+        .status(403)
+        .json({ message: "Please activate your plan to post cars" });
     }
 
-    if(user.planType === 'free'){
-      return res.status(403).json({message: 'Please upgrade your plan to use AI features'});
+    if (user.planType === "free") {
+      return res
+        .status(403)
+        .json({ message: "Please upgrade your plan to use AI features" });
     }
 
-    if(user.planDetails.aiDescriptionGenerator <= 0){
-      return res.status(403).json({message: 'You have no remaining AI description generator.'});
+    if (user.planDetails.aiDescriptionGenerator <= 0) {
+      return res
+        .status(403)
+        .json({ message: "You have no remaining AI description generator." });
     }
 
     const carDetails = await AlAnalyzeCarImage(file);
 
-    if(!carDetails.success){
+    if (!carDetails.success) {
       return res.status(500).json({
         success: false,
-        message: 'Failed to analyze car image',
-        error: carDetails.error
+        message: "Failed to analyze car image",
+        error: carDetails.error,
       });
     }
-
-    
 
     user.planDetails.features.aiDescriptionGenerator -= 1;
     await user.save();
 
-    
-    
-
-
-    
-    
-
     return res.status(200).json({
       success: true,
-      message: 'Car description generated successfully',
-      carDetails: carDetails.data
+      message: "Car description generated successfully",
+      carDetails: carDetails.data,
     });
-     
   } catch (error) {
-    console.log(error);
     return res.status(500).json({
       success: false,
-      message: 'Internal server error',
-      error: error.message
+      message: "Internal server error",
+      error: error.message,
     });
   }
- }
+};
 
-
- export const carViewCount = async (req, res) => {
+export const carViewCount = async (req, res) => {
   try {
     const { carId } = req.params;
-   if (!carId) {
-     return res.status(400).json({ message: 'Car ID is required' });
-   }
-    
+    if (!carId) {
+      return res.status(400).json({ message: "Car ID is required" });
+    }
 
-     if (!isObjectIdOrHexString(carId)) {
-       return res.status(400).send({ error: "Invalid seller ID" });
-     }
-   
-     const sellerObjectId = new mongoose.Types.ObjectId(carId);
+    if (!isObjectIdOrHexString(carId)) {
+      return res.status(400).send({ error: "Invalid seller ID" });
+    }
+
+    const sellerObjectId = new mongoose.Types.ObjectId(carId);
     const car = await Car.findById(sellerObjectId);
-    if(!car){
-      return res.status(404).json({message: 'Car not found'});
+    if (!car) {
+      return res.status(404).json({ message: "Car not found" });
     }
     car.views += 1;
     await car.save();
 
-    
-    return res.status(200).json({message: 'Car view count updated successfully'});
+    return res
+      .status(200)
+      .json({ message: "Car view count updated successfully" });
   } catch (error) {
-    console.log(error.message);
-    return res.status(500).json({message: 'Internal server error'});
+    return res.status(500).json({ message: "Internal server error" });
   }
- }
-
-
- 
-
+};

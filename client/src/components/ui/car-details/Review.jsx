@@ -1,6 +1,13 @@
 import React, { useState } from "react";
 import { motion } from "motion/react";
-import { EllipsisVertical, Pencil, Send, Star, Trash, User } from "lucide-react";
+import {
+  EllipsisVertical,
+  Pencil,
+  Send,
+  Star,
+  Trash,
+  User,
+} from "lucide-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { callGetApis, callPostApis } from "../../../api/api";
 import { toast } from "sonner";
@@ -21,13 +28,10 @@ const Review = ({ car, user, paramsID }) => {
     enabled: !!car?._id,
   });
 
-  console.log(reviews);
-
   // Add review mutation
   const addReviewMutation = useMutation({
     mutationFn: async (reviewData) => {
       const res = await callPostApis(`/reviews/${car._id}`, reviewData);
-      console.log(res);
 
       return res.data;
     },
@@ -38,8 +42,6 @@ const Review = ({ car, user, paramsID }) => {
       toast.success("Review submitted successfully!", { duration: 1000 });
     },
     onError: (error) => {
-      console.log(error);
-
       toast.error(error.response?.data?.message || "Failed to submit review", {
         duration: 1000,
       });
@@ -204,7 +206,13 @@ const Review = ({ car, user, paramsID }) => {
       <div className="space-y-8 w-full lg:w-1/2  max-h-[500px] overflow-y-scroll scrollbar-hide">
         {reviews && reviews.length > 0 ? (
           reviews.map((review, index) => (
-            <ReviewCard key={review._id} review={review} index={index} user={user} reviewsRefetch={reviewsRefetch}/>
+            <ReviewCard
+              key={review._id}
+              review={review}
+              index={index}
+              user={user}
+              reviewsRefetch={reviewsRefetch}
+            />
           ))
         ) : (
           <motion.div

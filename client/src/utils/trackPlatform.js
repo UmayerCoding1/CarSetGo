@@ -11,19 +11,15 @@ export const trackPlatform = async () => {
   const experyDate = new Date(currentTime + 2 * 24 * 60 * 60 * 1000);
 
   if (!item) {
-    console.log("No data found");
     return;
   }
 
   const isExpired = now.getTime() > new Date(item.expires).getTime();
 
   if (isExpired) {
-    console.log("Data expired. Removing...");
     localStorage.removeItem("yourKey");
     return;
   }
-
-  console.log("tracking platform", now > new Date(item.expires));
 
   const items = { value: "true", expires: experyDate };
   const alreadyTracked = localStorage.getItem("platform_tracked");

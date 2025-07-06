@@ -72,26 +72,26 @@ export const userLogin = async (req, res) => {
     }
     user.password = undefined;
 
-    if(user.role === 'blacklisted') return res.status(400).json({ message: "You are blacklisted", success: false });
-
+    if (user.role === "blacklisted")
+      return res
+        .status(400)
+        .json({ message: "You are blacklisted", success: false });
 
     const token = jwt.sign({ _id: user._id }, process.env.JWT_SECTET, {
       expiresIn: process.env.JWT_EXPIRES,
     });
-
-
 
     if (!token)
       return res.status(500).json({
         message: "Token generation failed. Please try again later.",
         success: false,
       });
-    
+
     return res
       .cookie("token", token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        sameSite: "None", 
+        sameSite: "None",
         maxAge: 24 * 60 * 60 * 1000,
       })
       .status(200)
@@ -173,7 +173,7 @@ export const uploadAvatar = async (req, res) => {
       .status(201)
       .json({ message: "Avatar upload successfully", user, success: true });
   } catch (error) {
-    console.log(error);
+    throw new Error(error.message);
     return res
       .status(500)
       .json({ message: "Internal server error", success: false });
@@ -185,7 +185,7 @@ export const logout = async (req, res) => {
     .clearCookie("token", {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: 'None'
+      sameSite: "None",
     })
     .status(200)
     .json({ message: "User logout successfully", success: true });
@@ -210,14 +210,9 @@ export const logdinUser = async (req, res) => {
   }
 };
 
-
-
-
 export const getAllUsers = async (req, res) => {
-  const {page,limit,search,filterRole} = req.query;
+  const { page, limit, search, filterRole } = req.query;
 
-  
-  
   try {
     const filter = {};
     if (search) {
@@ -227,18 +222,19 @@ export const getAllUsers = async (req, res) => {
       filter.role = filterRole;
     }
 
-    console.log(filter);
-    
     const totalUsers = await User.find().countDocuments();
     const totalPage = Math.ceil(totalUsers / limit);
-    const users = await User.find(filter).skip((page - 1) * limit).limit(limit).select("-password  -updatedAt");
+    const users = await User.find(filter)
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .select("-password  -updatedAt");
     if (!users) {
       return res
         .status(400)
         .json({ message: "Users not found", success: false });
     }
 
-    return res.status(200).json({ users,totalPage,success: true });   
+    return res.status(200).json({ users, totalPage, success: true });
   } catch (error) {
     return res
       .status(500)
@@ -248,10 +244,9 @@ export const getAllUsers = async (req, res) => {
 
 export const getSingleUser = async (req, res) => {
   const { id } = req.params;
-  console.log(id);
-  
+
   try {
-    const user = await User.findById( id ).select("-password -updatedAt");
+    const user = await User.findById(id).select("-password -updatedAt");
     if (!user) {
       return res
         .status(400)
@@ -265,12 +260,10 @@ export const getSingleUser = async (req, res) => {
   }
 };
 
-
 export const updateUserRole = async (req, res) => {
   const { userId } = req.params;
   const { role } = req.body;
   try {
-
     const user = await User.findOneAndUpdate(
       { _id: userId },
       { role },
@@ -281,7 +274,9 @@ export const updateUserRole = async (req, res) => {
         .status(400)
         .json({ message: "User not found", success: false });
     }
-    return res.status(200).json({ message: "Update user role successfully", success: true });
+    return res
+      .status(200)
+      .json({ message: "Update user role successfully", success: true });
   } catch (error) {
     return res
       .status(500)

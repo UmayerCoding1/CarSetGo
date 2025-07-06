@@ -15,7 +15,7 @@ const FreePlanDeatils = ({ features }) => {
     unlimitedChat,
     adCreditsForPost,
   } = features;
-  console.log(features);
+  
   
 
   const freePlanFeatures = [

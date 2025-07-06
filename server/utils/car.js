@@ -1,42 +1,36 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
-import fs from 'fs';
-import path from 'path';
-
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import fs from "fs";
+import path from "path";
 
 // Function to convert file to base64
-async function fileToBase64(file){
-
-   const absolutePath = path.resolve(file.path);
-   const buffer = await fs.promises.readFile(absolutePath);
-    return buffer.toString('base64');
+async function fileToBase64(file) {
+  const absolutePath = path.resolve(file.path);
+  const buffer = await fs.promises.readFile(absolutePath);
+  return buffer.toString("base64");
 }
 
-
 export const AlAnalyzeCarImage = async (file) => {
-
   try {
-     if(!process.env.GEMINI_API_KEY){
-      throw new Error('GEMINI_API_KEY is not configured');
-     }
+    if (!process.env.GEMINI_API_KEY) {
+      throw new Error("GEMINI_API_KEY is not configured");
+    }
 
-     const  genAi  = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-     const model = genAi.getGenerativeModel({model: 'gemini-1.5-flash'});
+    const genAi = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+    const model = genAi.getGenerativeModel({ model: "gemini-1.5-flash" });
 
+    const base64Image = await fileToBase64(file);
 
-     const base64Image = await fileToBase64(file);
+    // Determine mimeType from file extension or default to image/jpeg
+    const mimeType = file.mimetype || "image/jpeg";
 
-     // Determine mimeType from file extension or default to image/jpeg
-     const mimeType = file.mimetype || 'image/jpeg';
+    const imagePart = {
+      inlineData: {
+        data: base64Image,
+        mimeType: mimeType,
+      },
+    };
 
-     const imagePart ={
-         inlineData: {
-            data: base64Image,
-            mimeType: mimeType,
-         }
-     }
-
-
-     const prompt = `
+    const prompt = `
       Analyze this car image and extract the following information:
       1: Make (manufacturer)
       2: Model 
@@ -73,39 +67,51 @@ export const AlAnalyzeCarImage = async (file) => {
    Only respond with the JSON object , nothing else.
      `;
 
+    const resilt = await model.generateContent([prompt, imagePart]);
+    const response = await resilt.response;
+    const text = response.text();
+    const cleanText = text.replace(/```(?:json)?\n?/g, "").trim();
 
-     const resilt = await model.generateContent([prompt,imagePart]);
-     const response = await resilt.response;
-     const text = response.text();
-     const cleanText = text.replace(/```(?:json)?\n?/g,"").trim();
-    
-     try {
-      
-        const carDetails = JSON.parse(cleanText);
-        
-        const requriedFields = ['make','model','year','color','mileage','fuelType','bodyType','transmission','price','seats','category','description'];
+    try {
+      const carDetails = JSON.parse(cleanText);
 
-        const missingFields = requriedFields.filter(field => !(field in carDetails) );
+      const requriedFields = [
+        "make",
+        "model",
+        "year",
+        "color",
+        "mileage",
+        "fuelType",
+        "bodyType",
+        "transmission",
+        "price",
+        "seats",
+        "category",
+        "description",
+      ];
 
-        if(missingFields.length > 0){
-            throw new Error(`AI response missing required fields: ${missingFields.join(', ')}`);
-        }
+      const missingFields = requriedFields.filter(
+        (field) => !(field in carDetails)
+      );
 
-        return {
-            success: true,
-            data: carDetails,
-        };
-     } catch (error) {
-        console.error('Error parsing car details:', error);
-        throw new Error('Failed to parse AI response');
-     }
+      if (missingFields.length > 0) {
+        throw new Error(
+          `AI response missing required fields: ${missingFields.join(", ")}`
+        );
+      }
 
-     
+      return {
+        success: true,
+        data: carDetails,
+      };
+    } catch (error) {
+      console.error("Error parsing car details:", error);
+      throw new Error("Failed to parse AI response");
+    }
   } catch (error) {
-    console.log(error.message);
     return {
       success: false,
-      error: error.message || 'Failed to analyze car image'
+      error: error.message || "Failed to analyze car image",
     };
   }
-}
+};

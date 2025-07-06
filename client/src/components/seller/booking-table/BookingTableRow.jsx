@@ -45,7 +45,7 @@ const BookingTable = ({ data, refetchSellerBookings }) => {
               setIsLoading(false);
                refetchSellerBookings();
             }
-          } catch (error) {console.log(error);
+          } catch (error) {
             toast.error(error.response.data.message, {duration: 1000});
             setIsLoading(false);
           }

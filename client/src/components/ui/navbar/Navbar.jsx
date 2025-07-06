@@ -35,7 +35,6 @@ const Navbar = () => {
 
     const formData = new FormData();
     formData.append("avatar", file);
-    console.log(formData);
   };
 
   const handleLogout = () => {
@@ -45,7 +44,7 @@ const Navbar = () => {
         localStorage.removeItem("xytz5T");
       })
       .catch((err) => {
-        console.log(err);
+        throw new Error(error);
       });
   };
 
@@ -66,7 +65,6 @@ const Navbar = () => {
         document.body.style.overflow = "auto";
       }
     } catch (error) {
-      console.log(error);
       toast.error(error.response.data.message);
     }
   };
@@ -115,31 +113,34 @@ const Navbar = () => {
             <img loading="lazy" className="w-48 " src={asset.logo} alt="logo" />
           </Link>
 
- 
-         {user?.role === 'blacklisted' ? (
-           <div className="flex flex-col items-center gap-3 bg-gradient-to-r from-blue-50 via-white to-blue-100 border border-blue-200 rounded-lg px-3 py-3 w-full max-w-[400px] shadow relative  sm:px-6 sm:py-4">
-             <Ban className="animate-pulse absolute top-2 left-4 sm:top-3 sm:left-7 text-red-600"/>
-             <p className="text-base sm:text-lg font-bold text-red-700 flex items-center gap-2 mt-2">
-               <span className="inline-block w-2 h-2 bg-red-500 rounded-full animate-ping"></span>
-               You are blacklisted
-             </p>
-             <p className="text-xs sm:text-sm text-gray-600 mb-2 text-center px-1">Your account has been restricted. Please contact support or try logging in again.</p>
-             <div className="flex flex-wrap gap-2 justify-center w-full">
-               <Link
-                 to="/sign-in"
-                 className="inline-block w-full sm:w-auto text-center bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 text-white font-semibold px-4 py-2 rounded-lg shadow transition-all duration-200 text-xs sm:text-sm border border-blue-600"
-               >
-                 Go to Login
-               </Link>
-               <Link
-                 to="/support"
-                 className="inline-block w-full sm:w-auto text-center bg-gradient-to-r from-green-400 to-green-600 hover:from-green-500 hover:to-green-700 text-white font-semibold px-4 py-2 rounded-lg shadow transition-all duration-200 text-xs sm:text-sm border border-green-500"
-               >
-                 Support
-               </Link>
-             </div>
-           </div>
-         ) : user ?  <div className="flex items-center gap-3">
+          {user?.role === "blacklisted" ? (
+            <div className="flex flex-col items-center gap-3 bg-gradient-to-r from-blue-50 via-white to-blue-100 border border-blue-200 rounded-lg px-3 py-3 w-full max-w-[400px] shadow relative  sm:px-6 sm:py-4">
+              <Ban className="animate-pulse absolute top-2 left-4 sm:top-3 sm:left-7 text-red-600" />
+              <p className="text-base sm:text-lg font-bold text-red-700 flex items-center gap-2 mt-2">
+                <span className="inline-block w-2 h-2 bg-red-500 rounded-full animate-ping"></span>
+                You are blacklisted
+              </p>
+              <p className="text-xs sm:text-sm text-gray-600 mb-2 text-center px-1">
+                Your account has been restricted. Please contact support or try
+                logging in again.
+              </p>
+              <div className="flex flex-wrap gap-2 justify-center w-full">
+                <Link
+                  to="/sign-in"
+                  className="inline-block w-full sm:w-auto text-center bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 text-white font-semibold px-4 py-2 rounded-lg shadow transition-all duration-200 text-xs sm:text-sm border border-blue-600"
+                >
+                  Go to Login
+                </Link>
+                <Link
+                  to="/support"
+                  className="inline-block w-full sm:w-auto text-center bg-gradient-to-r from-green-400 to-green-600 hover:from-green-500 hover:to-green-700 text-white font-semibold px-4 py-2 rounded-lg shadow transition-all duration-200 text-xs sm:text-sm border border-green-500"
+                >
+                  Support
+                </Link>
+              </div>
+            </div>
+          ) : user ? (
+            <div className="flex items-center gap-3">
               {user.role === "user" && <UserNav asset={asset} user={user} />}
               {user.role === "seller" && (
                 <SellerNav asset={asset} user={user} />
@@ -186,7 +187,9 @@ const Navbar = () => {
                         loading="lazy"
                       />
                       <div>
-                        <h2 className="font-semibold text-lg text-gray-800">{user?.fullname}</h2>
+                        <h2 className="font-semibold text-lg text-gray-800">
+                          {user?.fullname}
+                        </h2>
                         <p className="text-sm text-gray-500">{user?.email}</p>
                       </div>
                     </div>
@@ -250,16 +253,16 @@ const Navbar = () => {
                   </div>
                 )}
               </div>
-            </div> : <MotionLink
+            </div>
+          ) : (
+            <MotionLink
               to="/sign-up"
               whileTap={{ scale: 0.9 }}
               className="bg-blue-600 text-white px-4 py-2 font-semibold rounded-lg text-sm cursor-pointer"
             >
               Create an account
-            </MotionLink>}
-
-            
-          
+            </MotionLink>
+          )}
         </nav>
       </motion.header>
 
@@ -267,10 +270,12 @@ const Navbar = () => {
         <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center">
           <div className="w-full max-w-md bg-gradient-to-br from-white via-gray-50 to-gray-100 rounded-2xl p-6 shadow-2xl border border-gray-200 relative">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-2xl font-bold text-gray-800">Request for seller</h2>
+              <h2 className="text-2xl font-bold text-gray-800">
+                Request for seller
+              </h2>
               <button
                 onClick={() => {
-                  document.body.style.overflow = 'auto';
+                  document.body.style.overflow = "auto";
                   setIsOpenRequestForSeller(false);
                 }}
                 className="flex items-center justify-center gap-1 text-lg font-medium cursor-pointer hover:text-red-500 transition-colors"
@@ -281,7 +286,10 @@ const Navbar = () => {
             </div>
             <form onSubmit={handleRequestForSeller}>
               <div className="mb-4">
-                <label htmlFor="reason" className="text-sm font-semibold text-gray-700 mb-1 block">
+                <label
+                  htmlFor="reason"
+                  className="text-sm font-semibold text-gray-700 mb-1 block"
+                >
                   Reason
                 </label>
                 <textarea

@@ -70,8 +70,6 @@ export const createBooking = async (req, res) => {
       .status(201)
       .json({ message: "Booking created successfully", success: true });
   } catch (error) {
-    console.log(error);
-
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -107,22 +105,18 @@ export const checkExistingBookings = async (req, res) => {
     });
 
     if (existingBooking) {
-      return res
-        .status(200)
-        .json({
-          existingBooking,
-          message: "Car is already booked for the selected dates",
-          success: true,
-        });
+      return res.status(200).json({
+        existingBooking,
+        message: "Car is already booked for the selected dates",
+        success: true,
+      });
     }
 
-    return res
-      .status(200)
-      .json({
-        existingBooking,
-        message: "Car is not booked for the selected dates",
-        success: false,
-      });
+    return res.status(200).json({
+      existingBooking,
+      message: "Car is not booked for the selected dates",
+      success: false,
+    });
   } catch (error) {
     return res.status(500).json({ message: "Internal server error" });
   }
@@ -131,8 +125,7 @@ export const checkExistingBookings = async (req, res) => {
 export const getBookingsBySeller = async (req, res) => {
   try {
     const { sellerId } = req.params;
-    const {  search, paymentStatus, bookingStatus, searchBydate } =
-      req.query;
+    const { search, paymentStatus, bookingStatus, searchBydate } = req.query;
     if (!sellerId) {
       return res
         .status(400)
@@ -167,13 +160,17 @@ export const getBookingsBySeller = async (req, res) => {
       };
     }
 
-     const totalBookings = await Booking.countDocuments(filter);
-     const totalPages = Math.ceil(totalBookings / limit);
+    const totalBookings = await Booking.countDocuments(filter);
+    const totalPages = Math.ceil(totalBookings / limit);
 
-    const bookings = await Booking.find(filter).populate("carId").populate({
-      path: "userId",
-      select: "-password",
-    }).skip(skip).limit(limit);
+    const bookings = await Booking.find(filter)
+      .populate("carId")
+      .populate({
+        path: "userId",
+        select: "-password",
+      })
+      .skip(skip)
+      .limit(limit);
 
     if (!bookings) {
       return res
@@ -183,7 +180,6 @@ export const getBookingsBySeller = async (req, res) => {
 
     return res.status(200).json({ bookings, success: true, totalPages });
   } catch (error) {
-    console.log(error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -210,7 +206,6 @@ export const updateBookingDetails = async (req, res) => {
   }
 };
 
-
 export const updateBookingStatus = async (req, res) => {
   const { bookingId } = req.params;
   const { status } = req.body;
@@ -231,12 +226,7 @@ export const updateBookingStatus = async (req, res) => {
   } catch (error) {
     return res.status(500).json({ message: "Internal server error" });
   }
-
-
-  console.log(bookingId, status);
-  
-}
-
+};
 
 export const deleteBooking = async (req, res) => {
   const bookingId = req.params.bookingId;
@@ -251,7 +241,6 @@ export const deleteBooking = async (req, res) => {
       .status(200)
       .json({ message: "Booking deleted successfully", success: true });
   } catch (error) {
-    console.log(error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
