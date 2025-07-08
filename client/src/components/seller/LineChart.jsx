@@ -165,25 +165,7 @@ const LineChart = () => {
       <div className='flex flex-col sm:flex-row items-center justify-between mb-2'>
         <h1 className="text-2xl font-extrabold text-slate-800 mb-2 sm:mb-0 tracking-tight">Monthly Sales & Bookings</h1>
         <div className="flex justify-end">
-          <select 
-            className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white shadow-sm"
-            onChange={(e) => setSelectedMonth(e.target.value)}
-            value={selectedMonth}
-          >
-            <option value={selectedMonth}>{selectedMonth}</option>
-            <option value="January">January</option>
-            <option value="February">February</option>
-            <option value="March">March</option>
-            <option value="April">April</option>
-            <option value="May">May</option>
-            <option value="June">June</option>
-            <option value="July">July</option>
-            <option value="August">August</option>
-            <option value="September">September</option>
-            <option value="October">October</option>
-            <option value="November">November</option>
-            <option value="December">December</option>
-          </select>
+         
         </div>
       </div>
       <div className="w-full h-px bg-gradient-to-r from-blue-400/30 via-gray-300/30 to-transparent mb-6"></div>

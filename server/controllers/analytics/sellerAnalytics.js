@@ -65,6 +65,11 @@ export const getSellerAnalyticsState = async (req, res) => {
     const bookingRevenue = carBookings[0]?.totalRevenue || 0;
     const totalRevenue = sellRevenue + bookingRevenue;
 
+
+
+
+    // total 
+
     return res.json({
       totalRevenue,
       sellRevenue,
@@ -79,3 +84,8 @@ export const getSellerAnalyticsState = async (req, res) => {
     res.status(500).json({ message: "Internal server error", success: false });
   }
 };
+
+
+
+
+

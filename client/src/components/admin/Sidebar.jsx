@@ -26,7 +26,7 @@ const navLinks = [
   { label: 'Users', icon: Users, to: 'users' },
   { label: 'Cars', icon: Car, to: 'cars' },
   { label: 'Payments', icon: CreditCard, to: 'payments' },
-  { label: 'Messages', icon: MessageCircle, to: '/admin/messages' },
+  { label: 'Messages', icon: MessageCircle, to: 'messages' },
   // { label: 'Analytics', icon: BarChart2, to: '/admin/analytics' },
   { label: 'Report', icon: ClipboardList, to: '/admin/report' },
   { label: 'Plan', icon: CalendarClock, to: '/admin/plan' },

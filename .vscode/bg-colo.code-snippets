@@ -1,0 +1,10 @@
+{
+  "bg-color": {
+    "scope": "tailwindcss",
+    "prefix": "bg-color",
+    "body": [
+      "min-h-screen w-full flex flex-col bg-gradient-to-br from-[#0f172a] via-[#164e63] to-[#06b6d4] px-0 sm:px-4 max-h-screen overflow-auto scrollbar-hide text-white"
+    ],
+    "description": ""
+  }
+}

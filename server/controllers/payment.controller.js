@@ -8,6 +8,32 @@ import Stripe from "stripe";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
+export const getPayments = async (req,res) => {
+  try {
+    const {page,limit} = req.query;
+    const totalPaymenta = await Payment.countDocuments();
+    
+    const totalPage = Math.ceil(totalPaymenta / limit);
+
+ 
+    
+
+    const payments = await Payment.find().limit(limit).skip((page - 1) * limit).populate("userId").select("-password");
+  
+   
+    return res.status(200).json({
+      payments,totalPage,
+      success: true
+    })
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(500)
+      .json({ message: "Invalid server error", success: false });
+  }
+  }
+
+
 export const createCarBookingPayment = async (req, res) => {
   const { bookingId, amount, currency, sellerId } = req.body;
   // log

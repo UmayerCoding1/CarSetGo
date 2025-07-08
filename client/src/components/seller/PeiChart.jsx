@@ -60,6 +60,25 @@ const PieChart = () => {
   return (
     <div className="w-full block h-[30%] max-w-3xl bg-white  rounded-xl shadow-lg">
       <h2 className="text-xl font-bold text-center text-slate-800 mb-2 ">Annual Sales & Bookings Distribution</h2>
+       <select 
+            className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white shadow-sm"
+            // onChange={(e) => setSelectedMonth(e.target.value)}
+            // value={selectedMonth}
+          >
+            {/* <option value={selectedMonth}>{selectedMonth}</option> */}
+            <option value="January">January</option>
+            <option value="February">February</option>
+            <option value="March">March</option>
+            <option value="April">April</option>
+            <option value="May">May</option>
+            <option value="June">June</option>
+            <option value="July">July</option>
+            <option value="August">August</option>
+            <option value="September">September</option>
+            <option value="October">October</option>
+            <option value="November">November</option>
+            <option value="December">December</option>
+          </select>
       <div className="relative w-full h-80">
         <svg
           id="pieChart"
