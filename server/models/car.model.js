@@ -45,6 +45,7 @@ const carSchema = new Schema(
       type: Boolean,
       default: false,
     },
+    add: { type: Schema.Types.ObjectId, ref: "Add" },
     availableCar:{
       type: Boolean,
       default: true
