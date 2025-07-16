@@ -7,7 +7,7 @@ import CarBookingForm from "../../components/ui/CarBookingForm";
 import CarBuyngForm from "../../components/ui/CarBuyngForm";
 import useAuth from "../../hooks/useAuth";
 import { motion } from "motion/react";
-import { User, Shield, Edit, TriangleAlert } from "lucide-react";
+import { User, Shield, Edit, TriangleAlert, SkipBack } from "lucide-react";
 import Policy from "../../components/ui/car-details/Policy";
 import ChatInterface from "../../components/ui/ChatInterface";
 import { toast } from "sonner";
@@ -23,6 +23,8 @@ const CarDetails = () => {
   const MotionLink = motion(Link);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isReportOpen, setIsReportOpen] = useState(false);
+  const [showAds, setShowAds] = useState(true);
+  const [adsCloseCount, setAdsCloseCount] = useState(5);
 
   const {
     data: car,
@@ -40,6 +42,27 @@ const CarDetails = () => {
   });
 
   useEffect(() => {
+    if (showAds) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+    if (car?.add) {
+      if (adsCloseCount > 0) {
+        setTimeout(() => {
+          setAdsCloseCount((prev) => prev - 1);
+        }, 1000);
+      }
+    }
+
+    
+
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [car, showAds, adsCloseCount]);
+
+  useEffect(() => {
     const handleCarViewCount = async () => {
       try {
         const res = await callPutApis(`/cars/viewcount/${car?._id}`);
@@ -53,7 +76,9 @@ const CarDetails = () => {
     }
 
     handleCarViewCount();
-  }, [car?._id, isReportOpen]);
+  }, [car?._id, isReportOpen, showAds]);
+
+  console.log(car);
 
   const handleCloseReportWaper = () => {
     setIsReportOpen(false);
@@ -208,6 +233,57 @@ const CarDetails = () => {
           carId={car?._id}
           sellerId={car?.seller._id}
         />
+      )}
+
+      {showAds && (
+        <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-black/70 z-100">
+          <div className="w-[500px] h-[500px] bg-white rounded-lg relative">
+            <img
+              src={car?.add?.adsData.image}
+              alt="product"
+              className="w-full h-full object-cover rounded-lg"
+            />
+
+            <div className="absolute top-0 left-0 w-full h-full flex items-end justify-center  bg-gradient-to-b form-black/80 via-black/40 to-black/80 ">
+              <div className="text-white mb-2 px-5 w-full  flex items-center justify-between gap-10">
+                <div>
+                  <h2 className="text-2xl font-medium">
+                    {car?.add?.adsData.title}
+                  </h2>
+                  <p>{car?.add?.adsData.description}</p>
+                </div>
+
+                <div className="flex  flex-col gap-2">
+                  <h2 className="text-3xl">Price: ${car?.add?.adsData.price}</h2>
+                  <Link
+                    to={car?.add?.adsData.productUrl}
+                    target="_blank"
+                    className="bg-blue-500 px-4 py-2 rounded-lg text-center"
+                  >
+                    View
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="absolute top-2 right-2 cursor-pointer">
+            {adsCloseCount === 0 ? (
+              <button
+                className="flex items-center gap-1 bg-white px-3 py-2 rounded-lg"
+                onClick={() => setShowAds(false)}
+              >
+                <SkipBack size={20} />
+                <span>Skip</span>
+              </button>
+            ) : (
+              <button className="flex items-center gap-1 bg-white px-3 py-2 rounded-lg">
+                <span className="text-sm text-gray-500">Wait</span>
+                {adsCloseCount}
+              </button>
+            )}
+          </div>
+        </div>
       )}
     </div>
   );

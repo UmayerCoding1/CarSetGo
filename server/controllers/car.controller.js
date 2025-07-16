@@ -69,7 +69,10 @@ export const getCarById = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const car = await Car.findById(id).populate("seller add").select("-password");
+    const car = await Car.findById(id).populate([
+    { path: "seller", select: "-password" },
+    { path: "add" }
+  ]);
 
     if (!car) {
       return res.status(404).json({
@@ -345,13 +348,15 @@ export const analyzeCarImage = async (req, res) => {
   try {
     const file = req.file;
     const userId = req.userId;
+console.log(file);
 
     if (!file) {
       return res.status(400).json({ message: "No image file provided" });
     }
 
     const carDetails = await AlAnalyzeCarImage(file);
-
+   console.log(carDetails);
+   
     if (!carDetails.success) {
       return res.status(400).json({ message: carDetails.error });
     } else {
@@ -402,7 +407,8 @@ export const generateCarDescription = async (req, res) => {
     }
 
     const carDetails = await AlAnalyzeCarImage(file);
-
+   console.log(carDetails);
+   
     if (!carDetails.success) {
       return res.status(500).json({
         success: false,

@@ -79,6 +79,8 @@ const SearchInput = () => {
         toast.error(res.data.message);
       }
     } catch (error) {
+      console.log(error);
+      
       throw new Error(error);
     }
   };

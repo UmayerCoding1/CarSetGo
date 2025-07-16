@@ -109,6 +109,7 @@ export const AlAnalyzeCarImage = async (file) => {
       throw new Error("Failed to parse AI response");
     }
   } catch (error) {
+    console.log(error);
     return {
       success: false,
       error: error.message || "Failed to analyze car image",
