@@ -12,8 +12,8 @@ const BookingList = ({ carinfo, sellerinfo, bookinginfo, refetch}) => {
   const handleCancelBooking = async () => {
     try {
       const response = await callDeleteApis(`/delete-booking/${bookinginfo._id}`);
-      if(response.data.success){
-        toast.success(response.data.message);
+      if(response.success){
+        toast.success(response.message);
         refetch();
       }
     } catch (error) {

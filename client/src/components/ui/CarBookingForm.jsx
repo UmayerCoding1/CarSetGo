@@ -35,12 +35,12 @@ const CarBookingForm = ({ carId, userId, sellerId, price }) => {
           import.meta.env.VITE_API_ENDPOINT
         }/check-bookings?carId=${carId}&startDate=${startDate}&endDate=${endDate}`
       );
-      if (response.data.success) {
+      if (response.success) {
         setShowModal(false);
         document.body.style.overflow = "auto";
         
       }
-      return response.data.success;
+      return response.success;
     } catch (error) {
       console.error("Error checking existing bookings:", error);
       return false;

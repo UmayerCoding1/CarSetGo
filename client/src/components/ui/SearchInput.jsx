@@ -69,14 +69,15 @@ const SearchInput = () => {
 
     try {
       const res = await callPostApis(`/cars/image-search`, formData);
-
+      console.log(res);
+      
       if (res.data) {
         setSearchImageUploadActive(false);
         navigate(
           `/future-cars?make=${res.data.make}&model=${res.data.model}&year=${res.data.fuelType}&price=${res.data.price}`
         );
       } else {
-        toast.error(res.data.message);
+        toast.error(res.message);
       }
     } catch (error) {
       console.log(error);

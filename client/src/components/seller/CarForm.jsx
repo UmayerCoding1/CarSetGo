@@ -82,22 +82,22 @@ const CarForm = ({ initialData, onSubmit, isEditing = false }) => {
 
    
        const response = await callPostApis(`/cars/generate-description`,formData);
-       if (!response.data) {
+       if (!response.carDetails) {
          throw new Error('Failed to get response from server');
        }
        
-       if (response.data.success) {
-        setAiPreview(response.data.carDetails);
+       if (response.success) {
+        setAiPreview(response.carDetails);
         toast.success('Car details analyzed successfully!');
         setIsLoading(false);
        }else{
-        toast.error(response.data.error);
+        toast.error(response.error);
         setIsLoading(false);
        }
        
 
 
-      setAiPreview(response.data.carDetails);
+      setAiPreview(response.carDetails);
       toast.success('Car details analyzed successfully!');
     } catch (error) {
       toast.error('Failed to analyze car image');
@@ -143,11 +143,11 @@ const CarForm = ({ initialData, onSubmit, isEditing = false }) => {
 
     try {
       setIsLoading(true);
-      const response = await secureApi.post("/cars", formData);
+      const response = await callPostApis("/cars", formData);
 
-      if (response.data.success) {
+      if (response.success) {
         setIsLoading(false);
-        toast.success(response.data.message);
+        toast.success(response.message);
         navigate('/seller-dashboard/car-lists');
       }
     } catch (error) {

@@ -375,6 +375,9 @@ export const generateCarDescription = async (req, res) => {
     const file = req.file;
     const userId = req.userId;
 
+    console.log(file);
+    
+
     if (!file) {
       return res.status(400).json({ message: "No image file provided" });
     }

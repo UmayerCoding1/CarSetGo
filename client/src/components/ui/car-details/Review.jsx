@@ -33,7 +33,7 @@ const Review = ({ car, user, paramsID }) => {
     mutationFn: async (reviewData) => {
       const res = await callPostApis(`/reviews/${car._id}`, reviewData);
 
-      return res.data;
+      return res;
     },
     onSuccess: () => {
       queryClient.invalidateQueries(["car", paramsID]);
@@ -42,7 +42,7 @@ const Review = ({ car, user, paramsID }) => {
       toast.success("Review submitted successfully!", { duration: 1000 });
     },
     onError: (error) => {
-      toast.error(error.response?.data?.message || "Failed to submit review", {
+      toast.error(error.response?.message || "Failed to submit review", {
         duration: 1000,
       });
     },
