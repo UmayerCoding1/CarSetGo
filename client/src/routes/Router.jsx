@@ -29,6 +29,8 @@ import Cars from "../pages/admin/Cars";
 import UserAnalytics from "../pages/admin/UserAnalytics";
 import Payment from "../pages/admin/Payment";
 import Message from "../pages/admin/Message";
+import Add from "../pages/seller/ads/Add";
+import CreateAds from "../pages/seller/ads/CreateAds";
 const GoogleAuthWrapper = ({ children }) => {
   return (
     <GoogleOAuthProvider clientId={`${import.meta.env.VITE_GOOGLE_CLIENT_ID}`}>
@@ -132,6 +134,14 @@ const router = createBrowserRouter([
       {
         path: "/seller-dashboard/received-payments",
         element: <ReceivedPayment />,
+      },
+      {
+        path: "/seller-dashboard/ads",
+        element: <Add />,
+      },
+      {
+        path: "/seller-dashboard/ads/:id",
+        element: <CreateAds />,
       },
     ],
   },

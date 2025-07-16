@@ -8,6 +8,7 @@ import {
   Home,
   LayoutDashboard,
   LogOut,
+  Megaphone,
   Menu,
   PlusCircle,
 } from "lucide-react";
@@ -167,6 +168,22 @@ const Sidebar = () => {
                   } text-base font-medium flex-1 text-left`}
                 >
                   Payment
+                </span>
+              </NavLink>
+            </motion.li>
+
+            <motion.li whileTap={{ scale: 0.9 }} className={`w-full relative rounded-lg ${activeSellerPath === "ads" ? "bg-blue-100 text-blue-500" : "hover:bg-gray-100 text-gray-700"}`}>
+              <NavLink to={'ads'}
+                onClick={() => handleDropdownClick("ads")}
+                className="flex items-center gap-3 p-3 rounded-lg w-full transition-all duration-200 cursor-pointer"
+              >
+                <Megaphone size={22} />
+                <span
+                  className={`${
+                    isOpen ? "block" : "hidden"
+                  } text-base font-medium flex-1 text-left`}
+                >
+                 Ads
                 </span>
               </NavLink>
             </motion.li>

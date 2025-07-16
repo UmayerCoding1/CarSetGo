@@ -69,7 +69,7 @@ export const getCarById = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const car = await Car.findById(id).populate("seller").select("-password");
+    const car = await Car.findById(id).populate("seller add").select("-password");
 
     if (!car) {
       return res.status(404).json({
@@ -282,7 +282,7 @@ export const getCarsBySeller = async (req, res) => {
   try {
     const { sellerId } = req.params;
     const { postType, searchValue, page, limit } = req.query;
-
+    
     // Validate sellerId
     if (!mongoose.Types.ObjectId.isValid(sellerId)) {
       return res.status(400).json({ message: "Invalid seller ID" });
