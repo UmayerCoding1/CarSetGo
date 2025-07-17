@@ -15,7 +15,7 @@ const CarLists = () => {
   const make = searchParams.get("make") || "";
   const bodyType = searchParams.get("bodyType") || "";
   const fuelType = searchParams.get("fuelType") || "";
-
+  const category = searchParams.get("category") || "";
   const search = searchParams.get("search") || "";
 
   const {
@@ -25,12 +25,12 @@ const CarLists = () => {
     totalCars,
     isLoadingCars,
     isRefetchingCars,
-  } = useCars(page, limit, price, make, bodyType, fuelType, search);
+  } = useCars(page, limit, price, make, bodyType, fuelType, search, category);
 
   const handlePageChange = (newPage) => {
     setPage(newPage);
   };
-
+console.log(cars);
   return (
     <div className="py-3">
       <div>

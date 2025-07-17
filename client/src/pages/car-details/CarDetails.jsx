@@ -16,6 +16,7 @@ import Savecar from "../../components/ui/car-details/Savecar";
 import { callPostApis, callPutApis } from "../../api/api";
 import Review from "../../components/ui/car-details/Review";
 import Repote from "../../components/ui/Repote";
+import CarDetailsSkeleton from "../../components/Skeleton/CarDetails";
 const CarDetails = () => {
   const { id } = useParams();
   const publicApi = usePublicApi();
@@ -66,11 +67,13 @@ const CarDetails = () => {
     return () => {
       document.body.style.overflow = "auto";
     };
-  }, [car, showAds, adsCloseCount]);
+  }, [car?._id, showAds, adsCloseCount]);
 
   useEffect(() => {
     const handleCarViewCount = async () => {
       try {
+        console.log(car?._id);
+        
         const res = await callPutApis(`/cars/viewcount/${car?._id}`);
       } catch (error) {
         throw new Error(error);
@@ -84,13 +87,29 @@ const CarDetails = () => {
     handleCarViewCount();
   }, [car?._id, isReportOpen, showAds]);
 
-  console.log(car);
+
+  useEffect(() => {
+    const handleCarViewCount = async () => {
+      try {
+        console.log(car?._id);
+        
+        const res = await callPutApis(`/cars/viewcount/${car?._id}`);
+      } catch (error) {
+        throw new Error(error);
+      }
+    };
+
+   console.log('sd')
+
+    handleCarViewCount();
+  }, [car])
+  
 
   const handleCloseReportWaper = () => {
     setIsReportOpen(false);
   };
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <CarDetailsSkeleton/>;
   if (error) return <div>Error loading car details</div>;
   if (!car) {
     return <div>No car found</div>;

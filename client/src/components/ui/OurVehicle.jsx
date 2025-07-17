@@ -3,7 +3,7 @@ import CarCard from './CarCard';
 import {Link} from 'react-router-dom';
 import useCars from '../../hooks/useCars';
 const OurVehicle = () => {
-    const {cars,isLoadingCars,isRefetchingCars} = useCars(1,6,'','','','','');
+    const {cars,isLoadingCars,isRefetchingCars} = useCars(1,6,'','','','','','');
     return (
         <div className='flex flex-col items-center justify-center my-14 relative'>
                 <div>

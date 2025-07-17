@@ -3,6 +3,7 @@ import { motion } from "motion/react";
 import React from "react";
 import { toast } from "sonner";
 import useSecureApi from "../../../hooks/useSecureApi";
+import { callPostApis } from "../../../api/api";
 
 const Savecar = ({carId,userId}) => {
     const secureApi = useSecureApi();
@@ -14,15 +15,16 @@ const Savecar = ({carId,userId}) => {
 
     if(carId || userId){
       try {
-        const response = await secureApi.post("/save-car", {carId, userId});
-        if(response.data.success){
-            toast.success(response.data.message, { duration: 1000 });
+        const response = await callPostApis("/save-car", {carId, userId});
+        if(response.success){
+            toast.success(response.message, { duration: 1000 });
         }
 
-        if(!response.data.success){
-            toast.error(response.data.message, { duration: 1000 });
+        if(!response.success){
+            toast.error(response.message, { duration: 1000 });
         }
       } catch (error) {
+        console.log(error);
         
         toast.error(error.response.data.message || "Something went wrong", { duration: 1000 });
       }

@@ -76,8 +76,14 @@ export const createBooking = async (req, res) => {
 
 export const getBookings = async (req, res) => {
   const { userId } = req.params;
+  const { status } = req.query;
   try {
-    const bookings = await Booking.find({ userId }).populate("carId sellerId");
+    const filter = { userId };
+    if (status && status !== "all") {
+      filter.status = status;
+    }
+
+    const bookings = await Booking.find(filter).populate("carId sellerId");
     if (!bookings) {
       return res
         .status(404)

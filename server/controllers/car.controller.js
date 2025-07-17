@@ -11,7 +11,7 @@ export const getCars = async (req, res) => {
     const skip = (page - 1) * limit;
 
     // Get filter parameters from query
-    const { price, make, bodyType, fuelType, search } = req.query;
+    const { price, make, bodyType, fuelType, search,category } = req.query;
 
     // Build filter object
     const filter = {};
@@ -32,6 +32,10 @@ export const getCars = async (req, res) => {
 
     if (search) {
       filter.make = { $regex: search, $options: "i" };
+    }
+
+    if (category) {
+      filter.category = { $regex: category, $options: "i" };
     }
 
     // Get total count of cars with filters
