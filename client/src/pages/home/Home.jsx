@@ -39,14 +39,14 @@ const Home = () => {
         <Banner />
       </motion.div>
 
-      <motion.div
+      {/* <motion.div
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true }}
         variants={fadeInUp}
       >
         <CarCategories />
-      </motion.div>
+      </motion.div> */}
 
       <motion.div
         initial="hidden"
