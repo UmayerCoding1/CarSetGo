@@ -21,9 +21,9 @@ export const saveCar = async (req, res) => {
 
 export const getSavedCars = async (req, res) => {
   const { userId } = req.params;
-//  const {}
+ const {page, limit} = req.query;
   try {
-    const savedCars = await SaveCars.find({ userId }).populate("carId");
+    const savedCars = await SaveCars.find({ userId }).limit(limit).skip((page - 1) * limit).populate("carId");
     res
       .status(200)
       .json({ message: "Saved cars fetched successfully", savedCars, success: true });
