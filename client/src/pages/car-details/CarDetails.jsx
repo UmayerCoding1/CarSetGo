@@ -24,7 +24,7 @@ const CarDetails = () => {
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isReportOpen, setIsReportOpen] = useState(false);
   const [showAds, setShowAds] = useState(true);
-  const [adsCloseCount, setAdsCloseCount] = useState(5);
+  const [adsCloseCount, setAdsCloseCount] = useState(7);
 
   const {
     data: car,
@@ -42,6 +42,7 @@ const CarDetails = () => {
   });
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     if (showAds) {
       document.body.style.overflow = "hidden";
     } else {
@@ -55,6 +56,11 @@ const CarDetails = () => {
       }
     }
 
+
+    if (!car?.add) {
+      setShowAds(false);
+      
+    }
     
 
     return () => {

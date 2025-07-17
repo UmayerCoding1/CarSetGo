@@ -65,7 +65,7 @@ const Add = () => {
 
                 {car.addCredits && (
                     <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-[#00000057] to-emerald-500 flex items-end justify-center " >
-                     <h2 className="mb-2 text-lg text-white font-semibold text-shadow-2xs">Add available</h2>
+                     <h2 className="mb-2 text-lg text-white font-semibold text-shadow-2xs">Ads available</h2>
                 </div>
                 )}
               </div>
