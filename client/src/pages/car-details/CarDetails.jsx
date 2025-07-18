@@ -82,6 +82,8 @@ const CarDetails = () => {
 
     if (isReportOpen) {
       document.body.style.overflow = "hidden";
+    }else{
+      document.body.style.overflow = "auto";
     }
 
     handleCarViewCount();
@@ -99,7 +101,7 @@ const CarDetails = () => {
       }
     };
 
-   console.log(user)
+  
 
     handleCarViewCount();
   }, [car])
@@ -260,6 +262,7 @@ const CarDetails = () => {
         />
       )}
 
+{/* ads show */}
       {showAds && (
         <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-black/70 z-100">
           <div className="w-[500px] h-[500px] bg-white rounded-lg relative">

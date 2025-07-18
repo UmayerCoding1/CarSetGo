@@ -131,15 +131,19 @@ export const googleLogin = async (req, res) => {
       expiresIn: process.env.JWT_EXPIRES,
     });
 
-    const option = {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      maxAge: 24 * 60 * 60 * 1000,
-    };
+    if (!token)
+      return res.status(500).json({
+        message: "Token generation failed. Please try again later.",
+        success: false,
+      });
 
     return res
-      .cookie("token", token, option)
+      .cookie("token", token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "None",
+        maxAge: 24 * 60 * 60 * 1000,
+      })
       .status(200)
       .json({ message: "Welcome to CarSetGo", user, token, success: true });
   } catch (error) {

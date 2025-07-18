@@ -20,6 +20,7 @@ import { Link } from "react-router-dom";
 import useAuth from "../../../hooks/useAuth";
 import { toast } from "sonner";
 import useSecureApi from "../../../hooks/useSecureApi";
+import UserMenu from "../UserMenu";
 
 const Navbar = () => {
   const { user, logout, setUser } = useAuth();
@@ -175,82 +176,7 @@ const Navbar = () => {
 
                 {/* User Menu */}
                 {isOpenUserMenage && (
-                  <div
-                    ref={userManageRef}
-                    className="absolute w-full lg:w-[320px] top-[52px] shadow-2xl border border-gray-200 rounded-2xl bg-white -right-2 lg:right-0 p-4 z-50 animate-fade-in-up"
-                  >
-                    <div className="border-b border-gray-200 pb-3 mb-3 flex gap-3 items-center">
-                      <img
-                        className="w-12 h-12 rounded-full border-2 border-blue-400 shadow"
-                        src={user?.avatar}
-                        alt="avatar"
-                        loading="lazy"
-                      />
-                      <div>
-                        <h2 className="font-semibold text-lg text-gray-800">
-                          {user?.fullname}
-                        </h2>
-                        <p className="text-sm text-gray-500">{user?.email}</p>
-                      </div>
-                    </div>
-                    <div className="flex flex-col gap-2">
-                      <label className="flex items-center gap-2 bg-gray-100 border border-gray-200 px-3 py-2 rounded-lg text-sm cursor-pointer hover:bg-gray-200 transition-colors">
-                        <Plus size={15} />
-                        <span>Update avatar</span>
-                        <input
-                          type="file"
-                          accept="image/*"
-                          className="hidden"
-                          onChange={handleUpdateAvatar}
-                        />
-                      </label>
-                      <div
-                        onClick={handleLogout}
-                        className="flex items-center gap-2 bg-red-100 border border-red-200 px-3 py-2 rounded-lg text-sm cursor-pointer hover:bg-red-200 transition-colors"
-                      >
-                        <LogOut size={15} />
-                        <span>Sign out</span>
-                      </div>
-                    </div>
-                    <div className="w-full h-px bg-gradient-to-r from-blue-400/30 via-gray-300/30 to-transparent my-3"></div>
-                    <Link
-                      to={`/my-cars/${user?._id}`}
-                      onClick={() => setIsOpenUserMenage(false)}
-                      className="flex items-center gap-3 my-2 p-3 rounded-lg cursor-pointer hover:bg-blue-50 transition-colors font-medium text-sm"
-                    >
-                      <Car size={18} />
-                      <span>My cars</span>
-                    </Link>
-                    {user?.role === "user" && (
-                      <div
-                        onClick={() => {
-                          document.body.style.overflow = "hidden";
-                          setIsOpenRequestForSeller(true);
-                          setIsOpenUserMenage(false);
-                        }}
-                        className="flex items-center gap-3 my-2 p-3 rounded-lg cursor-pointer hover:bg-blue-50 transition-colors font-medium text-sm"
-                      >
-                        <Handshake size={18} />
-                        <span>Request for seller</span>
-                      </div>
-                    )}
-                    {user?.role === "seller" && (
-                      <div
-                        onClick={() => setIsOpenUserMenage(false)}
-                        className="flex items-center gap-3 my-2 p-3 rounded-lg cursor-pointer hover:bg-blue-50 transition-colors font-medium text-sm"
-                      >
-                        <MessageCircle size={18} />
-                        <span>Message</span>
-                      </div>
-                    )}
-                    <div
-                      onClick={() => setIsOpenUserMenage(false)}
-                      className="flex items-center gap-3 my-2 p-3 rounded-lg cursor-pointer hover:bg-blue-50 transition-colors font-medium text-sm"
-                    >
-                      <Info size={18} />
-                      <span>About Us</span>
-                    </div>
-                  </div>
+                  <UserMenu onUseRef={userManageRef} user={user} onLogout={handleLogout} setIsOpenUserMenage={setIsOpenUserMenage}  setIsOpenRequestForSeller={setIsOpenRequestForSeller}/>
                 )}
               </div>
             </div>

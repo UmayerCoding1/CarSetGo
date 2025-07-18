@@ -8,14 +8,9 @@ import {
   MessageCircle,
   Plus,
   User,
-  PlusCircle,
-  Calendar,
-  CalendarClock,
   ClipboardList,
   CreditCard,
   LayoutDashboard,
-  ChevronDown,
-  ChevronUp,
   X,
 } from "lucide-react";
 import React, { useEffect, useState } from "react";
@@ -28,27 +23,24 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenSidebar, setIsOpenSidebar] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
- const [activeSellerPath, setActiveSellerPath] = useState('');
+  const [activeSellerPath, setActiveSellerPath] = useState("");
   const { user } = useAuth();
   const isSellerBadge = "free";
 
   const handleLogout = async () => {};
 
- 
+  const handleDropdownClick = (dropdownName) => {
+    setActiveSellerPath(dropdownName);
+    sessionStorage.setItem("currentSellerPath", dropdownName);
+    setIsOpenSidebar(false);
+  };
 
-   const handleDropdownClick = (dropdownName) => {
-      setActiveSellerPath(dropdownName);
-      sessionStorage.setItem('currentSellerPath', dropdownName);
-      setIsOpenSidebar(false)
-    };
-  
-    useEffect(() => {
-      const currentPath = sessionStorage.getItem('currentSellerPath');
-      if (currentPath) {
-        setActiveSellerPath(currentPath);
-         
-      }
-    }, []);
+  useEffect(() => {
+    const currentPath = sessionStorage.getItem("currentSellerPath");
+    if (currentPath) {
+      setActiveSellerPath(currentPath);
+    }
+  }, []);
   return (
     <div className="w-full h-16 bg-gradient-to-r from-white via-gray-50 to-gray-100 shadow-xl border-b border-gray-200 flex items-center justify-between px-4">
       <div>
@@ -56,7 +48,8 @@ const Navbar = () => {
           to="/"
           className="flex items-center gap-2 bg-black hover:bg-gray-900 text-white p-2 rounded-xl font-semibold shadow transition-colors duration-200"
         >
-          <Home size={20} /> <span className="hidden lg:block">Back to app</span>
+          <Home size={20} />{" "}
+          <span className="hidden lg:block">Back to app</span>
         </Link>
       </div>
 
@@ -72,7 +65,10 @@ const Navbar = () => {
           )}
           <div>
             <div className="relative flex items-center justify-center w-10 h-10 bg-gray-200 rounded-xl cursor-pointer shadow hover:shadow-lg transition-shadow">
-              <MessageCircle size={20} className="text-gray-700 group-hover:text-blue-500 transition-colors" />
+              <MessageCircle
+                size={20}
+                className="text-gray-700 group-hover:text-blue-500 transition-colors"
+              />
               <span className="absolute -top-1 -right-1 w-5 h-5 text-xs text-white flex items-center justify-center bg-gradient-to-br from-red-500 via-pink-500 to-orange-500 rounded-full font-bold shadow border-2 border-white animate-bounce">
                 2
               </span>
@@ -107,7 +103,9 @@ const Navbar = () => {
                       loading="lazy"
                     />
                     <div>
-                      <h2 className="font-semibold text-lg text-gray-800">{user?.fullname}</h2>
+                      <h2 className="font-semibold text-lg text-gray-800">
+                        {user?.fullname}
+                      </h2>
                       <p className="text-sm text-gray-500">{user?.email}</p>
                     </div>
                   </div>
@@ -139,7 +137,9 @@ const Navbar = () => {
             )}
 
             <div className="ml-2">
-              <h2 className="text-lg font-semibold text-gray-800">{user?.fullname}</h2>
+              <h2 className="text-lg font-semibold text-gray-800">
+                {user?.fullname}
+              </h2>
               <p
                 className={`text-xs font-semibold ${
                   isSellerBadge === "free" ? "text-red-500" : "text-green-500"
@@ -153,108 +153,138 @@ const Navbar = () => {
           {/* mobile */}
           <div className="lg:hidden">
             <div className="relative">
-              <Menu size={20} onClick={() => setIsOpenSidebar(!isOpenSidebar)} />
+              <Menu
+                size={20}
+                onClick={() => setIsOpenSidebar(!isOpenSidebar)}
+              />
             </div>
 
-            {isOpenSidebar && <div className="fixed inset-0 z-50 bg-black/40 flex">
+            {isOpenSidebar && (
+              <div className="fixed inset-0 z-50 bg-black/40 flex">
                 <div className="w-80 max-w-full h-full bg-gradient-to-b from-white via-gray-50 to-gray-100 shadow-2xl border-r border-gray-200 flex flex-col">
                   <div className="flex items-center justify-end p-4">
-                    <X size={24} className="cursor-pointer hover:text-red-500 transition-colors" onClick={() => setIsOpenSidebar(false)} />
+                    <X
+                      size={24}
+                      className="cursor-pointer hover:text-red-500 transition-colors"
+                      onClick={() => setIsOpenSidebar(false)}
+                    />
                   </div>
                   <ul className="w-full space-y-3 px-4">
-                          {/* Dashboard Link */}
-                          <motion.li whileTap={{ scale: 0.9 }} className="w-full">
-                            <NavLink
-                              onClick={() => handleDropdownClick("seller-dashboard")}
-                              to="/seller-dashboard"
-                              className={`flex items-center gap-3 p-3 rounded-lg transition-all duration-200 ${
-                                activeSellerPath === "seller-dashboard"
-                                  ? "bg-blue-100 text-blue-500"
-                                  : "hover:bg-gray-100 text-gray-700"
-                              }`}
-                            >
-                              <LayoutDashboard size={22} />
-                              <span
-                                className={` text-base font-medium`}
-                              >
-                                Dashboard
-                              </span>
-                            </NavLink>
-                          </motion.li>
-              
-                          {/* Car Management */}
-                          <motion.li
-                            whileTap={{ scale: 0.9 }}
-                            className={`w-full relative rounded-lg ${
-                              activeSellerPath === "car"
-                                ? "bg-blue-100 text-blue-500"
-                                : "hover:bg-gray-100 text-gray-700"
-                            }`}
+                    {/* Dashboard Link */}
+                    <motion.li whileTap={{ scale: 0.9 }} className="w-full">
+                      <NavLink
+                        onClick={() => handleDropdownClick("seller-dashboard")}
+                        to="/seller-dashboard"
+                        className={`flex items-center gap-3 p-3 rounded-lg transition-all duration-200 ${
+                          activeSellerPath === "seller-dashboard"
+                            ? "bg-blue-100 text-blue-500"
+                            : "hover:bg-gray-100 text-gray-700"
+                        }`}
+                      >
+                        <LayoutDashboard size={22} />
+                        <span className={` text-base font-medium`}>
+                          Dashboard
+                        </span>
+                      </NavLink>
+                    </motion.li>
+
+                    {/* Car Management */}
+                    <motion.li
+                      whileTap={{ scale: 0.9 }}
+                      className={`w-full relative rounded-lg ${
+                        activeSellerPath === "car"
+                          ? "bg-blue-100 text-blue-500"
+                          : "hover:bg-gray-100 text-gray-700"
+                      }`}
+                    >
+                      <NavLink to="car-lists" className="w-full">
+                        <button
+                          onClick={() => handleDropdownClick("car")}
+                          className="flex items-center gap-3 p-3 rounded-lg w-full transition-all duration-200 cursor-pointer"
+                        >
+                          <Car size={22} />
+                          <span
+                            className={` text-base font-medium flex-1 text-left`}
                           >
-                            <NavLink to="car-lists" className="w-full">
-                              <button
-                                onClick={() => handleDropdownClick("car")}
-                                className="flex items-center gap-3 p-3 rounded-lg w-full transition-all duration-200 cursor-pointer"
-                              >
-                                <Car size={22} />
-                                <span
-                                  className={` text-base font-medium flex-1 text-left`}
-                                >
-                                  Car Lists
-                                </span>
-                              </button>
-                            </NavLink>
-                          </motion.li>
-              
-                          {/* Booking Management */}
-                          <motion.li whileTap={{ scale: 0.9 }} className={`w-full relative rounded-lg ${activeSellerPath === "booking" ? "bg-blue-100 text-blue-500" : "hover:bg-gray-100 text-gray-700"}`}>
-                            <NavLink to="all-bookings" className="w-full">
-                              <button
-                                onClick={() => handleDropdownClick("booking")}
-                                className="flex items-center gap-3 p-3 rounded-lg w-full transition-all duration-200  cursor-pointer"
-                              >
-                                <ClipboardList size={22} />
-                                <span
-                                  className={` text-base font-medium flex-1 text-left`}
-                                >
-                                  Booking Management
-                                </span>
-                              </button>
-                            </NavLink>
-                          </motion.li>
-              
-                          {/* Buyer Requests */}
-                          <motion.li  whileTap={{ scale: 0.9 }} className={`w-full relative rounded-lg ${activeSellerPath === "buyer" ? "bg-blue-100 text-blue-500" : "hover:bg-gray-100 text-gray-700"}`}>
-                            <NavLink to={'dealership-requests'}
-                              onClick={() => handleDropdownClick("buyer")}
-                              className="flex items-center gap-3 p-3 rounded-lg w-full transition-all duration-200  cursor-pointer"
-                            >
-                              <Handshake size={22} />
-                              <span
-                                className={` text-base font-medium flex-1 text-left`}
-                              >
-                                Buyer Requests
-                              </span>
-                            </NavLink>
-                          </motion.li>
-              
-                          {/* Payment */}
-                          <motion.li whileTap={{ scale: 0.9 }} className={`w-full relative rounded-lg ${activeSellerPath === "payment" ? "bg-blue-100 text-blue-500" : "hover:bg-gray-100 text-gray-700"}`}>
-                            <NavLink to={'received-payments'}
-                              onClick={() => handleDropdownClick("payment")}
-                              className="flex items-center gap-3 p-3 rounded-lg w-full transition-all duration-200 cursor-pointer"
-                            >
-                              <CreditCard size={22} />
-                              <span
-                                className={` text-base font-medium flex-1 text-left`}
-                              >
-                                Payment
-                              </span>
-                            </NavLink>
-                          </motion.li>
-                        </ul>
+                            Car Lists
+                          </span>
+                        </button>
+                      </NavLink>
+                    </motion.li>
+
+                    {/* Booking Management */}
+                    <motion.li
+                      whileTap={{ scale: 0.9 }}
+                      className={`w-full relative rounded-lg ${
+                        activeSellerPath === "booking"
+                          ? "bg-blue-100 text-blue-500"
+                          : "hover:bg-gray-100 text-gray-700"
+                      }`}
+                    >
+                      <NavLink to="all-bookings" className="w-full">
+                        <button
+                          onClick={() => handleDropdownClick("booking")}
+                          className="flex items-center gap-3 p-3 rounded-lg w-full transition-all duration-200  cursor-pointer"
+                        >
+                          <ClipboardList size={22} />
+                          <span
+                            className={` text-base font-medium flex-1 text-left`}
+                          >
+                            Booking Management
+                          </span>
+                        </button>
+                      </NavLink>
+                    </motion.li>
+
+                    {/* Buyer Requests */}
+                    <motion.li
+                      whileTap={{ scale: 0.9 }}
+                      className={`w-full relative rounded-lg ${
+                        activeSellerPath === "buyer"
+                          ? "bg-blue-100 text-blue-500"
+                          : "hover:bg-gray-100 text-gray-700"
+                      }`}
+                    >
+                      <NavLink
+                        to={"dealership-requests"}
+                        onClick={() => handleDropdownClick("buyer")}
+                        className="flex items-center gap-3 p-3 rounded-lg w-full transition-all duration-200  cursor-pointer"
+                      >
+                        <Handshake size={22} />
+                        <span
+                          className={` text-base font-medium flex-1 text-left`}
+                        >
+                          Buyer Requests
+                        </span>
+                      </NavLink>
+                    </motion.li>
+
+                    {/* Payment */}
+                    <motion.li
+                      whileTap={{ scale: 0.9 }}
+                      className={`w-full relative rounded-lg ${
+                        activeSellerPath === "payment"
+                          ? "bg-blue-100 text-blue-500"
+                          : "hover:bg-gray-100 text-gray-700"
+                      }`}
+                    >
+                      <NavLink
+                        to={"received-payments"}
+                        onClick={() => handleDropdownClick("payment")}
+                        className="flex items-center gap-3 p-3 rounded-lg w-full transition-all duration-200 cursor-pointer"
+                      >
+                        <CreditCard size={22} />
+                        <span
+                          className={` text-base font-medium flex-1 text-left`}
+                        >
+                          Payment
+                        </span>
+                      </NavLink>
+                    </motion.li>
+                  </ul>
                 </div>
-            </div>}
+              </div>
+            )}
           </div>
         </div>
       </div>

@@ -14,7 +14,6 @@ const SaveCars = () => {
   const { user } = useAuth();
   const observer = useRef(null);
 
-
   const fetchSavedCars = async ({ pageParam = 1 }) => {
     const res = await callGetApis(
       `/saved-cars/${user._id}?page=${pageParam}&limit=${LIMIT}`
@@ -77,15 +76,7 @@ const SaveCars = () => {
     }
   };
 
-  const handleDeletedAllCars = async () => {};
-
   
-
- 
-
-
-
-
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [user._id]);
@@ -135,23 +126,6 @@ const SaveCars = () => {
             </motion.p>
           </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center items-center max-w-4xl mx-auto"
-          >
-           
-
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="flex items-center gap-2 px-8 py-3 bg-white/10 backdrop-blur-sm border-2 border-white/20 text-white rounded-xl hover:bg-white/20 transition-colors"
-            >
-              <Trash2 className="w-5 h-5" />
-              Clear All
-            </motion.button>
-          </motion.div>
         </div>
       </motion.div>
 
