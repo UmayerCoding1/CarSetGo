@@ -16,11 +16,12 @@ import {
   X,
 } from "lucide-react";
 import AdminNav from "./AdminNav";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import useAuth from "../../../hooks/useAuth";
 import { toast } from "sonner";
 import useSecureApi from "../../../hooks/useSecureApi";
 import UserMenu from "../UserMenu";
+import Profile from "../Profile";
 
 const Navbar = () => {
   const { user, logout, setUser } = useAuth();
@@ -28,8 +29,10 @@ const Navbar = () => {
   const [isSticky, setIsSticky] = useState(false);
   const [isOpenUserMenage, setIsOpenUserMenage] = useState(false);
   const [isOpenRequestForSeller, setIsOpenRequestForSeller] = useState(false);
+  const [isOpenProfile,setIsOpenProfile] = useState(false);
   const userManageRef = useRef(null);
   const secureApi = useSecureApi();
+  const navigate = useNavigate();
 
   const handleUpdateAvatar = async (e) => {
     const file = e.target.files[0];
@@ -84,6 +87,40 @@ const Navbar = () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+
+  useEffect(() => {
+    const handleShortcut = (e) => {
+      if (e.ctrlKey && e.key === "Backspace") {
+        e.preventDefault(); // optional, prevents browser history back
+        navigate("/");
+      }
+
+      if (e.ctrlKey) {
+        const key = e.key.toLowerCase();
+        if (key === "p") {
+          e.preventDefault();
+          setIsOpenUserMenage(false);
+          setIsOpenProfile(true);
+        }
+        if (key === "m") {
+          e.preventDefault();
+          setIsOpenUserMenage(false);
+          navigate(`/my-cars/${user?._id}`);
+        }
+        if (key === "b") {
+          e.preventDefault();
+          setIsOpenUserMenage(false);
+          navigate("/my-booking");
+        }
+      }
+    };
+
+    window.addEventListener("keydown", handleShortcut);
+
+    return () => {
+      window.removeEventListener("keydown", handleShortcut);
+    };
+  }, [navigate, setIsOpenUserMenage, user]);
 
   useEffect(() => {
     const handleOutSiteClick = (e) => {
@@ -176,7 +213,14 @@ const Navbar = () => {
 
                 {/* User Menu */}
                 {isOpenUserMenage && (
-                  <UserMenu onUseRef={userManageRef} user={user} onLogout={handleLogout} setIsOpenUserMenage={setIsOpenUserMenage}  setIsOpenRequestForSeller={setIsOpenRequestForSeller}/>
+                  <UserMenu
+                    onUseRef={userManageRef}
+                    user={user}
+                    onLogout={handleLogout}
+                    setIsOpenUserMenage={setIsOpenUserMenage}
+                    setIsOpenRequestForSeller={setIsOpenRequestForSeller}
+                    setIsOpenProfile={setIsOpenProfile}
+                  />
                 )}
               </div>
             </div>
@@ -236,6 +280,15 @@ const Navbar = () => {
           </div>
         </div>
       )}
+
+
+    {user && isOpenProfile && (
+      <>
+      <Profile  user={user}  setIsOpenProfile={setIsOpenProfile}/>
+      </>
+    )}
+
+
       {/* Navbar er jonne space */}
       <div className="h-[90px] md:h-[65px] lg:h-[65px]"></div>
     </>

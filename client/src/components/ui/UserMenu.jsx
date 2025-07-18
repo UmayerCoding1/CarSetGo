@@ -7,19 +7,25 @@ import {
   Heart,
   Info,
   LogOut,
-  MessageCircle,
   ShieldCheck,
   User,
 } from "lucide-react";
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+
 const UserMenu = ({
   onUseRef,
   user,
   onLogout,
   setIsOpenUserMenage,
   setIsOpenRequestForSeller,
+  setIsOpenProfile
 }) => {
+  
+  
+
+  
+
   return (
     <div
       ref={onUseRef}
@@ -44,7 +50,10 @@ const UserMenu = ({
 
           <div className="flex flex-col gap-2">
             <div
-              onClick={() => setIsOpenUserMenage(false)}
+              onClick={() => {
+                setIsOpenUserMenage(false)
+               setIsOpenProfile(true)
+            }}
               className="flex justify-between items-center hover:bg-blue-50 border border-gray-50 cursor-pointer hover:border-blue-100 px-3 py-2 rounded-lg"
             >
               <div className="flex items-center gap-1 font-medium ">
@@ -108,19 +117,17 @@ const UserMenu = ({
           </Link>
 
           {user?.role === "user" && (
-            <>
-              <div
-                onClick={() => {
-                  document.body.style.overflow = "hidden";
-                  setIsOpenRequestForSeller(true);
-                  setIsOpenUserMenage(false);
-                }}
-                className="flex items-center gap-1 font-medium hover:bg-blue-50 border border-gray-50 cursor-pointer hover:border-blue-100 px-3 py-2 rounded-lg"
-              >
-                <Handshake size={15} />
-                <span>Request for seller</span>
-              </div>
-            </>
+            <div
+              onClick={() => {
+                document.body.style.overflow = "hidden";
+                setIsOpenRequestForSeller(true);
+                setIsOpenUserMenage(false);
+              }}
+              className="flex items-center gap-1 font-medium hover:bg-blue-50 border border-gray-50 cursor-pointer hover:border-blue-100 px-3 py-2 rounded-lg"
+            >
+              <Handshake size={15} />
+              <span>Request for seller</span>
+            </div>
           )}
         </>
       )}
@@ -155,6 +162,18 @@ const UserMenu = ({
           <span>Support Center</span>
         </Link>
       </div>
+
+      <hr className="w-full border border-gray-200 my-1" />
+
+      {user && (
+        <div
+          onClick={onLogout}
+          className="flex items-center gap-2 border border-gray-50 hover:border-red-200 px-3 py-2 rounded-lg text-sm cursor-pointer hover:bg-red-50 transition-colors"
+        >
+          <LogOut size={15} />
+          <span>Sign out</span>
+        </div>
+      )}
     </div>
   );
 };
