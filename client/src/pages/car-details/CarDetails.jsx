@@ -99,7 +99,7 @@ const CarDetails = () => {
       }
     };
 
-   console.log('sd')
+   console.log(user)
 
     handleCarViewCount();
   }, [car])

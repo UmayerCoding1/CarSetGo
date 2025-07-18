@@ -1,11 +1,11 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { useRef, useCallback } from "react";
+import { useRef, useCallback, useEffect, useState } from "react";
 import useAuth from "../../hooks/useAuth";
-import { callGetApis } from "../../api/api";
+import { callDeleteApis, callGetApis } from "../../api/api";
 import { motion } from "motion/react";
 import { Car, Heart, Search, Trash2 } from "lucide-react";
 import SaveCarsSkeleton from "../../components/Skeleton/SaveCars";
-
+import { toast } from "sonner";
 // Separate data fetching logic
 
 const LIMIT = 10;
@@ -13,6 +13,7 @@ const LIMIT = 10;
 const SaveCars = () => {
   const { user } = useAuth();
   const observer = useRef(null);
+
 
   const fetchSavedCars = async ({ pageParam = 1 }) => {
     const res = await callGetApis(
@@ -24,13 +25,19 @@ const SaveCars = () => {
     };
   };
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
-    useInfiniteQuery({
-      queryKey: ["savedCars", user._id],
-      queryFn: fetchSavedCars,
-      getNextPageParam: (lastPage) => lastPage.nextPage,
-      enabled: !!user._id,
-    });
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+    refetch,
+  } = useInfiniteQuery({
+    queryKey: ["savedCars", user._id],
+    queryFn: fetchSavedCars,
+    getNextPageParam: (lastPage) => lastPage.nextPage,
+    enabled: !!user._id,
+  });
 
   const savedCar = data?.pages.flatMap((page) => page.cars) || [];
 
@@ -49,6 +56,41 @@ const SaveCars = () => {
     },
     [isFetchingNextPage, hasNextPage, fetchNextPage]
   );
+
+  const handleRemoveCar = async (carId) => {
+    try {
+      const response = await callDeleteApis(
+        `/unsave-car?carId=${carId}&userId=${user?._id}`
+      );
+      if (response.success) {
+        toast.success(response.message, { duration: 1000 });
+        refetch();
+      }
+      if (!response.success) {
+        toast.error(response.message, { duration: 1000 });
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error?.response?.data.message || "Something went wrong", {
+        duration: 1000,
+      });
+    }
+  };
+
+  const handleDeletedAllCars = async () => {};
+
+  
+
+ 
+
+
+
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [user._id]);
+
+  console.log(savedCar);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
@@ -99,16 +141,7 @@ const SaveCars = () => {
             transition={{ delay: 0.3 }}
             className="flex flex-col sm:flex-row gap-4 justify-center items-center max-w-4xl mx-auto"
           >
-            <div className="relative w-full max-w-md">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-              <input
-                type="text"
-                placeholder="Search saved cars..."
-                // value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 rounded-xl border-2 border-white/20 bg-white/10 backdrop-blur-sm text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
-              />
-            </div>
+           
 
             <motion.button
               whileHover={{ scale: 1.05 }}
@@ -165,10 +198,15 @@ const SaveCars = () => {
                       </p>
                     </div>
 
-                    <button className="flex items-center gap-2 bg-red-500 text-white px-4 py-2 rounded-md h-10 ">
+                    <motion.button
+                      onClick={() => handleRemoveCar(savedCar.carId._id)}
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
+                      className="flex items-center gap-2 bg-red-500 text-white px-4 py-2 rounded-md h-10 "
+                    >
                       <Trash2 className="w-5 h-5" />
                       <span>Remove</span>
-                    </button>
+                    </motion.button>
                   </div>
                 </div>
               );

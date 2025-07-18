@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CarCard from "../../components/ui/CarCard";
 import "./carlist.css";
 import Filter from "../../components/ui/filter/Filter";
@@ -30,7 +30,10 @@ const CarLists = () => {
   const handlePageChange = (newPage) => {
     setPage(newPage);
   };
-console.log(cars);
+ 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  })
   return (
     <div className="py-3">
       <div>

@@ -22,6 +22,7 @@ const userSchema = new Schema(
       type: String,
       enum: ["free", "pro", "advanced"],
     },
+    savedCars: [{ type: Schema.Types.ObjectId, ref: "Car" }],
     isPlanActive: { type: Boolean, default: false },
     planDetails: {
       name: { type: String },

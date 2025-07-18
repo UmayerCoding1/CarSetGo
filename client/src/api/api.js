@@ -35,7 +35,19 @@ export const callPutApis = async (endpoint, data) => {
     throw error;
   }
 };
-export const callDeleteApis = async (endpoint) => {
+
+
+export const  callDeleteApis = async (endpoint, data) => {
+  console.log(endpoint, data);
+  try {
+    const response = await api.delete(endpoint, data);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const callDeletesApis = async (endpoint) => {
   try {
     const response = await api.delete(endpoint);
     return response.data;
