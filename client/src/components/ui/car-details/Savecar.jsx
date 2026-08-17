@@ -52,9 +52,9 @@ const Savecar = ({carId,userId}) => {
     }
   };
 
-
+console.log('user',user)
    useEffect(() => {
-           if (user.savedCars.includes(carId)) {
+           if (user && user.savedCars && user.savedCars.includes(carId)) {
               setIsSaveCar(true);
            }
     },[isSaveCar, carId, user]);
